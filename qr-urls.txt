@@ -1,0 +1,40 @@
+# Ganpati_ai_museum — QR / NFC URLs
+# प्रत्येक ओळ = एक वस्तू. QR आणि NFC वर EXACT हीच लिंक लिहा.
+
+BASE=https://smartconnect2020-hash.github.io/Ganpati_ai_museum
+
+001 गणपतीची आयुधे
+https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=001
+
+002 परशु
+https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=002
+
+003 अंकुश
+https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=003
+
+004 वस्तू ४ (प्लेसहोल्डर)
+https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=004
+
+005 वस्तू ५ (प्लेसहोल्डर)
+https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=005
+
+006 वस्तू ६ (प्लेसहोल्डर)
+https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=006
+
+007 वस्तू ७ (प्लेसहोल्डर)
+https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=007
+
+008 वस्तू ८ (प्लेसहोल्डर)
+https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=008
+
+009 वस्तू ९ (प्लेसहोल्डर)
+https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=009
+
+010 वस्तू १० (प्लेसहोल्डर)
+https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=010
+
+# होम (सर्व यादी)
+https://smartconnect2020-hash.github.io/Ganpati_ai_museum/
+
+# QR टूल: https://www.qrcode-monkey.com
+# NFC: NFC Tools app → Write → URL → वरील लिंक → टॅग ला टॅप

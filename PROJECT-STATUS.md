@@ -7,13 +7,16 @@
 **फोल्डर:** `e:\Ganpati_audio_qr_project`  
 **स्पेक:** `home-audio-guide-build-spec.md`  
 **Repo URL:** https://github.com/smartconnect2020-hash/Ganpati_ai_museum  
-**Live site:** https://smartconnect2020-hash.github.io/Ganpati_ai_museum/
+**Live site:** https://smartconnect2020-hash.github.io/Ganpati_ai_museum/  
+**Visibility:** PUBLIC  
+**GitHub अपडेट गाइड:** `GITHUB-GUIDE.md`  
+**QR/NFC URL यादी:** `qr-urls.txt`
 
 ---
 
 ## 1. एका वाक्यात स्थिती
 
-**कोड तयार + GitHub Pages live.** खरा कंटेंट (ऑडिओ + फोटो + कहाणी) आणि QR/NFC प्रिंट–एनकोडिंग **अजून बाकी** आहे.
+**कोड तयार + GitHub Pages live (Public).** खरा कंटेंट (ऑडिओ + फोटो + कहाणी) बाकी; QR/NFC साठी URL लिस्ट तयार आहे.
 
 ---
 

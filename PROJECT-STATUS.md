@@ -2,15 +2,18 @@
 
 **अपडेट तारीख:** 20 Aug 2026  
 **Repo नाव:** `Ganpati_ai_museum`  
+**GitHub अकाउंट:** `smartconnect2020-hash` (नोंद: `smartconnect2020-lab` अस्तित्वात नव्हते)  
 **कुटुंब:** Nil  
 **फोल्डर:** `e:\Ganpati_audio_qr_project`  
-**स्पेक:** `home-audio-guide-build-spec.md`
+**स्पेक:** `home-audio-guide-build-spec.md`  
+**Repo URL:** https://github.com/smartconnect2020-hash/Ganpati_ai_museum  
+**Live site:** https://smartconnect2020-hash.github.io/Ganpati_ai_museum/
 
 ---
 
 ## 1. एका वाक्यात स्थिती
 
-**कोड / वेब अॅप तयार आहे.** खरा कंटेंट (ऑडिओ + फोटो + कहाणी), GitHub Pages डिप्लॉय, आणि QR/NFC प्रिंट–एनकोडिंग **अजून बाकी** आहे.
+**कोड तयार + GitHub Pages live.** खरा कंटेंट (ऑडिओ + फोटो + कहाणी) आणि QR/NFC प्रिंट–एनकोडिंग **अजून बाकी** आहे.
 
 ---
 
@@ -55,9 +58,9 @@
 
 ### B. डिप्लॉय
 
-- [ ] GitHub वर public repo: `Ganpati_ai_museum`
-- [ ] `git push` + **GitHub Pages** चालू
-- [ ] Live URL तपासा (फोन Chrome + Safari)
+- [x] GitHub वर public repo: `Ganpati_ai_museum` (`smartconnect2020-hash`)
+- [x] `git push` + **GitHub Pages** चालू (`main` / root)
+- [ ] Live URL फोनवर तपासा (Chrome + Safari)
 
 ### C. QR + NFC (भौतिक)
 

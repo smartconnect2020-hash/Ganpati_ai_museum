@@ -13,9 +13,10 @@ Repo: **Ganpati_ai_museum**
 2. वेबपेज उघडेल → मोठे **ऐका / Play** बटण दाबा  
 3. वर उजवीकडे **मराठी | English** बदलता येते  
 
-URL उदाहरणे:
-- यादी: `https://YOUR_USERNAME.github.io/Ganpati_ai_museum/`
-- वस्तू: `https://YOUR_USERNAME.github.io/Ganpati_ai_museum/?id=001`
+URL उदाहरणे (live):
+- यादी: https://smartconnect2020-hash.github.io/Ganpati_ai_museum/
+- वस्तू: https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=001
+- GitHub repo: https://github.com/smartconnect2020-hash/Ganpati_ai_museum
 
 ---
 

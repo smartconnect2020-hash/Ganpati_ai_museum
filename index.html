@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#8B4513" />
+  <meta name="description" content="Nil कुटुंबाचे घर संग्रहालय — QR/NFC ऑडिओ गाइड" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" type="image/png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>आमचं घर संग्रहालय</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">मुख्य मजकुराकडे जा</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./" id="brand-link">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text">
+          <span class="brand-title" id="brand-title">आमचं घर संग्रहालय</span>
+          <span class="brand-family" id="brand-family">Nil</span>
+        </span>
+      </a>
+      <button type="button" class="lang-toggle" id="lang-toggle" aria-label="Language toggle">
+        <span data-lang-label="mr">मराठी</span>
+        <span class="lang-sep" aria-hidden="true">|</span>
+        <span data-lang-label="en">English</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="main" tabindex="-1">
+    <div id="app" class="app" aria-live="polite">
+      <p class="loading" id="loading">लोड होत आहे…</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p id="footer-text">Nil · घर संग्रहालय</p>
+  </footer>
+
+  <div id="lightbox" class="lightbox" hidden>
+    <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+    <img id="lightbox-img" alt="" />
+  </div>
+
+  <script src="app.js" defer></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {
+          /* silent — offline optional on first visit */
+        });
+      });
+    }
+  </script>
+</body>
+</html>

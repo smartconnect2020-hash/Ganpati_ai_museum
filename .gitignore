@@ -1,0 +1,16 @@
+# Local / OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Print assets (keep offline)
+qr-codes/
+
+# Editor
+.vscode/
+.idea/
+
+# Python helper
+__pycache__/
+*.pyc
+_tmp.webp

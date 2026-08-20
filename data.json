@@ -1,0 +1,283 @@
+{
+  "meta": {
+    "site_title": {
+      "mr": "आमचं घर संग्रहालय",
+      "en": "Our Home Museum"
+    },
+    "family_name": "Nil",
+    "version": "1.0",
+    "repo": "Ganpati_ai_museum"
+  },
+  "items": [
+    {
+      "id": "001",
+      "title": {
+        "mr": "गणपतीची आयुधे",
+        "en": "Ganpati Aayudha"
+      },
+      "year": "—",
+      "location": {
+        "mr": "मुख्य पूजा स्थळ",
+        "en": "Main puja space"
+      },
+      "audio": {
+        "mr": "media/item-001/audio-mr.mp3",
+        "en": "media/item-001/audio-en.mp3"
+      },
+      "images": [
+        "media/item-001/01.png",
+        "media/item-001/02.png",
+        "media/item-001/03.png"
+      ],
+      "story": {
+        "mr": "गणपतीच्या हातातील आयुधे — प्रत्येक आयुधाला अर्थ आणि कहाणी आहे. ही वस्तू आमच्या घरातल्या गणेश उपासनेचा भाग आहे. (खरी कहाणी आणि ऑडिओ नंतर जोडा.)",
+        "en": "The divine weapons held by Lord Ganpati — each has meaning and a story. This piece is part of our home's Ganesh devotion. (Replace with the real story and audio later.)"
+      },
+      "related_ids": ["002", "003"],
+      "duration_sec": 45
+    },
+    {
+      "id": "002",
+      "title": {
+        "mr": "परशु",
+        "en": "Parshu"
+      },
+      "year": "—",
+      "location": {
+        "mr": "मुख्य पूजा स्थळ",
+        "en": "Main puja space"
+      },
+      "audio": {
+        "mr": "media/item-002/audio-mr.mp3",
+        "en": "media/item-002/audio-en.mp3"
+      },
+      "images": [
+        "media/item-002/01.png",
+        "media/item-002/02.png",
+        "media/item-002/03.png"
+      ],
+      "story": {
+        "mr": "परशु — कुऱ्हाड. गणपतीच्या आयुधांपैकी एक. घरात ही वस्तू कशी आली, कोणाकडून मिळाली — ती कहाणी इथे लिहा आणि ऑडिओ रेकॉर्ड करा.",
+        "en": "Parshu — the axe. One of Lord Ganpati's attributes. Write how this piece came into the home, and record the audio."
+      },
+      "related_ids": ["001", "003"],
+      "duration_sec": 45
+    },
+    {
+      "id": "003",
+      "title": {
+        "mr": "अंकुश",
+        "en": "Ankush"
+      },
+      "year": "—",
+      "location": {
+        "mr": "मुख्य पूजा स्थळ",
+        "en": "Main puja space"
+      },
+      "audio": {
+        "mr": "media/item-003/audio-mr.mp3",
+        "en": "media/item-003/audio-en.mp3"
+      },
+      "images": [
+        "media/item-003/01.png",
+        "media/item-003/02.png",
+        "media/item-003/03.png"
+      ],
+      "story": {
+        "mr": "अंकुश — हत्ती चालवण्याचे आयुध, मन नियंत्रित करण्याचे प्रतीक. या वस्तूची खरी कहाणी आणि कुटुंबाचा आवाज नंतर जोडा.",
+        "en": "Ankush — the goad, a symbol of guiding the mind. Add the real family story and voice recording later."
+      },
+      "related_ids": ["001", "002"],
+      "duration_sec": 45
+    },
+    {
+      "id": "004",
+      "title": {
+        "mr": "वस्तू ४ (प्लेसहोल्डर)",
+        "en": "Item 4 (placeholder)"
+      },
+      "year": "—",
+      "location": {
+        "mr": "स्थान भरा",
+        "en": "Add location"
+      },
+      "audio": {
+        "mr": "media/item-004/audio-mr.mp3",
+        "en": "media/item-004/audio-en.mp3"
+      },
+      "images": [
+        "media/item-004/01.png",
+        "media/item-004/02.png",
+        "media/item-004/03.png"
+      ],
+      "story": {
+        "mr": "ही प्लेसहोल्डर एंट्री आहे. खरे शीर्षक, वर्ष, स्थळ, कहाणी आणि ऑडिओ येथे भरा.",
+        "en": "This is a placeholder entry. Fill in the real title, year, location, story, and audio."
+      },
+      "related_ids": ["005", "001"],
+      "duration_sec": 30
+    },
+    {
+      "id": "005",
+      "title": {
+        "mr": "वस्तू ५ (प्लेसहोल्डर)",
+        "en": "Item 5 (placeholder)"
+      },
+      "year": "—",
+      "location": {
+        "mr": "स्थान भरा",
+        "en": "Add location"
+      },
+      "audio": {
+        "mr": "media/item-005/audio-mr.mp3",
+        "en": "media/item-005/audio-en.mp3"
+      },
+      "images": [
+        "media/item-005/01.png",
+        "media/item-005/02.png",
+        "media/item-005/03.png"
+      ],
+      "story": {
+        "mr": "ही प्लेसहोल्डर एंट्री आहे. खरे शीर्षक, वर्ष, स्थळ, कहाणी आणि ऑडिओ येथे भरा.",
+        "en": "This is a placeholder entry. Fill in the real title, year, location, story, and audio."
+      },
+      "related_ids": ["004", "006"],
+      "duration_sec": 30
+    },
+    {
+      "id": "006",
+      "title": {
+        "mr": "वस्तू ६ (प्लेसहोल्डर)",
+        "en": "Item 6 (placeholder)"
+      },
+      "year": "—",
+      "location": {
+        "mr": "स्थान भरा",
+        "en": "Add location"
+      },
+      "audio": {
+        "mr": "media/item-006/audio-mr.mp3",
+        "en": "media/item-006/audio-en.mp3"
+      },
+      "images": [
+        "media/item-006/01.png",
+        "media/item-006/02.png",
+        "media/item-006/03.png"
+      ],
+      "story": {
+        "mr": "ही प्लेसहोल्डर एंट्री आहे. खरे शीर्षक, वर्ष, स्थळ, कहाणी आणि ऑडिओ येथे भरा.",
+        "en": "This is a placeholder entry. Fill in the real title, year, location, story, and audio."
+      },
+      "related_ids": ["005", "007"],
+      "duration_sec": 30
+    },
+    {
+      "id": "007",
+      "title": {
+        "mr": "वस्तू ७ (प्लेसहोल्डर)",
+        "en": "Item 7 (placeholder)"
+      },
+      "year": "—",
+      "location": {
+        "mr": "स्थान भरा",
+        "en": "Add location"
+      },
+      "audio": {
+        "mr": "media/item-007/audio-mr.mp3",
+        "en": "media/item-007/audio-en.mp3"
+      },
+      "images": [
+        "media/item-007/01.png",
+        "media/item-007/02.png",
+        "media/item-007/03.png"
+      ],
+      "story": {
+        "mr": "ही प्लेसहोल्डर एंट्री आहे. खरे शीर्षक, वर्ष, स्थळ, कहाणी आणि ऑडिओ येथे भरा.",
+        "en": "This is a placeholder entry. Fill in the real title, year, location, story, and audio."
+      },
+      "related_ids": ["006", "008"],
+      "duration_sec": 30
+    },
+    {
+      "id": "008",
+      "title": {
+        "mr": "वस्तू ८ (प्लेसहोल्डर)",
+        "en": "Item 8 (placeholder)"
+      },
+      "year": "—",
+      "location": {
+        "mr": "स्थान भरा",
+        "en": "Add location"
+      },
+      "audio": {
+        "mr": "media/item-008/audio-mr.mp3",
+        "en": "media/item-008/audio-en.mp3"
+      },
+      "images": [
+        "media/item-008/01.png",
+        "media/item-008/02.png",
+        "media/item-008/03.png"
+      ],
+      "story": {
+        "mr": "ही प्लेसहोल्डर एंट्री आहे. खरे शीर्षक, वर्ष, स्थळ, कहाणी आणि ऑडिओ येथे भरा.",
+        "en": "This is a placeholder entry. Fill in the real title, year, location, story, and audio."
+      },
+      "related_ids": ["007", "009"],
+      "duration_sec": 30
+    },
+    {
+      "id": "009",
+      "title": {
+        "mr": "वस्तू ९ (प्लेसहोल्डर)",
+        "en": "Item 9 (placeholder)"
+      },
+      "year": "—",
+      "location": {
+        "mr": "स्थान भरा",
+        "en": "Add location"
+      },
+      "audio": {
+        "mr": "media/item-009/audio-mr.mp3",
+        "en": "media/item-009/audio-en.mp3"
+      },
+      "images": [
+        "media/item-009/01.png",
+        "media/item-009/02.png",
+        "media/item-009/03.png"
+      ],
+      "story": {
+        "mr": "ही प्लेसहोल्डर एंट्री आहे. खरे शीर्षक, वर्ष, स्थळ, कहाणी आणि ऑडिओ येथे भरा.",
+        "en": "This is a placeholder entry. Fill in the real title, year, location, story, and audio."
+      },
+      "related_ids": ["008", "010"],
+      "duration_sec": 30
+    },
+    {
+      "id": "010",
+      "title": {
+        "mr": "वस्तू १० (प्लेसहोल्डर)",
+        "en": "Item 10 (placeholder)"
+      },
+      "year": "—",
+      "location": {
+        "mr": "स्थान भरा",
+        "en": "Add location"
+      },
+      "audio": {
+        "mr": "media/item-010/audio-mr.mp3",
+        "en": "media/item-010/audio-en.mp3"
+      },
+      "images": [
+        "media/item-010/01.png",
+        "media/item-010/02.png",
+        "media/item-010/03.png"
+      ],
+      "story": {
+        "mr": "ही प्लेसहोल्डर एंट्री आहे. खरे शीर्षक, वर्ष, स्थळ, कहाणी आणि ऑडिओ येथे भरा.",
+        "en": "This is a placeholder entry. Fill in the real title, year, location, story, and audio."
+      },
+      "related_ids": ["009", "001"],
+      "duration_sec": 30
+    }
+  ]
+}

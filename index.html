@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#8B4513" />
+  <meta name="theme-color" content="#7A1E2B" />
   <meta name="description" content="Nil कुटुंबाचे घर संग्रहालय — QR/NFC ऑडिओ गाइड" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icons/icon-192.png" type="image/png" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yatra+One&display=swap" />
   <link rel="stylesheet" href="styles.css" />
   <title>आमचं घर संग्रहालय</title>
 </head>
@@ -19,7 +21,7 @@
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="./" id="brand-link">
-        <span class="brand-mark" aria-hidden="true"></span>
+        <svg class="brand-mark" aria-hidden="true" viewBox="0 0 24 30" fill="currentColor"><path d="M12 0c-1.6 2-2 3.4-2 4.6C6.5 5.6 4 8.6 4 13c0 8 3.6 15 8 15s8-7 8-15c0-4.4-2.5-7.4-6-8.4C14 3.4 13.6 2 12 0z"/></svg>
         <span class="brand-text">
           <span class="brand-title" id="brand-title">आमचं घर संग्रहालय</span>
           <span class="brand-family" id="brand-family">Nil</span>
@@ -34,8 +36,15 @@
   </header>
 
   <main id="main" class="main" tabindex="-1">
+    <span class="corner c-tl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 18c0-9 7-16 16-16 2 8-2 14-8 16-4 1-8 1-8 0z"/></svg></span>
+    <span class="corner c-tr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 18c0-9 7-16 16-16 2 8-2 14-8 16-4 1-8 1-8 0z"/></svg></span>
+    <span class="corner c-bl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 18c0-9 7-16 16-16 2 8-2 14-8 16-4 1-8 1-8 0z"/></svg></span>
+    <span class="corner c-br" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 18c0-9 7-16 16-16 2 8-2 14-8 16-4 1-8 1-8 0z"/></svg></span>
     <div id="app" class="app" aria-live="polite">
-      <p class="loading" id="loading">लोड होत आहे…</p>
+      <p class="loading" id="loading">
+        <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>
+        लोड होत आहे…
+      </p>
     </div>
   </main>
 
@@ -44,8 +53,17 @@
   </footer>
 
   <div id="lightbox" class="lightbox" hidden>
-    <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+    <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+    <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous photo">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next photo">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
     <img id="lightbox-img" alt="" />
+    <span class="lightbox-counter" id="lightbox-counter"></span>
   </div>
 
   <script src="app.js" defer></script>

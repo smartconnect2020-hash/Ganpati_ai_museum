@@ -3,7 +3,8 @@
  * Cache-first for same-origin assets.
  */
 
-const CACHE_NAME = 'ghar-museum-v1';
+const CACHE_NAME = 'ghar-museum-v2';
+const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 const SHELL = [
   './',
   './index.html',
@@ -34,19 +35,23 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
-  if (url.origin !== self.location.origin) return;
+  const sameOrigin = url.origin === self.location.origin;
+  const isFontHost = FONT_HOSTS.includes(url.hostname);
+  if (!sameOrigin && !isFontHost) return;
 
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
       return fetch(req)
         .then((res) => {
-          if (!res || res.status !== 200 || res.type === 'opaque') return res;
+          if (!res) return res;
+          const cacheable = res.status === 200 || (isFontHost && res.type === 'opaque');
+          if (!cacheable) return res;
           const clone = res.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
           return res;
         })
-        .catch(() => caches.match('./index.html'));
+        .catch(() => (sameOrigin ? caches.match('./index.html') : undefined));
     })
   );
 });

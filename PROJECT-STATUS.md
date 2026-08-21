@@ -105,8 +105,8 @@
 - [x] ३ पर्याय दाखवून युजर-निवड घेतली (पूजा पत्रिका)
 - [x] WCAG contrast पुन्हा गणित करून तपासलं — नवीन gold साठीही एक contrast bug सापडला, त्याच सेशनमध्ये फिक्स केला (तपशील `DESIGN-DECISIONS.md`)
 - [x] DOM/console/लाइव्ह क्लिक-टेस्ट (lightbox prev/next/counter, play अ‍ॅरिया-लेबल, seal बॅज अंक) — सर्व काम करतात
-- [ ] **पिक्सेल-स्तरावर visual बघणे बाकी** — या सेशनमध्ये browser screenshot घेता आला नाही, त्यामुळे फोन/लॅपटॉपवर प्रत्यक्ष उघडून बघा: `python -m http.server 8080` → `http://127.0.0.1:8080/?id=003`
-- [ ] Git मध्ये commit/push अजून केलेलं नाही — बघितल्यावर ठीक वाटल्यास सांगा
+- [x] Git commit + push केलं (`5e57053`) — GitHub Pages १-२ मिनिटांत live साइटवर दाखवेल
+- [ ] **पिक्सेल-स्तरावर visual बघणे अजूनही बाकी** — या सेशनमध्ये browser screenshot घेता आला नाही, त्यामुळे live साइटवर (https://smartconnect2020-hash.github.io/Ganpati_ai_museum/) प्रत्यक्ष उघडून बघा
 
 ---
 

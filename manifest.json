@@ -1,7 +1,7 @@
 {
-  "name": "आमचं घर संग्रहालय — Nil",
-  "short_name": "घर संग्रहालय",
-  "description": "Nil कुटुंबाचे घर संग्रहालय — QR/NFC ऑडिओ गाइड",
+  "name": "श्री गणेश आयुधे — Nil",
+  "short_name": "गणेश आयुधे",
+  "description": "Nil कुटुंबाचे श्री गणेश आयुधे — QR/NFC ऑडिओ गाइड",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

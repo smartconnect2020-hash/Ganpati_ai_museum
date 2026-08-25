@@ -26,7 +26,7 @@
       homeLead: 'QR किंवा NFC स्कॅन करून प्रत्येक वस्तूची कहाणी ऐका.',
       location: 'स्थळ',
       year: 'वर्ष',
-      footer: (name) => `${name} · घर संग्रहालय`,
+      footer: (name) => `${name} · श्री गणेश आयुधे`,
       itemNo: (n) => `वस्तू क्र. ${n}`,
     },
     en: {
@@ -44,12 +44,21 @@
       homeLead: 'Scan QR or NFC to hear each object’s story.',
       location: 'Location',
       year: 'Year',
-      footer: (name) => `${name} · Home Museum`,
+      footer: (name) => `${name} · Shri Ganesh's Weapons`,
       itemNo: (n) => `ITEM NO. ${n}`,
     },
   };
 
   const DEVANAGARI_DIGITS = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+
+  /* design-ref.jpg files are AI-generated multi-view spec sheets (front/side/
+     detail panels + printed English labels/rulers baked into the pixels) —
+     not plain photos. Cropping them with object-fit:cover would randomly cut
+     into that text, so they get a dedicated "show the whole sheet" treatment
+     (see .is-ref in styles.css) instead of the normal cover-crop. */
+  function isDesignRef(src) {
+    return typeof src === 'string' && src.includes('design-ref');
+  }
 
   function displayNum(idStr) {
     const n = String(Number(idStr));
@@ -69,10 +78,14 @@
     info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg>',
     back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>',
     error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>',
+    scroll: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6"/><path d="M6 3a2 2 0 0 0-2 2v1h2M6 21a2 2 0 0 1-2-2v-1h2"/><path d="M9 8h7M9 12h7M9 16h4"/></svg>',
   };
 
   let data = null;
-  let lang = localStorage.getItem(STORAGE_LANG) || 'mr';
+  // Language toggle is hidden until English guide text exists (see styles.css
+  // .lang-toggle) — forcing 'mr' here means a stale "en" in localStorage from
+  // before this change can never strand a visitor on the toggle-less English view.
+  let lang = 'mr';
   let audioEl = null;
   let wakeLock = null;
   let currentItem = null;
@@ -242,7 +255,7 @@
         return `
           <a class="item-card" href="?id=${item.id}" style="--i:${i}">
             <div class="item-card-media">
-              <img class="item-card-img" src="${thumb}" alt="" loading="lazy" width="400" height="300" />
+              <img class="item-card-img${isDesignRef(thumb) ? ' is-ref' : ''}" src="${thumb}" alt="" loading="lazy" width="400" height="300" />
             </div>
             <span class="item-card-badge">${displayNum(item.id)}</span>
             <div class="item-card-body">
@@ -397,6 +410,38 @@
     }
   }
 
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  }
+
+  /* g.sections[].sfx and g.outro are audio-production cues from the source
+     guide ("(ध्वनी प्रभाव [SFX]: ...)") — meant for whoever records the
+     narration, not for visitors reading the page, so they stay in data.json
+     (and the generated audio-scripts/*.md files) but are never rendered here. */
+  function renderGuide(g, symbol) {
+    const sections = g.sections
+      .map(
+        (s, i) => `
+        <section class="movement" style="--i:${i}">
+          <h2 class="movement-label"><span class="ln"></span>${escapeHtml(s.heading)}<span class="ln"></span></h2>
+          ${s.paras.map((p) => `<p>${escapeHtml(p)}</p>`).join('')}
+          ${s.sources ? `<p class="granth-line">${ICON.scroll}<span>${escapeHtml(s.sources)}</span></p>` : ''}
+        </section>
+      `
+      )
+      .join('');
+
+    return `
+      ${symbol ? `<img class="symbol-medallion" src="${symbol}" alt="" width="100" height="100" />` : ''}
+      <p class="guide-intro">${escapeHtml(g.intro)}</p>
+      ${sections}
+      <p class="darshanik">${escapeHtml(g.darshanik)}</p>
+      <aside class="guide-outro">
+        <p class="next-guide">${escapeHtml(g.nextGuide)}</p>
+      </aside>
+    `;
+  }
+
   function renderItem(item) {
     const u = t();
     const recent = wasRecentVisit(item.id);
@@ -406,8 +451,12 @@
     const images = item.images || [];
     const galleryImgs = images
       .map(
+        // No loading="lazy" here: a gallery only ever has 1-3 images and they
+        // sit right at the top of the page the visitor navigated to, so lazy
+        // loading buys nothing and has been the suspect in reports of a
+        // gallery photo never appearing.
         (src, i) =>
-          `<img src="${src}" alt="${item.title[lang]}" loading="lazy" width="800" height="600" data-idx="${i}" />`
+          `<img class="${isDesignRef(src) ? 'is-ref' : ''}" src="${src}" alt="${item.title[lang]}" width="800" height="600" data-idx="${i}" />`
       )
       .join('');
     const dots =
@@ -417,16 +466,22 @@
             .join('')}</div>`
         : '';
 
+    const guide = item.guide && item.guide[lang];
+
+    const subhead = guide
+      ? `<p class="item-subtitle">${escapeHtml(guide.docTitle)}</p>`
+      : `<p class="item-meta">
+          <span>${ICON.calendar}${item.year || '—'}</span>
+          <span>${ICON.location}${item.location[lang]}</span>
+        </p>`;
+
     app.innerHTML = `
       ${recent ? `<div class="banner" role="status">${ICON.info}${u.revisit}</div>` : ''}
       <article>
         <span class="item-eyebrow">${u.itemNo(displayNum(item.id))}</span>
         <h1 class="item-title">${item.title[lang]}</h1>
         <div class="flourish" aria-hidden="true"><span class="ln"></span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 7.5H22l-6 4.5 2.5 7.5L12 17l-6.5 4.5L8 14 2 9.5h7.5z"/></svg><span class="ln"></span></div>
-        <p class="item-meta">
-          <span>${ICON.calendar}${item.year || '—'}</span>
-          <span>${ICON.location}${item.location[lang]}</span>
-        </p>
+        ${subhead}
         <span class="duration">${u.duration(item.duration_sec || 0)}</span>
 
         <div class="player">
@@ -451,10 +506,14 @@
           ${dots}
         </div>
 
-        <section class="story">
-          <h2>${ICON.book}${u.story}</h2>
-          <p>${item.story[lang]}</p>
-        </section>
+        ${
+          guide
+            ? `<div class="narrative">${renderGuide(guide, item.symbol)}</div>`
+            : `<section class="story">
+                 <h2>${ICON.book}${u.story}</h2>
+                 <p>${escapeHtml(item.story[lang])}</p>
+               </section>`
+        }
 
         <a class="back-home" href="./">${ICON.back}${u.homeCta}</a>
       </article>

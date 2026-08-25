@@ -1,15 +1,14 @@
 /**
  * Service worker — cache shell on install; cache media on visit.
- * Cache-first for same-origin assets.
+ * Cache-first for same-origin assets. No external hosts (site uses system fonts only).
  */
 
-const CACHE_NAME = 'ghar-museum-v2';
-const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
+const CACHE_NAME = 'ghar-museum-v8';
 const SHELL = [
   './',
   './index.html',
-  './styles.css',
-  './app.js',
+  './styles.css?v=8',
+  './app.js?v=8',
   './data.json',
   './manifest.json',
   './icons/icon-192.png',
@@ -35,23 +34,19 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
-  const sameOrigin = url.origin === self.location.origin;
-  const isFontHost = FONT_HOSTS.includes(url.hostname);
-  if (!sameOrigin && !isFontHost) return;
+  if (url.origin !== self.location.origin) return;
 
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
       return fetch(req)
         .then((res) => {
-          if (!res) return res;
-          const cacheable = res.status === 200 || (isFontHost && res.type === 'opaque');
-          if (!cacheable) return res;
+          if (!res || res.status !== 200 || res.type === 'opaque') return res;
           const clone = res.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
           return res;
         })
-        .catch(() => (sameOrigin ? caches.match('./index.html') : undefined));
+        .catch(() => caches.match('./index.html'));
     })
   );
 });

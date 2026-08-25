@@ -6,6 +6,11 @@ desktop.ini
 # Print assets (keep offline)
 qr-codes/
 
+# Raw AI-generated source material — only the curated copies inside media/
+# are actually used by the site; this folder is just the working stash.
+all images/
+audio-scripts/*.wav
+
 # Editor
 .vscode/
 .idea/

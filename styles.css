@@ -27,30 +27,17 @@
   --dur-fast: 160ms;
   --dur: 260ms;
   --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
-  --font-display: "Yatra One", var(--font);
+  /* Reverted from "Yatra One" (Google Font) after repeated font/legibility
+     complaints — system-ui renders instantly, offline, with guaranteed
+     Devanagari coverage on every device. Weight/spacing carry the "display"
+     feel instead (each --font-display usage pairs it with font-weight: 700). */
+  --font-display: var(--font);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #1c0a0d;
-    --color-surface: #260f13;
-    --color-surface-2: #2c1216;
-    --color-text: #f3e6d6;
-    --color-muted: #c9aa8e;
-    --color-primary: #e2795f;
-    --color-primary-hover: #ec9280;
-    --color-primary-soft: rgba(226, 121, 95, 0.16);
-    --color-gold: #d9ab5c;
-    --color-gold-soft: rgba(217, 171, 92, 0.18);
-    --color-border: rgba(217, 171, 92, 0.32);
-    --color-play-text: #2b1305;
-    --color-banner: #3a2a10;
-    --color-banner-border: #5a431a;
-    --color-error: #f0a08e;
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.32);
-    --shadow-md: 0 10px 26px rgba(0, 0, 0, 0.42);
-  }
-}
+/* Dark mode intentionally removed — the "पत्रिका" (invitation card) look is
+   paper/ivory by nature, and an auto-switching brown palette on some phones
+   was confusing family members ("theme changed on its own"). The site now
+   always shows the same warm palette regardless of the device's OS setting. */
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -154,6 +141,10 @@ button { touch-action: manipulation; }
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
+
+/* Hidden until English guide content exists for the docx-based items (§ audio-scripts).
+   Remove this rule to bring the toggle back once English text is written. */
+.lang-toggle { display: none; }
 
 .lang-toggle {
   flex-shrink: 0;
@@ -266,7 +257,8 @@ button { touch-action: manipulation; }
 .home-hero h1 {
   margin: 0 0 0.45rem;
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   font-size: clamp(1.9rem, 7vw, 2.5rem);
   line-height: 1.25;
   color: var(--color-primary);
@@ -292,14 +284,22 @@ button { touch-action: manipulation; }
   overflow: visible;
   box-shadow: var(--shadow-sm);
   min-height: 100%;
-  opacity: 0;
-  transform: translateY(10px);
-  animation: card-in var(--dur) var(--ease) forwards;
-  animation-delay: calc(var(--i, 0) * 45ms);
   transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 
-@keyframes card-in { to { opacity: 1; transform: translateY(0); } }
+/* The hidden state lives only inside the keyframes, never in the base rule, so
+   content stays visible if the animation is unsupported or never ticks. */
+@media (prefers-reduced-motion: no-preference) {
+  .item-card {
+    animation: card-in var(--dur) var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 45ms);
+  }
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
 
 .item-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--color-gold); }
 .item-card:active { transform: scale(0.98); }
@@ -311,6 +311,15 @@ button { touch-action: manipulation; }
   object-fit: cover;
   width: 100%;
   background: var(--color-gold-soft);
+}
+
+/* AI reference sheets are dense multi-panel diagrams on a white ground —
+   cover-cropping them at thumbnail size would slice into the panel labels,
+   so they get letterboxed in full instead of cropped. */
+.item-card-img.is-ref {
+  object-fit: contain;
+  background: #fbfaf7;
+  padding: 0.3rem;
 }
 
 .item-card-badge {
@@ -399,7 +408,8 @@ article { text-align: center; }
 .item-title {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   color: var(--color-primary);
   font-size: clamp(1.7rem, 7vw, 2.2rem);
   line-height: 1.25;
@@ -601,6 +611,15 @@ article { text-align: center; }
   transition: transform var(--dur-fast) var(--ease);
 }
 
+/* AI reference sheets (front/side/detail panels + printed labels) shown at
+   their own native ratio so nothing is cropped or letterboxed. */
+.gallery img.is-ref {
+  aspect-ratio: 1376 / 768;
+  object-fit: contain;
+  background: #fbfaf7;
+  padding: 0.4rem;
+}
+
 .gallery img:active { transform: scale(0.97); }
 
 .gallery-dots { display: flex; justify-content: center; gap: 0.4rem; margin-top: 0.6rem; }
@@ -614,6 +633,121 @@ article { text-align: center; }
 }
 
 .gallery-dots span.active { background: var(--color-primary); transform: scale(1.3); }
+
+/* ---------- Narrative (story-guide items) ---------- */
+
+.narrative { text-align: left; }
+
+.symbol-medallion {
+  width: 4.4rem;
+  height: 4.4rem;
+  margin: 0.4rem auto 1.1rem;
+  border-radius: 50%;
+  border: 2px solid var(--color-gold);
+  box-shadow: 0 0 0 4px var(--color-surface), 0 0 0 5px var(--color-gold-soft);
+  object-fit: cover;
+}
+
+.guide-intro {
+  margin: 0 auto 2rem;
+  max-width: 34ch;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.05rem, 4.1vw, 1.24rem);
+  line-height: 1.55;
+  color: var(--color-primary);
+  text-wrap: balance;
+}
+
+.granth-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 1.1rem 0 0;
+  padding-top: 0.85rem;
+  border-top: 1px dashed var(--color-border);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.granth-line svg { width: 1rem; height: 1rem; flex-shrink: 0; margin-top: 0.2rem; color: var(--color-gold); }
+
+.darshanik {
+  margin: 2rem 0 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.02rem;
+  letter-spacing: 0.02em;
+  color: var(--color-primary);
+}
+
+.guide-outro {
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.next-guide {
+  margin: 0 0 0.9rem;
+  font-size: 0.86rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .movement {
+    animation: card-in 420ms var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 110ms);
+  }
+}
+
+.movement + .movement { margin-top: 1.9rem; }
+
+/* No text-transform here: section headings must read exactly as written
+   in the source guide, including their original capitalisation. */
+.movement-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 0 0 0.9rem;
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  color: var(--color-primary);
+  text-wrap: balance;
+}
+
+.movement-label .ln {
+  flex: 1;
+  max-width: 34px;
+  height: 1px;
+  background: var(--color-gold);
+  opacity: 0.7;
+}
+
+.movement p {
+  margin: 0 0 0.95rem;
+  line-height: 1.78;
+  max-width: 62ch;
+}
+
+.movement p:last-child { margin-bottom: 0; }
+
+/* No drop cap: source paragraphs open with list markers ("१)"), which a
+   floated first letter would mangle. */
+
+.item-subtitle {
+  margin: 0.35rem auto 0;
+  max-width: 30ch;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
 
 /* ---------- Story ---------- */
 

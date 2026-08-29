@@ -4,6 +4,8 @@ clipped labels) — the honest alternative to spot-checking 2 of 24."""
 from pathlib import Path
 from PIL import Image
 
+Image.init()  # force-register format plugins before any .save() (see _print_sheet.py note)
+
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "qr-codes"
 files = sorted(OUT.glob("*.png"))

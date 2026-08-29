@@ -13,6 +13,8 @@ from pathlib import Path
 from PIL import Image, ImageFilter
 from pyzbar.pyzbar import decode
 
+Image.init()  # force-register format plugins before any .save() (see _print_sheet.py note)
+
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "qr-codes"
 BASE_URL = "https://smartconnect2020-hash.github.io/Ganpati_ai_museum"

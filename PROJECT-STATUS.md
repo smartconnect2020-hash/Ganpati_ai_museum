@@ -120,7 +120,10 @@ cd e:\Ganpati_audio_qr_project
 python _generate_qr.py          # २४ कार्ड्स तयार करतो (qr-codes/)
 python _stress_test_qr.py       # कठोर-परिस्थिती चाचणी
 python _contact_sheet.py        # सर्व २४ एका फाइलमध्ये बघण्यासाठी
+python _print_sheet.py          # A4 प्रिंट-शीट PDF (qr-codes/print-sheet-A4.pdf), कापण्याच्या रेषांसह
 ```
+
+**प्रिंट कसं करायचं:** `qr-codes/print-sheet-A4.pdf` उघडा → प्रिंट डायलॉगमध्ये **"Actual size" / 100%** निवडा (कधीच "Fit to page" नाही, नाहीतर आकार चुकेल — DPI आधीच फाइलमध्ये embed आहे) → कापण्याच्या पातळ रेषांवरून कापा.
 
 ---
 

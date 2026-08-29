@@ -16,6 +16,8 @@ from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
 from qrcode.image.styles.colormasks import SolidFillColorMask
 from PIL import Image, ImageDraw, ImageFont
 
+Image.init()  # force-register format plugins before any .save() (see _print_sheet.py note)
+
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "qr-codes"
 OUT.mkdir(exist_ok=True)

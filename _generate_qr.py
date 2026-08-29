@@ -1,0 +1,174 @@
+"""Generate print-ready, brand-styled QR tags for every item + home page.
+
+Uses only local libraries (qrcode + Pillow) — no external QR service,
+no watermark, no upload, no signup. Palette matches the "पूजा पत्रिका"
+theme already defined in styles.css.
+"""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import qrcode
+from qrcode.constants import ERROR_CORRECT_H
+from qrcode.image.styledpil import StyledPilImage
+from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
+from qrcode.image.styles.colormasks import SolidFillColorMask
+from PIL import Image, ImageDraw, ImageFont
+
+ROOT = Path(__file__).resolve().parent
+OUT = ROOT / "qr-codes"
+OUT.mkdir(exist_ok=True)
+
+BASE_URL = "https://smartconnect2020-hash.github.io/Ganpati_ai_museum"
+
+DEVANAGARI_DIGITS = "०१२३४५६७८९"
+
+
+def to_devanagari(n: int) -> str:
+    """Mirrors app.js's displayNum() so printed tags match on-site numerals."""
+    return "".join(DEVANAGARI_DIGITS[int(c)] for c in str(n))
+
+MAROON = (122, 30, 43)      # --color-primary
+GOLD = (143, 98, 36)        # --color-gold (text-safe, verified 4.76:1 earlier)
+CREAM = (251, 241, 222)     # --color-bg
+IVORY = (255, 249, 236)     # --color-surface
+INK = (58, 15, 22)          # --color-text
+
+CARD_W = 900
+QR_BOX = 700
+PAD = 60
+LOGO_FRACTION = 0.22  # keep well under ERROR_CORRECT_H's ~30% budget
+PRINT_DPI = 300  # embedded in the PNG so print dialogs show the true physical size
+
+
+def load_font(size: int, bold: bool = False):
+    candidates = (
+        ["C:/Windows/Fonts/Nirmala.ttc"] if not bold else ["C:/Windows/Fonts/Nirmala.ttc"]
+    ) + ["C:/Windows/Fonts/segoeui.ttf", "C:/Windows/Fonts/arial.ttf"]
+    for path in candidates:
+        try:
+            return ImageFont.truetype(path, size)
+        except Exception:
+            continue
+    return ImageFont.load_default()
+
+
+def make_qr(url: str) -> Image.Image:
+    # No center logo: testing proved an embedded icon breaks decoding on
+    # roughly half of these codes even at ERROR_CORRECT_H (see commit notes).
+    # A QR that "looks branded but won't scan" is worse than a plain one, so
+    # the item icon moves to the printed card instead (see make_card).
+    qr = qrcode.QRCode(
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=20,
+        border=2,
+    )
+    qr.add_data(url)
+    qr.make(fit=True)
+
+    img = qr.make_image(
+        image_factory=StyledPilImage,
+        module_drawer=RoundedModuleDrawer(radius_ratio=0.9),
+        color_mask=SolidFillColorMask(front_color=MAROON, back_color=IVORY),
+    ).convert("RGBA")
+
+    return img.resize((QR_BOX, QR_BOX), Image.LANCZOS)
+
+
+def make_card(title_mr: str, subtitle: str, url: str, logo_path: Path | None, out_path: Path):
+    qr_img = make_qr(url)
+
+    badge_d = int(QR_BOX * LOGO_FRACTION) if logo_path and logo_path.exists() else 0
+    top_zone = (badge_d + 30) if badge_d else 0
+    extra_h = 260 + top_zone
+    card = Image.new("RGB", (CARD_W, QR_BOX + PAD * 2 + extra_h), CREAM)
+    draw = ImageDraw.Draw(card)
+
+    # Double gold ring frame, matching .main's box-shadow motif on the site
+    inset = 22
+    draw.rounded_rectangle(
+        [inset, inset, CARD_W - inset, card.height - inset],
+        radius=28, outline=GOLD, width=4,
+    )
+    draw.rounded_rectangle(
+        [inset + 10, inset + 10, CARD_W - inset - 10, card.height - inset - 10],
+        radius=22, outline=GOLD, width=1,
+    )
+
+    # Item icon as a seal above the QR — never overlaps the code, so the QR
+    # itself stays untouched and 100% scannable (verified per-file, see
+    # _verify_qr.py). This is the actual customization: every weapon's tag
+    # carries its own icon, the code underneath is identical in structure.
+    if badge_d:
+        logo = Image.open(logo_path).convert("RGBA")
+        inner = int(badge_d * 0.68)
+        logo.thumbnail((inner, inner), Image.LANCZOS)
+        plate = Image.new("RGBA", (badge_d, badge_d), (0, 0, 0, 0))
+        pd = ImageDraw.Draw(plate)
+        pd.ellipse([0, 0, badge_d, badge_d], fill=IVORY + (255,), outline=GOLD + (255,), width=5)
+        px = (badge_d - logo.width) // 2
+        py = (badge_d - logo.height) // 2
+        plate.paste(logo, (px, py), logo)
+        bx = (CARD_W - badge_d) // 2
+        by = PAD
+        card.paste(plate, (bx, by), plate)
+
+    qr_x = (CARD_W - QR_BOX) // 2
+    qr_y = PAD + top_zone + 20
+    card.paste(qr_img, (qr_x, qr_y), qr_img)
+
+    title_font = load_font(52, bold=True)
+    sub_font = load_font(30)
+    foot_font = load_font(22)
+
+    ty = qr_y + QR_BOX + 30
+    tw = draw.textlength(title_mr, font=title_font)
+    draw.text(((CARD_W - tw) / 2, ty), title_mr, font=title_font, fill=MAROON)
+
+    sy = ty + 66
+    sw = draw.textlength(subtitle, font=sub_font)
+    draw.text(((CARD_W - sw) / 2, sy), subtitle, font=sub_font, fill=INK)
+
+    foot = "श्री गणेश आयुधे · स्कॅन करून ऐका"
+    fw = draw.textlength(foot, font=foot_font)
+    draw.text(((CARD_W - fw) / 2, sy + 56), foot, font=foot_font, fill=GOLD)
+
+    card.save(out_path, "PNG", dpi=(PRINT_DPI, PRINT_DPI))
+
+
+def main():
+    d = json.loads((ROOT / "data.json").read_text(encoding="utf-8"))
+
+    # Home / index QR
+    make_card(
+        "आमचं घर संग्रहालय",
+        "सर्व २३ आयुधे — मुख्य यादी",
+        f"{BASE_URL}/",
+        None,
+        OUT / "000-home.png",
+    )
+
+    count = 0
+    for item in d["items"]:
+        iid = item["id"]
+        title = item["title"]["mr"]
+        url = f"{BASE_URL}/?id={iid}"
+        symbol = ROOT / "media" / f"item-{iid}" / "symbol.png"
+        logo = symbol if symbol.exists() else None
+        make_card(title, f"वस्तू क्र. {to_devanagari(int(iid))}", url, logo, OUT / f"{iid}-{title}.png")
+        count += 1
+
+    card_in = (CARD_W / PRINT_DPI, (QR_BOX + PAD * 2 + 260) / PRINT_DPI)
+    qr_in = QR_BOX / PRINT_DPI
+    print(f"Generated {count + 1} QR cards in {OUT}")
+    print(f"Embedded print DPI: {PRINT_DPI}")
+    print(
+        f"Full card @ {PRINT_DPI}dpi ~= {card_in[0]:.2f}in x {card_in[1]:.2f}in "
+        f"({card_in[0]*2.54:.1f}cm x {card_in[1]*2.54:.1f}cm)"
+    )
+    print(f"QR square alone ~= {qr_in:.2f}in ({qr_in*2.54:.1f}cm) per side — do not print smaller than this")
+
+
+if __name__ == "__main__":
+    main()

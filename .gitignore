@@ -12,6 +12,8 @@ all images/
 audio-scripts/*.wav
 icons/_ai-kalash-raw.jpeg
 icons/_ai-kalash-cutout.png
+icons/_grid1.jpeg
+icons/_grid2.png
 
 # Editor
 .vscode/

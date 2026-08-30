@@ -10,6 +10,8 @@ qr-codes/
 # are actually used by the site; this folder is just the working stash.
 all images/
 audio-scripts/*.wav
+icons/_ai-kalash-raw.jpeg
+icons/_ai-kalash-cutout.png
 
 # Editor
 .vscode/

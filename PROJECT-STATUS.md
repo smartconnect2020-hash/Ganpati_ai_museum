@@ -72,7 +72,8 @@
 - [ ] लाकूड/कार्डबोर्ड वर लावा (धातू मागे नाही)
 
 ### C. उरलेलं ऐच्छिक
-- [x] खरे अॅप आयकॉन्स — AI-चित्रित कलश (नारळ, आंब्याची पानं, मौली दोरा, कमळ-पट्टी नक्षी — OpenArt/Seedream 4.5) + मरून gradient व gold ring background (`_compose_icon.py`), आधीची हाताने काढलेली साधी silhouette बदलली
+- [x] खरे अॅप आयकॉन्स — AI-चित्रित कलश (OpenArt/Seedream 4.5) + मरून gradient व gold ring background (`_compose_icon.py`)
+- [~] वस्तू-बॅज (`media/item-XXX/symbol.png`) — **९/२२ अपग्रेड** (पाश, परशू, सुदर्शन चक्र, गदा, खड्ग, त्रिशूळ, खट्वांग, मुद्गर, कुंत — `_crop_symbol_icons.py`). Credits संपल्याने बाकीचे १३ (००३, ०१२-०२३) अजून जुनेच आहेत — नंतर credits वाढल्यावर पूर्ण करता येईल
 - [ ] कस्टम डोमेन
 - [ ] केस स्टडी (`case-study-template.md`) — मसुदा `DESIGN-DECISIONS.md` मध्ये तयार
 

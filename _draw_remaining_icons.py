@@ -1,4 +1,8 @@
-"""Hand-crafted vector-style icons for the 13 items no AI credit remains
+"""SUPERSEDED by _draw_remaining_icons_v2.py (smoother bezier curves,
+gold gradient, radial-navy background). Kept only as a record of the
+first pass; media/item-XXX/symbol.png now holds the v2 output.
+
+Hand-crafted vector-style icons for the 13 items no AI credit remains
 for. Filled gold silhouettes (not hollow outline like the AI-generated
 ones) on the same navy circle -- a deliberate, disclosed style
 difference, not an attempt to fake the AI look exactly.

@@ -72,7 +72,7 @@
 - [ ] लाकूड/कार्डबोर्ड वर लावा (धातू मागे नाही)
 
 ### C. उरलेलं ऐच्छिक
-- [x] खरे अॅप आयकॉन्स — कलश-आकाराचा सोनेरी silhouette, मरून gradient + gold ring (`_generate_icons.py`)
+- [x] खरे अॅप आयकॉन्स — AI-चित्रित कलश (नारळ, आंब्याची पानं, मौली दोरा, कमळ-पट्टी नक्षी — OpenArt/Seedream 4.5) + मरून gradient व gold ring background (`_compose_icon.py`), आधीची हाताने काढलेली साधी silhouette बदलली
 - [ ] कस्टम डोमेन
 - [ ] केस स्टडी (`case-study-template.md`) — मसुदा `DESIGN-DECISIONS.md` मध्ये तयार
 

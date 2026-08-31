@@ -1,14 +1,21 @@
 /**
  * Service worker — cache shell on install; cache media on visit.
  * Cache-first for same-origin assets. No external hosts (site uses system fonts only).
+ *
+ * IMPORTANT: media/item-XXX/*.png (symbol badges, gallery images) have no
+ * ?v=N query string, so cache-first means a returning visitor's cached copy
+ * never refreshes on its own even after the file changes on the server.
+ * Any time a media file changes, bump CACHE_NAME (and the ?v=N on
+ * styles.css/app.js below, if those also changed) so the old cache gets
+ * dropped in 'activate' and everything re-fetches fresh.
  */
 
-const CACHE_NAME = 'ghar-museum-v8';
+const CACHE_NAME = 'ghar-museum-v9';
 const SHELL = [
   './',
   './index.html',
-  './styles.css?v=8',
-  './app.js?v=8',
+  './styles.css?v=9',
+  './app.js?v=9',
   './data.json',
   './manifest.json',
   './icons/icon-192.png',

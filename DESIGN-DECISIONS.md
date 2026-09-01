@@ -1,5 +1,7 @@
 # UI Redesign — निर्णय नोंदी (21 Aug 2026)
 
+> **टीप (1 Sep 2026):** या फाइलमधले निर्णय आता `CASE-STUDY-DRAFT.md` च्या Section 5 व 6 मध्ये विलीन केले आहेत (नंतरच्या git-log निर्णयांसह). ही फाइल कच्चा-नोंद appendix म्हणून ठेवली आहे.
+
 > ही फाइल `case-study-template.md` च्या **Section 5 (Design decisions)** आणि **Section 6 (AI-assisted workflow)** साठी कच्चा मसुदा आहे — खरे, या सेशनमध्ये घडलेले निर्णय. युजर संशोधन/मुलाखती/मेट्रिक्स (Section 4, 7) इथे नाहीत — ते खरे guest testing झाल्यावर वेगळे भरायचे, इथे fabricate केलेले नाहीत.
 
 ## संदर्भ

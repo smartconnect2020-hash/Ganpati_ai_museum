@@ -48,8 +48,8 @@ python -m http.server 8080
 6. JSON चुकीचा तर साइट बंद पडते — तपासा: https://jsonlint.com  
 7. GitHub Desktop → **Commit** + **Push**  
 8. २ मिनिटांनी live  
-9. [qrcode-monkey.com](https://www.qrcode-monkey.com) वर QR: `...?id=011`  
-10. NFC Tools अॅपमध्ये **तोच URL** टॅगवर लिहा  
+9. QR: `python _generate_qr.py` चालवा — सर्व कार्ड्स `qr-codes/` मध्ये पुन्हा तयार होतात  
+10. NFC Tools अॅपमध्ये **तोच URL** टॅगवर लिहा (`qr-urls.txt` मध्ये सर्व लिंक्स)  
 
 ---
 
@@ -92,7 +92,7 @@ git push -u origin main
 - NFC **धातू** फ्रेम/शेल्फ मागे काम करत नाही — लाकूड/कार्डबोर्ड/पेपर वापरा  
 - जुने iPhone: NFC कठीण → QR बॅकअप आवश्यक  
 
-QR रंग सुचवणी: dark brown `#3E2723`, error correction **High (H)**
+QR कोड्स `python _generate_qr.py` ने स्थानिक तयार होतात (`qr-codes/` मध्ये, फक्त प्रिंटसाठी — `.gitignore` मध्ये). रंग `#7a1e2b` (मरून, साइट-थीम), error correction **M**, मध्यभागी logo **नाही** (logo मुळे ~अर्धे कोड scan-fail होत होते — प्रत्येक आयुधाचा आयकॉन कार्डवर वेगळा सील म्हणून). बदल हवा असल्यास `_generate_qr.py` संपादा.
 
 ---
 

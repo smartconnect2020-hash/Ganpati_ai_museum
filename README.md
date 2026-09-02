@@ -1,21 +1,25 @@
-# घर संग्रहालय — कुटुंबासाठी मार्गदर्शक (Nil)
+# श्री गणेश आयुधे — कुटुंबासाठी मार्गदर्शक (Nil)
 
 Repo: **Ganpati_ai_museum**  
-कुटुंब: **Nil**
+कुटुंब: **Nil**  
+Live: **https://smartconnect2020-hash.github.io/Ganpati_ai_museum/**
 
-ही वेबसाइट QR किंवा NFC स्कॅन केल्यावर घरातल्या वस्तूची ऑडिओ कहाणी + फोटो दाखवते.
+ही वेबसाइट QR किंवा NFC स्कॅन केल्यावर गणपतीच्या **२३ आयुधांपैकी** एकाची ऑडिओ कहाणी, दार्शनिक अर्थ, मूळ ग्रंथसंदर्भ + चित्र दाखवते. मजकूर मूळ गाईड-ग्रंथातून जसाच्या तसा घेतलेला आहे.
+
+> **सद्यस्थिती (थोडक्यात):** कोड + मजकूर + चित्रं + QR कार्ड्स तयार, साइट live.  
+> बाकी — २३ पैकी **२२ आयुधांचा खरा आवाज** (स्क्रिप्ट्स `audio-scripts/` मध्ये तयार, फक्त वाचून रेकॉर्ड करायचे) आणि **भौतिक पायरी** (QR प्रिंट + NFC टॅग + फोनवर स्कॅन-टेस्ट). पूर्ण तपशील: `PROJECT-STATUS.md`.
 
 ---
 
 ## पाहुण्यांसाठी कसे चालते?
 
-1. वस्तूजवळचा **QR स्कॅन** करा किंवा **NFC** टॅगला फोन लावा  
-2. वेबपेज उघडेल → मोठे **ऐका / Play** बटण दाबा  
-3. वर उजवीकडे **मराठी | English** बदलता येते  
+1. आयुधाजवळचा **QR स्कॅन** करा किंवा **NFC** टॅगला फोन लावा  
+2. वेबपेज उघडेल → मोठे सोनेरी **ऐका** (मुद्रा) बटण दाबा  
+3. मराठी हीच डीफॉल्ट भाषा. *(English टॉगल सध्या लपवलेला — इंग्रजी मजकूर/आवाज अजून तयार नाही.)*
 
 URL उदाहरणे (live):
-- यादी: https://smartconnect2020-hash.github.io/Ganpati_ai_museum/
-- वस्तू: https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=001
+- सर्व २३ ची यादी: https://smartconnect2020-hash.github.io/Ganpati_ai_museum/
+- एक आयुध (एकदंत): https://smartconnect2020-hash.github.io/Ganpati_ai_museum/?id=001
 - GitHub repo: https://github.com/smartconnect2020-hash/Ganpati_ai_museum
 
 ---
@@ -35,38 +39,46 @@ python -m http.server 8080
 
 ---
 
-## नवीन वस्तू जोडणे (३ मिनिटांचा फ्लो)
+## खरा आवाज रेकॉर्ड करणे (मुख्य उरलेलं काम)
 
-1. फोनवर **३०–६० सेकंद** ऑडिओ रेकॉर्ड करा (मराठी + इंग्रजी वेगळे)  
-2. वस्तूचे **३ फोटो** घ्या  
-3. संगणकावर `media/` मध्ये नवीन फोल्डर: `item-011/`  
-4. फाइल्स या नावांनी ठेवा:
-   - `audio-mr.mp3`
-   - `audio-en.mp3`
-   - `01.webp` (किंवा आताच्या प्लेसहोल्डरसाठी `01.png`), `02`, `03` — नंतर खरे WebP फोटो ठेवा  
-5. `data.json` Notepad मध्ये उघडा → शेवटच्या item नंतर copy-paste करून नवीन entry भरा (`id`: `"011"`)  
-6. JSON चुकीचा तर साइट बंद पडते — तपासा: https://jsonlint.com  
-7. GitHub Desktop → **Commit** + **Push**  
-8. २ मिनिटांनी live  
-9. QR: `python _generate_qr.py` चालवा — सर्व कार्ड्स `qr-codes/` मध्ये पुन्हा तयार होतात  
-10. NFC Tools अॅपमध्ये **तोच URL** टॅगवर लिहा (`qr-urls.txt` मध्ये सर्व लिंक्स)  
+२३ आयुधांचा मजकूर, चित्रं व `data.json` तयार आहे. फक्त आवाज बाकी — २३ पैकी **१ (एकदंत) झाला, २२ शांत placeholder** आहेत.
 
----
+1. `audio-scripts/` मधली त्या आयुधाची फाइल उघडा (उदा. `item-005-सुदर्शन-mr.md`)  
+   - 🎙 खालचा मजकूर **तोच वाचायचा**, शब्दशः · 🔊 / `[SFX]` ओळी **वाचायच्या नाहीत** (त्या ध्वनी-संयोजकासाठी)  
+2. फोन Voice Recorder / WhatsApp voice note — स्पष्ट मराठी  
+3. फाइल इथे ठेवा (जुनी शांत फाइल बदला): `media/item-XXX/audio-mr.mp3`  
+   *(पाथ `data.json` मध्ये आधीच बरोबर आहे — फक्त overwrite करा)*  
+4. लोकल टेस्ट: `python -m http.server 8080` → `http://127.0.0.1:8080/?id=005`  
+5. `git add media data.json && git commit -m "Add real audio for item XXX" && git push` → १–२ मिनिटांत live  
 
-## सध्याच्या १० वस्तू
+> फक्त `media/` किंवा `data.json` बदललं तर एवढंच पुरेसं. पण `styles.css` / `app.js` बदललं तर `index.html` व `sw.js` मधला `?v=N` वाढवा (नाहीतर जुनी आवृत्ती cache होते).
 
-| id | मराठी | English |
-|---|---|---|
-| 001 | गणपतीची आयुधे | Ganpati Aayudha |
-| 002 | परशु | Parshu |
-| 003 | अंकुश | Ankush |
-| 004–010 | प्लेसहोल्डर | Placeholder — नंतर भरा |
-
-खरी कहाणी / ऑडिओ / फोटो `data.json` आणि `media/item-XXX/` मध्ये बदला.
+**नवीन आयुध जोडायचं असल्यास:** `data.json` च्या `items` मध्ये शेवटी नवीन entry (नेस्टेड `guide` ऑब्जेक्टसह — आधीची एखादी entry कॉपी करून बदला), https://jsonlint.com वर तपासा, `media/item-XXX/` फोल्डर, मग `python _generate_qr.py`.
 
 ---
 
-## GitHub Pages वर अपलोड
+## २३ आयुधे
+
+| id | मराठी | English | id | मराठी | English |
+|---|---|---|---|---|---|
+| 001 | एकदंत | Ekadanta | 013 | बाण | Bana |
+| 002 | पाश | Pasha | 014 | इक्षुकार्मुक | Ikshukarmuka |
+| 003 | अंकुश | Ankusha | 015 | पुष्पबाण | Kusumashara |
+| 004 | परशू | Parashu | 016 | वज्रशूळ | Vajra Shool |
+| 005 | सुदर्शन चक्र | Chakra | 017 | वेताळ अस्त्र | Vetala |
+| 006 | गदा | Gada | 018 | खेटक | Khetaka |
+| 007 | खड्ग | Khadga | 019 | खंजीर | Churi |
+| 008 | त्रिशूळ | Shula | 020 | पाषाणधारण | Pasanadharana |
+| 009 | खट्वांग | Khatvanga | 021 | नांगर | Hala |
+| 010 | मुद्गर | Mudgara | 022 | कवच | Kavacha |
+| 011 | कुंत | Kunta | 023 | अग्नी | Agni |
+| 012 | धनुष्य | Karmuka | | | |
+
+सर्व URL: `qr-urls.txt`. कहाणी / अर्थ / चित्रं `data.json` व `media/item-XXX/` मध्ये.
+
+---
+
+## GitHub Pages वर अपलोड (हे एकदाच — आधीच झालेलं, फक्त संदर्भासाठी)
 
 1. GitHub वर public repo तयार करा: `Ganpati_ai_museum`  
 2. PowerShell:
@@ -100,7 +112,7 @@ QR कोड्स `python _generate_qr.py` ने स्थानिक तय�
 
 - फ्रेमवर्क नाही — फक्त `index.html`, `styles.css`, `app.js`, `data.json`  
 - ऑफलाइन: Service Worker (`sw.js`) + `manifest.json`  
-- भाषा निवड `localStorage` मध्ये जतन  
+- भाषा निवड `localStorage` मध्ये जतन (English टॉगल सध्या UI मधून लपवलेला)  
 - ३० सेकंदात पुन्हा स्कॅन → ऑडिओ आपोआप रीस्टार्ट होत नाही  
 
 स्पेक: `home-audio-guide-build-spec.md`

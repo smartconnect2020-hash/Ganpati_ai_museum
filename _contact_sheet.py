@@ -8,7 +8,7 @@ Image.init()  # force-register format plugins before any .save() (see _print_she
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "qr-codes"
-files = sorted(OUT.glob("*.png"))
+files = [f for f in sorted(OUT.glob("*.png")) if not f.name.startswith("_")]
 
 THUMB = 220
 COLS = 6

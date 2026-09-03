@@ -22,7 +22,9 @@ import json
 from pathlib import Path
 
 import qrcode
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
+
+from _text_shape import paste_centered   # HarfBuzz-shaped Devanagari
 
 Image.init()
 
@@ -52,18 +54,8 @@ def dev(n: int) -> str:
     return "".join(DEV_DIGITS[int(c)] for c in str(n))
 
 
-def font(size: int):
-    for p in ("C:/Windows/Fonts/Nirmala.ttc", "C:/Windows/Fonts/segoeui.ttf",
-              "C:/Windows/Fonts/arial.ttf"):
-        try:
-            return ImageFont.truetype(p, size)
-        except Exception:
-            continue
-    return ImageFont.load_default()
-
-
-F_NUM, F_MR, F_EN = font(46), font(35), font(26)
-NUM_ADV, MR_ADV, EN_ADV = 48, 40, 34
+NUM_PX, MR_PX, EN_PX = 46, 36, 26
+NUM_ADV, MR_ADV, EN_ADV = 54, 46, 36
 TEXT_BLOCK_H = LABEL_GAP + NUM_ADV + MR_ADV + EN_ADV
 
 
@@ -85,11 +77,10 @@ def draw_tile(page, draw, cx, top, iid, mr, en, url):
     page.paste(qr, (qx, top))
 
     y = top + QR_PX + LABEL_GAP
-    for text, fnt, fill, adv in ((f"#{dev(int(iid))}", F_NUM, MAROON, NUM_ADV),
-                                 (mr, F_MR, INK, MR_ADV),
-                                 (en, F_EN, GREY, EN_ADV)):
-        w = draw.textlength(text, font=fnt)
-        draw.text((cx - w / 2, y), text, font=fnt, fill=fill)
+    for text, px, fill, adv in ((f"#{dev(int(iid))}", NUM_PX, MAROON, NUM_ADV),
+                                (mr, MR_PX, INK, MR_ADV),
+                                (en, EN_PX, GREY, EN_ADV)):
+        paste_centered(page, text, cx, y, px, fill)
         y += adv
 
 

@@ -1,0 +1,12 @@
+# The website itself needs NOTHING — it is vanilla HTML/CSS/JS.
+# These packages are only for the local helper scripts (_*.py): QR card
+# generation, print sheets, stress tests, icon compositing.
+#
+#   pip install -r requirements.txt
+
+qrcode            # QR generation (_generate_qr.py)
+pillow            # image composition (all _*.py)
+pyzbar            # QR decode verification (_stress_test_qr.py) — needs the
+                  # ZBar shared library on the system as well
+uharfbuzz         # Devanagari text shaping (_text_shape.py) — Pillow's
+freetype-py       # draw.text() cannot shape Marathi conjuncts without these

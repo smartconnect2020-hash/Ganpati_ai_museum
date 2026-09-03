@@ -14,7 +14,10 @@ from qrcode.constants import ERROR_CORRECT_H
 from qrcode.image.styledpil import StyledPilImage
 from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
 from qrcode.image.styles.colormasks import SolidFillColorMask
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
+
+# Devanagari needs HarfBuzz shaping — Pillow's draw.text() mangles conjuncts.
+from _text_shape import paste_centered, NIRMALA, NIRMALA_BOLD_INDEX
 
 Image.init()  # force-register format plugins before any .save() (see _print_sheet.py note)
 
@@ -42,18 +45,6 @@ QR_BOX = 700
 PAD = 60
 LOGO_FRACTION = 0.22  # keep well under ERROR_CORRECT_H's ~30% budget
 PRINT_DPI = 300  # embedded in the PNG so print dialogs show the true physical size
-
-
-def load_font(size: int, bold: bool = False):
-    candidates = (
-        ["C:/Windows/Fonts/Nirmala.ttc"] if not bold else ["C:/Windows/Fonts/Nirmala.ttc"]
-    ) + ["C:/Windows/Fonts/segoeui.ttf", "C:/Windows/Fonts/arial.ttf"]
-    for path in candidates:
-        try:
-            return ImageFont.truetype(path, size)
-        except Exception:
-            continue
-    return ImageFont.load_default()
 
 
 def make_qr(url: str) -> Image.Image:
@@ -120,21 +111,15 @@ def make_card(title_mr: str, subtitle: str, url: str, logo_path: Path | None, ou
     qr_y = PAD + top_zone + 20
     card.paste(qr_img, (qr_x, qr_y), qr_img)
 
-    title_font = load_font(52, bold=True)
-    sub_font = load_font(30)
-    foot_font = load_font(22)
-
     ty = qr_y + QR_BOX + 30
-    tw = draw.textlength(title_mr, font=title_font)
-    draw.text(((CARD_W - tw) / 2, ty), title_mr, font=title_font, fill=MAROON)
+    paste_centered(card, title_mr, CARD_W // 2, ty, 52, MAROON,
+                   path=NIRMALA, index=NIRMALA_BOLD_INDEX)
 
-    sy = ty + 66
-    sw = draw.textlength(subtitle, font=sub_font)
-    draw.text(((CARD_W - sw) / 2, sy), subtitle, font=sub_font, fill=INK)
+    sy = ty + 78
+    paste_centered(card, subtitle, CARD_W // 2, sy, 30, INK)
 
     foot = "श्री गणेश आयुधे · स्कॅन करून ऐका"
-    fw = draw.textlength(foot, font=foot_font)
-    draw.text(((CARD_W - fw) / 2, sy + 56), foot, font=foot_font, fill=GOLD)
+    paste_centered(card, foot, CARD_W // 2, sy + 52, 22, GOLD)
 
     card.save(out_path, "PNG", dpi=(PRINT_DPI, PRINT_DPI))
 

@@ -104,7 +104,9 @@ git push -u origin main
 - NFC **धातू** फ्रेम/शेल्फ मागे काम करत नाही — लाकूड/कार्डबोर्ड/पेपर वापरा  
 - जुने iPhone: NFC कठीण → QR बॅकअप आवश्यक  
 
-QR कोड्स `python _generate_qr.py` ने स्थानिक तयार होतात (`qr-codes/` मध्ये, फक्त प्रिंटसाठी — `.gitignore` मध्ये). रंग `#7a1e2b` (मरून, साइट-थीम), error correction **M**, मध्यभागी logo **नाही** (logo मुळे ~अर्धे कोड scan-fail होत होते — प्रत्येक आयुधाचा आयकॉन कार्डवर वेगळा सील म्हणून). बदल हवा असल्यास `_generate_qr.py` संपादा.
+QR कोड्स `python _generate_qr.py` ने स्थानिक तयार होतात (`qr-codes/` मध्ये, फक्त प्रिंटसाठी — `.gitignore` मध्ये). रंग `#7a1e2b` (मरून), **square modules + error correction Q (~२५%)**, मध्यभागी logo **नाही** (आयकॉन कार्डवर वेगळा सील). सर्व २४ कोड rotation/blur/JPEG/लांबून सर्व परिस्थितींत scan होतात हे verified. बदल हवा असल्यास `_generate_qr.py`.
+
+**३ प्रिंट फॉरमॅट:** `_print_sheet.py` → 6 पानं, पूर्ण सजावटी कार्ड (QR ~५.८ सेमी) · `_print_sheet_compact.py` → 2 पानं, साधा B/W (५.४ सेमी) · `_print_sheet_patrika_compact.py` → 2 पानं, पत्रिका कार्ड (~३.८ सेमी). सर्व PDF `qr-codes/` मध्ये. **१००% scale वर प्रिंट करा.**
 
 ---
 

@@ -2,12 +2,11 @@
 scaled to fit all 24 on 2 A4 pages (12 per page, 3x4), cards centred in
 their cell with even margins.
 
-Trade-off: keeping the whole decorative card shrinks the QR itself to
-~3.7 cm — below _generate_qr.py's 5.9 cm ideal and below
-_print_sheet_compact.py (5.4 cm, plain black/white). It also keeps the
-maroon rounded-module styling, which is less robust at small size. This
-is the "looks best, scans worst" option: TEST-PRINT a few before
-committing, or rely on the NFC tag as the real trigger.
+The QR ends up ~3.8 cm — smaller than _print_sheet.py (6 pages, ~5.8 cm)
+and _print_sheet_compact.py (2 pages, 5.4 cm plain B/W). Since the cards
+now use square modules + EC-Q, all 24 still decode after rotation / blur
+/ JPEG-q45 / distance even at this scale (verified), but a home printer
+has less margin here than at full size — a quick test print is wise.
 
 Print: open the PDF -> 100% / "actual size" (NOT "fit to page") -> cut
 along the thin guide lines.
@@ -31,7 +30,7 @@ GAP = 24
 COLS, ROWS = 3, 4
 PER_PAGE = COLS * ROWS
 CUT = (170, 160, 140)
-QR_FRACTION_OF_W = 700 / 900     # _generate_qr.py: QR_BOX / CARD_W
+QR_FRACTION_OF_W = 686 / 900     # _generate_qr.py: v6 QR (~686 px) / CARD_W
 
 
 def cards() -> list[Path]:
@@ -70,7 +69,7 @@ def main():
     print(f"card scale {scale:.3f}; QR approx {qr_cm:.1f} cm; "
           f"margins {MARGIN/DPI*2.54:.1f} cm; {COLS}x{ROWS} per page")
     print("Print at 100% / 'actual size', then cut along the guide lines.")
-    print("NOTE: QR ~3.7 cm + maroon rounded modules -> test-print first.")
+    print("NOTE: QR is small here (~3.8 cm) — a quick test print is wise.")
 
 
 if __name__ == "__main__":

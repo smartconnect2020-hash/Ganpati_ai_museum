@@ -9,9 +9,11 @@ Design goals for reliable scanning off a home printer:
     4-module quiet zone
   * even margins, tiles centred in their cell, thin cut guides
 
-For the full decorative cards at true 5.9 cm use _print_sheet.py (6 pages).
-For the decorative cards squeezed onto 2 pages (QR only ~3.9 cm, less
-robust) use _print_sheet_patrika_compact.py.
+For the full decorative "पत्रिका" cards at ~5.8 cm use _print_sheet.py
+(6 pages). For those cards squeezed onto 2 pages (QR ~3.8 cm) use
+_print_sheet_patrika_compact.py. All three now decode all 24 codes under
+the same stress conditions; this one just has the plainest look and the
+most size margin.
 
 Print: open the PDF -> 100% / "actual size" (NOT "fit to page") -> cut
 along the thin guide lines.

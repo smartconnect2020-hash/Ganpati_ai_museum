@@ -6,9 +6,9 @@
 > **Source of truth:** `PROJECT-STATUS.md` (25 Aug 2026), `DESIGN-DECISIONS.md` (21 Aug 2026), git log (20–31 Aug 2026), `styles.css` / `app.js` (verified), live site.
 >
 > **पडताळणीची स्थिती (प्रामाणिकपणे, १ Sep 2026 ला स्वतंत्र तपासणी):**
-> - ✅ *कोड/फाइल पाहून खात्री:* रंग-टोकन (styles.css), Wake Lock + Media Session API (app.js), build-spec = १८ विभाग, git-तारखा, आयटम-संख्या = २३ (data.json), फाँट/dark-mode काढल्याच्या नोंदी (styles.css कमेंट्स), कंटेंट पूर्ण + placeholder-मुक्त (data.json), आवाज १ खरा/२२ placeholder, QR DPI 300 + चौरस ५.९३ सेमी + रुंदी ७.६२ सेमी (`_generate_qr.py`), center-logo-काढल्याचं कारण.
-> - ⚠️ *तपासताना सापडलेल्या सुधारणा:* QR error-correction कोडमध्ये **M** आहे (README "H" म्हणतो); कार्ड-उंची ९.१ सेमी फक्त home-tag ला; `_verify_qr.py` repo मध्ये नाही; home QR वर जुनं नाव.
-> - ✅ *re-run केला (१ Sep):* QR baseline decode **२४/२४**; stress-test — rotation/blur/distance **२४/२४**, पण **print+photo JPEG q45 वर १७/२४** (PROJECT-STATUS ने हे कमी लेखलं होतं). तपशील Section 7 मध्ये.
+> - ✅ *कोड/फाइल पाहून खात्री:* रंग-टोकन (styles.css), Wake Lock + Media Session API (app.js), build-spec = १८ विभाग, git-तारखा, आयटम-संख्या = २३ (data.json), फाँट/dark-mode काढल्याच्या नोंदी (styles.css कमेंट्स), कंटेंट पूर्ण + placeholder-मुक्त (data.json), आवाज १ खरा/२२ placeholder, QR DPI 300 + चौरस ~५.८ सेमी + रुंदी ७.६ सेमी + EC-Q + square modules (`_generate_qr.py`), center-logo-काढल्याचं कारण.
+> - ⚠️ *बाकी छोटं:* home QR कार्डवर अजून जुनं नाव "आमचं घर संग्रहालय"; कार्ड-उंची आयकॉन-बॅजनुसार बदलते (~१०.५ सेमी आयटम, ~८.५ home).
+> - ✅ *re-run केला (१–२ Sep):* सुरुवातीला QR stress-test JPEG q45 वर १७/२४ होतं (rounded modules + EC-M). कार्ड्स **square modules + EC-Q** वर बदलले → आता **सर्व ५ परिस्थितींत २४/२४**, तिन्ही प्रिंट-फॉरमॅटमध्ये (~३.८ सेमी scale वरही). तपशील Section 7 + 8.
 > - ✅ *अंशतः:* live साइट प्रतिसाद देते, हेडिंग "श्री गणेश आयुधे", live `data.json` = वैध JSON २३ आयटम्स (local शी जुळतं). आयटम-यादीचं render + 375px खऱ्या ब्राउझरमध्ये तपासा.
 > - ❌ *reproduce अशक्य:* "२९९/२९९ fields" — स्रोत docx repo मध्ये नाही, checker script नाही.
 > - ❓ *अज्ञात — केस स्टडीत लिहिण्याआधी नक्की करा:* एकदंत (००१) ऑडिओचा स्रोत (खरा रेकॉर्ड की AI); QR pipeline scripts कुणी लिहिले; काम part-time की full-time.
@@ -213,11 +213,11 @@ Play/pause बटण आधी `ऐका`/`थांबवा` मजकूर 
 | **कंटेंट (data.json)** | ✅ २३ पूर्ण आयटम्स; प्रत्येकात title/story/guide/audio/images/duration भरलेलं. `guide.mr` = संपूर्ण रचित मजकूर (पौराणिक कथा verbatim, SFX cues, प्रतीकार्थ, ग्रंथसंदर्भ). ५७५ string fields, **० placeholder** |
 | **आवाज** | ✅ नक्की **१ खरा / २२ placeholder** — ००१ `audio-mr.wav` (६.२७ MB); ००२–०२३ `audio-mr.mp3` ६४३ B / ६४ B (शांत) |
 | **QR assets** | ✅ २४ branded PNG (०००-home + ००१–०२३) + contact-sheet + A4 print-PDF, सर्व २९ Aug. `qr-urls.txt` प्रत्येक id → बरोबर `?id=NNN` |
-| **QR प्रिंट DPI / आकार** | ✅ `_generate_qr.py`: 300 DPI embed; QR चौरस ७००px/300 = **५.९३ सेमी**; कार्ड रुंदी ९००px/300 = **७.६२ सेमी**. ⚠️ उंची "९.१ सेमी" फक्त home-tag साठी — आयकॉन-बॅज असलेली आयटम-कार्ड्स ~१०.७ सेमी उंच |
-| **QR error-correction** | ⚠️ कोडमध्ये **`ERROR_CORRECT_M`** (~१५%), README म्हणतो "High (H)" — doc/code विसंगती |
+| **QR प्रिंट DPI / आकार** | ✅ `_generate_qr.py`: 300 DPI embed; QR चौरस ~६८६px/300 = **~५.८ सेमी** (module ~१.१९ मिमी); कार्ड रुंदी **७.६ सेमी**, उंची आयकॉन-बॅजनुसार (~१०.५ सेमी आयटम, ~८.५ home) |
+| **QR error-correction** | ✅ **`ERROR_CORRECT_Q`** (~२५%) + square modules + exact-integer render — stress-verified (आधी M + rounded होतं) |
 | **QR मध्यभागी logo नाही** | ✅ `_generate_qr.py` कमेंट पुष्टी करते: embedded icon "roughly half" कोड scan-fail करत होतं → आयकॉन कार्डवर सील म्हणून (Decision 9 खरा) |
 | **QR decode (pyzbar)** | ✅ **re-run केला — baseline २४/२४ decode pass.** (per-file verifier `_verify_qr.py` repo मध्ये नाही, पण `_stress_test_qr.py` तेच काम करतो) |
-| **QR stress-test** | ⚠️ **re-run केला (१२० चाचण्या):** सरळ २४/२४ · rotation ४° २४/२४ · blur २४/२४ · arm's-length distance २४/२४ · **print+photo JPEG q45: १७/२४ (७ fail: ००२, ००३, ००५, ००७, ००९, ०१४, ०२१)**. PROJECT-STATUS ने JPEG अपयश "काही अडचण" म्हणून कमी लेखलं — प्रत्यक्षात q45 वर २९% fail. बचाव: फोन-कॅमेरा decode path मध्ये JPEG q45 recompression नसतं (पण छापील कोडचा फोटो messaging-app ने compress केल्यास होऊ शकतं) |
+| **QR stress-test** | ✅ **square modules + EC-Q नंतर: सर्व २४/२४**, ५ परिस्थितींत (सरळ · rotation ४° · blur · print+photo JPEG q45 · arm's-length distance), पूर्ण कार्ड आणि patrika ~३.८ सेमी scale — दोन्हीवर. तिन्ही PDF मधून whole-page decode २४/२४. *(आधी rounded + EC-M होतं → JPEG q45 वर १७/२४; ते बदललं.)* |
 | **"२९९/२९९ fields (docx→json)"** | ❌ reproduce अशक्य — स्रोत `.docx` repo मध्ये नाही, checker script नाही. जेवढं सांगता येतं: २३ पूर्ण, placeholder-मुक्त आयटम्स |
 | **Live site** | ✅ अंशतः — homepage हेडिंग "श्री गणेश आयुधे" ठीक; live `data.json` = वैध JSON, २३ आयटम्स, local शी जुळतं. ⚠️ आयटम-यादी JS ने render होते → WebFetch ने "लोड होत आहे…" दिसलं (fetch-tool ची मर्यादा, बग नाही); ३७५px + प्रत्यक्ष render खऱ्या ब्राउझरमध्ये तपासा |
 | **किरकोळ** | ⚠️ home QR कार्ड अजून जुनं नाव "आमचं घर संग्रहालय" छापतं (साइट = "श्री गणेश आयुधे") |
@@ -249,7 +249,7 @@ Play/pause बटण आधी `ऐका`/`थांबवा` मजकूर 
 5. **पहिले hand-drawn आयकॉन flat-polyline होते** — नंतर cubic-bezier + gradient ने अधिक पॉलिश आवृत्तीने replace केले (`_draw_remaining_icons_v2.py`).
 6. **Autoplay** — स्पेकमध्येच "verified blocked" होतं; लढलो नाही, Play बटण design opportunity बनवली.
 7. **पहिला "देवघर पॅलेट" redesign** — युजरला "अजून impressive नाही". धडा: फक्त रंग ट्यून करणं ≠ redesign; structure/motif/interaction बदलावं लागतं. ३ पूर्ण संकल्पना बनवल्यावर निवड झाली.
-8. **QR stress-test वरचा दावा जास्त गोड होता** — status doc मध्ये "सर्व २४/२४ पास" लिहिलं होतं; re-run केल्यावर JPEG q45 recompression वर **७/२४ fail** निघाले. धडा: "पास" लिहिण्याआधी सर्व condition-wise आकडे नोंदवा, average नको. (छापण्याआधी हे ७ कोड — ००२/००३/००५/००७/००९/०१४/०२१ — खऱ्या फोनवर आधी तपासा.)
+8. **QR "सर्व पास" चा दावा घाईचा होता, आणि पहिली रचना नाजूक होती** — status doc मध्ये "२४/२४ पास" होतं; बारकाईने re-run केल्यावर JPEG q45 recompression वर ७/२४ fail. मूळ कारण: rounded modules (सजावटी) + EC-M (१५% recovery). rounded → **square modules**, EC-M → **EC-Q (२५%)**, आणि QR resize न करता exact integer module-size ने रेंडर — तिन्ही बदलल्यावर सर्व २४ कोड सर्व परिस्थितींत पास. धडा: (अ) "पास" लिहिण्याआधी condition-wise आकडे नोंदवा; (ब) QR वर सजावट (rounded corners, कमी EC, resize) scannability विरुद्ध जाते — साधा square QR च सर्वात विश्वासार्ह.
 
 ---
 

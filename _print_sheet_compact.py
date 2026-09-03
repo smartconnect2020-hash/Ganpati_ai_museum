@@ -41,8 +41,8 @@ GAP = 26               # gutter between tiles
 COLS, ROWS = 3, 4
 PER_PAGE = COLS * ROWS
 
-QR_CM = 5.4
-QR_PX = round(QR_CM / 2.54 * DPI)     # ~638 px
+QR_MODULE_PX = 13                     # exact integer px/module -> crisp, no resample
+QR_SLOT = 49 * QR_MODULE_PX           # v6 (41) + 8 border = 49 -> 637 px ~= 5.4 cm
 LABEL_GAP = round(0.09 * DPI)         # QR -> number
 CUT = (170, 160, 140)
 INK = (15, 15, 15)
@@ -63,22 +63,23 @@ TEXT_BLOCK_H = LABEL_GAP + NUM_ADV + MR_ADV + EN_ADV
 
 def make_qr(url: str) -> Image.Image:
     qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_Q,
-                       box_size=10, border=4)
+                       box_size=QR_MODULE_PX, border=4)
     qr.add_data(url)
     qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white").convert("RGB")
-    return img.resize((QR_PX, QR_PX), Image.NEAREST)
+    return qr.make_image(fill_color="black", back_color="white").convert("RGB")
 
 
 def draw_tile(page, draw, cx, top, iid, mr, en, url):
-    """cx = tile centre x; top = y of the QR's top edge."""
+    """cx = tile centre x; top = y of the QR's top edge (slot is QR_SLOT tall)."""
     qr = make_qr(url)
-    qx = cx - QR_PX // 2
-    draw.rectangle([qx - 7, top - 7, qx + QR_PX + 7, top + QR_PX + 7],
+    off = (QR_SLOT - qr.width) // 2          # centre a shorter (v5 home) code in the slot
+    qx = cx - qr.width // 2
+    draw.rectangle([cx - QR_SLOT // 2 - 7, top - 7,
+                    cx + QR_SLOT // 2 + 7, top + QR_SLOT + 7],
                    outline=CUT, width=2)
-    page.paste(qr, (qx, top))
+    page.paste(qr, (qx, top + off))
 
-    y = top + QR_PX + LABEL_GAP
+    y = top + QR_SLOT + LABEL_GAP
     for text, px, fill, adv in ((f"#{dev(int(iid))}", NUM_PX, MAROON, NUM_ADV),
                                 (mr, MR_PX, INK, MR_ADV),
                                 (en, EN_PX, GREY, EN_ADV)):
@@ -95,7 +96,7 @@ def main():
 
     cell_w = (A4_W - 2 * MARGIN - (COLS - 1) * GAP) / COLS
     cell_h = (A4_H - 2 * MARGIN - (ROWS - 1) * GAP) / ROWS
-    content_h = QR_PX + TEXT_BLOCK_H
+    content_h = QR_SLOT + TEXT_BLOCK_H
     y_pad = (cell_h - content_h) / 2          # centre the tile in its cell
 
     pages = []
@@ -113,8 +114,8 @@ def main():
     v = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_Q, border=4)
     v.add_data(f"{BASE_URL}/?id=001"); v.make(fit=True)
     print(f"{len(tiles)} tiles -> {len(pages)} A4 page(s) -> {OUT_PDF}")
-    print(f"QR {QR_PX}px = {QR_PX/DPI*2.54:.2f} cm, EC=Q, version {v.version}, "
-          f"module ~= {QR_CM*10/(v.version*4+17+8):.2f} mm")
+    print(f"QR slot {QR_SLOT}px = {QR_SLOT/DPI*2.54:.2f} cm, EC=Q, version {v.version}, "
+          f"module {QR_MODULE_PX/DPI*25.4:.2f} mm (exact, no resample)")
     print(f"margins {MARGIN/DPI*2.54:.1f} cm, {COLS}x{ROWS} per page")
     print("Print at 100% / 'actual size', then cut along the guide lines.")
 

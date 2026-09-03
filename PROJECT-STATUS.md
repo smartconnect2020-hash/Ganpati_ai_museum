@@ -45,11 +45,11 @@
 ### QR कोड्स
 | भाग | स्थिती |
 |---|---|
-| २४ सानुकूल QR कार्ड्स (होम + २३ आयुधे) | ✅ स्थानिक जनरेट (`qrcode`+`Pillow`, बाह्य साइट लागली नाही), साइटच्याच रंगसंगतीत |
-| स्कॅन-पडताळणी | ✅ २४/२४ बरोबर URL डीकोड (pyzbar, `_stress_test_qr.py` ने पुन्हा तपासलं — १ Sep 2026) |
-| कठोर-परिस्थिती चाचणी | ⚠️ rotation ४° / blur / arm's-length distance — **२४/२४ पास**. पण **print+photo JPEG q45 वर १७/२४** (७ fail: ००२, ००३, ००५, ००७, ००९, ०१४, ०२१). थेट कॅमेरा-स्कॅनला JPEG-recompression लागू नाही, पण छापील कोडचा फोटो messaging-app वर compress झाल्यास अडचण शक्य — **छापण्याआधी हे ७ कोड खऱ्या फोनवर तपासा** |
-| प्रिंट DPI | ✅ फाइलमध्येच 300 DPI embed — QR चौरस ५.९३ सेमी, कार्ड रुंदी ७.६२ सेमी (home-tag उंची ~९.१ सेमी; आयकॉन-बॅज असलेली आयटम-कार्ड्स ~१०.७ सेमी उंच) |
-| कुठे आहेत | `qr-codes/` (मुद्दाम `.gitignore` मध्ये — फक्त प्रिंटसाठी, वेबसाइटवर नाही) |
+| २४ सानुकूल QR कार्ड्स (होम + २३ आयुधे) | ✅ स्थानिक जनरेट (`qrcode`+`Pillow`), साइट-रंगसंगतीत. **चौरस modules + EC-Q** (आधी rounded + EC-M होते — JPEG-recompression मध्ये नाजूक). मराठी मजकूर HarfBuzz-shaped (`_text_shape.py`) |
+| कठोर-परिस्थिती चाचणी (२ Sep 2026, square+EC-Q नंतर) | ✅ **सर्व २४/२४**, सर्व ५ परिस्थितींत — सरळ / rotation ४° / blur / **print+photo JPEG q45** / arm's-length distance. पूर्ण कार्ड आणि patrika-compact च्या ~३.८ सेमी scale वरही. (आधी JPEG q45 वर १७/२४ होतं.) |
+| ३ प्रिंट फॉरमॅट | `print-sheet-A4.pdf` (6 पानं, पूर्ण कार्ड ~५.८ सेमी QR) · `print-sheet-A4-compact.pdf` (2 पानं, साधा B/W ५.४ सेमी) · `print-sheet-A4-patrika-compact.pdf` (2 पानं, पत्रिका कार्ड ~३.८ सेमी). तिन्ही PDF मधून २४/२४ decode verified |
+| प्रिंट DPI | ✅ 300 DPI embed. QR module ~१.१९ मिमी. **१००% scale वर प्रिंट करा** (कधीच "Fit to page" नाही) |
+| कुठे आहेत | `qr-codes/` (`.gitignore` मध्ये — फक्त प्रिंटसाठी, वेबसाइटवर नाही). पुन्हा बनवा: `pip install -r requirements.txt` मग `python _generate_qr.py && python _print_sheet.py && python _print_sheet_compact.py && python _print_sheet_patrika_compact.py` |
 
 ### लाइव्ह-साइट पडताळणी (या सेशनमध्ये प्रत्यक्ष केलेली)
 - data.json, सर्व २३ आयटम्सचे design-ref फोटो, एकदंतचा wav — सर्व live वर `200 OK`

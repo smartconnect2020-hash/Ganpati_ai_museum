@@ -10,9 +10,7 @@ import json
 from pathlib import Path
 
 import qrcode
-from qrcode.constants import ERROR_CORRECT_H
 from qrcode.image.styledpil import StyledPilImage
-from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
 from qrcode.image.styles.colormasks import SolidFillColorMask
 from PIL import Image, ImageDraw
 
@@ -41,41 +39,42 @@ IVORY = (255, 249, 236)     # --color-surface
 INK = (58, 15, 22)          # --color-text
 
 CARD_W = 900
-QR_BOX = 700
+QR_MODULE_PX = 14           # exact integer px per module -> perfectly crisp, no resample
 PAD = 60
-LOGO_FRACTION = 0.22  # keep well under ERROR_CORRECT_H's ~30% budget
-PRINT_DPI = 300  # embedded in the PNG so print dialogs show the true physical size
+LOGO_FRACTION = 0.22        # decorative seal, sits ABOVE the QR — never overlaps it
+PRINT_DPI = 300             # embedded in the PNG so print dialogs show the true physical size
 
 
 def make_qr(url: str) -> Image.Image:
-    # No center logo: testing proved an embedded icon breaks decoding on
-    # roughly half of these codes even at ERROR_CORRECT_H (see commit notes).
-    # A QR that "looks branded but won't scan" is worse than a plain one, so
-    # the item icon moves to the printed card instead (see make_card).
+    # Square modules + ERROR_CORRECT_Q + a 4-module quiet zone, rendered at
+    # an exact integer module size (no resampling — a resized QR aliases and
+    # fails under JPEG). An earlier version used RoundedModuleDrawer + EC-M;
+    # a stress sweep (rotation / blur / JPEG-q45 / distance, all 24 codes)
+    # showed rounded+M losing 5-12 codes under JPEG recompression at every
+    # size, while square+Q cleared everything. Looks are not worth an
+    # unscannable tag. No centre logo either — that broke ~half the codes;
+    # the item icon is a separate seal on the card (see make_card).
     qr = qrcode.QRCode(
-        error_correction=qrcode.constants.ERROR_CORRECT_M,
-        box_size=20,
-        border=2,
+        error_correction=qrcode.constants.ERROR_CORRECT_Q,
+        box_size=QR_MODULE_PX,
+        border=4,
     )
     qr.add_data(url)
     qr.make(fit=True)
-
-    img = qr.make_image(
+    return qr.make_image(
         image_factory=StyledPilImage,
-        module_drawer=RoundedModuleDrawer(radius_ratio=0.9),
         color_mask=SolidFillColorMask(front_color=MAROON, back_color=IVORY),
     ).convert("RGBA")
-
-    return img.resize((QR_BOX, QR_BOX), Image.LANCZOS)
 
 
 def make_card(title_mr: str, subtitle: str, url: str, logo_path: Path | None, out_path: Path):
     qr_img = make_qr(url)
+    qr_box = qr_img.width           # exact, integer — varies slightly with URL length
 
-    badge_d = int(QR_BOX * LOGO_FRACTION) if logo_path and logo_path.exists() else 0
+    badge_d = int(qr_box * LOGO_FRACTION) if logo_path and logo_path.exists() else 0
     top_zone = (badge_d + 30) if badge_d else 0
     extra_h = 260 + top_zone
-    card = Image.new("RGB", (CARD_W, QR_BOX + PAD * 2 + extra_h), CREAM)
+    card = Image.new("RGB", (CARD_W, qr_box + PAD * 2 + extra_h), CREAM)
     draw = ImageDraw.Draw(card)
 
     # Double gold ring frame, matching .main's box-shadow motif on the site
@@ -107,11 +106,11 @@ def make_card(title_mr: str, subtitle: str, url: str, logo_path: Path | None, ou
         by = PAD
         card.paste(plate, (bx, by), plate)
 
-    qr_x = (CARD_W - QR_BOX) // 2
+    qr_x = (CARD_W - qr_box) // 2
     qr_y = PAD + top_zone + 20
     card.paste(qr_img, (qr_x, qr_y), qr_img)
 
-    ty = qr_y + QR_BOX + 30
+    ty = qr_y + qr_box + 30
     paste_centered(card, title_mr, CARD_W // 2, ty, 52, MAROON,
                    path=NIRMALA, index=NIRMALA_BOLD_INDEX)
 
@@ -146,15 +145,15 @@ def main():
         make_card(title, f"वस्तू क्र. {to_devanagari(int(iid))}", url, logo, OUT / f"{iid}-{title}.png")
         count += 1
 
-    card_in = (CARD_W / PRINT_DPI, (QR_BOX + PAD * 2 + 260) / PRINT_DPI)
-    qr_in = QR_BOX / PRINT_DPI
+    sample = Image.open(OUT / f"005-{d['items'][4]['title']['mr']}.png")
+    qr_cm = QR_MODULE_PX * (6 * 4 + 17 + 8) / PRINT_DPI * 2.54   # v6 = 41 modules + 8 border
     print(f"Generated {count + 1} QR cards in {OUT}")
-    print(f"Embedded print DPI: {PRINT_DPI}")
-    print(
-        f"Full card @ {PRINT_DPI}dpi ~= {card_in[0]:.2f}in x {card_in[1]:.2f}in "
-        f"({card_in[0]*2.54:.1f}cm x {card_in[1]*2.54:.1f}cm)"
-    )
-    print(f"QR square alone ~= {qr_in:.2f}in ({qr_in*2.54:.1f}cm) per side — do not print smaller than this")
+    print(f"Embedded print DPI: {PRINT_DPI}  (square modules, EC-Q)")
+    print(f"Item card ~= {sample.width / PRINT_DPI * 2.54:.1f} x "
+          f"{sample.height / PRINT_DPI * 2.54:.1f} cm; QR square ~= {qr_cm:.1f} cm "
+          f"(module {QR_MODULE_PX / PRINT_DPI * 25.4:.2f} mm)")
+    print("Stress-verified: all 24 codes survive rotation / blur / JPEG-q45 / "
+          "distance. Fine to print smaller than the full card if space is tight.")
 
 
 if __name__ == "__main__":

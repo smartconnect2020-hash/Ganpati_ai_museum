@@ -7,7 +7,14 @@ wrong: "सुदर्शन" comes out as "सुद‌र्‌शन", "अ�
 
 This module shapes with HarfBuzz (uharfbuzz) and rasterises each glyph
 with FreeType (freetype-py), returning a transparent RGBA PIL image that
-callers paste onto their canvas. Pure-Python wheels, no system libs.
+callers paste onto their canvas. Both are self-contained binary wheels
+(bundled HarfBuzz / FreeType) — `pip install` needs no separate system
+library.
+
+Conjuncts render in Nirmala's tight ligature form: त्र / क्र / स्त्र come
+out as the base consonant plus a small subscript र-curl. That is correct
+Marathi typography — at low preview resolution the curl can look like a
+dropped letter, but it is not; check a full-resolution render.
 """
 from __future__ import annotations
 

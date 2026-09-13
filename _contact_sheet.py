@@ -1,13 +1,13 @@
-"""Build one grid image of every QR card, small enough to eyeball all 24
-at once for Marathi-text rendering problems (mojibake, missing glyphs,
-clipped labels) — the honest alternative to spot-checking 2 of 24."""
+"""Build one grid image of every QR card, small enough to eyeball all of
+them at once for Marathi-text rendering problems (mojibake, missing glyphs,
+clipped labels) — the honest alternative to spot-checking just a couple."""
 from pathlib import Path
 from PIL import Image
 
 Image.init()  # force-register format plugins before any .save() (see _print_sheet.py note)
 
 ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "qr-codes"
+OUT = ROOT / "qr-codes" / "alternate-designs" / "patrika-cards"
 files = [f for f in sorted(OUT.glob("*.png")) if not f.name.startswith("_")]
 
 THUMB = 220

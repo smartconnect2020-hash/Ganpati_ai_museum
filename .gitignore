@@ -3,8 +3,12 @@
 Thumbs.db
 desktop.ini
 
-# Print assets (keep offline)
-qr-codes/
+# Print assets (keep offline) — except the guide explaining what's in there,
+# which stays tracked so it's not lost/stale across machines. NOTE: must be
+# "qr-codes/*" not "qr-codes/" — git can't un-ignore a file inside a
+# wholesale-ignored directory, only inside an ignored directory's *contents*.
+qr-codes/*
+!qr-codes/README.md
 
 # Raw AI-generated source material — only the curated copies inside media/
 # are actually used by the site; this folder is just the working stash.

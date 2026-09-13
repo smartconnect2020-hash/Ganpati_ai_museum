@@ -1,4 +1,4 @@
-"""Compact print sheet: all 24 QR codes on 2 A4 pages (12 per page, 3x4).
+"""Compact print sheet: every item's QR code on A4 pages (12 per page, 3x4).
 
 Design goals for reliable scanning off a home printer:
   * plain BLACK on WHITE, square modules (max contrast, no rounded-module
@@ -11,7 +11,7 @@ Design goals for reliable scanning off a home printer:
 
 For the full decorative "पत्रिका" cards at ~5.8 cm use _print_sheet.py
 (6 pages). For those cards squeezed onto 2 pages (QR ~3.8 cm) use
-_print_sheet_patrika_compact.py. All three now decode all 24 codes under
+_print_sheet_patrika_compact.py. All three decode every code under
 the same stress conditions; this one just has the plainest look and the
 most size margin.
 
@@ -31,7 +31,8 @@ from _text_shape import paste_centered   # HarfBuzz-shaped Devanagari
 Image.init()
 
 ROOT = Path(__file__).resolve().parent
-OUT_PDF = ROOT / "qr-codes" / "print-sheet-A4-compact.pdf"
+OUT_DIR = ROOT / "qr-codes" / "alternate-designs"
+OUT_PDF = OUT_DIR / "print-sheet-A4-compact.pdf"
 BASE_URL = "https://smartconnect2020-hash.github.io/Ganpati_ai_museum"
 
 DPI = 300
@@ -89,7 +90,8 @@ def draw_tile(page, draw, cx, top, iid, mr, en, url):
 
 def main():
     d = json.loads((ROOT / "data.json").read_text(encoding="utf-8"))
-    tiles = [("000", "मुख्य यादी", "All 23 — Home", f"{BASE_URL}/")]
+    total = len(d["items"])   # dynamic — never hardcode the item count here again
+    tiles = [("000", "मुख्य यादी", f"All {total} — Home", f"{BASE_URL}/")]
     for it in d["items"]:
         tiles.append((it["id"], it["title"]["mr"], it["title"]["en"],
                       f"{BASE_URL}/?id={it['id']}"))
@@ -110,6 +112,7 @@ def main():
             draw_tile(page, draw, cx, top, iid, mr, en, url)
         pages.append(page)
 
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
     pages[0].save(OUT_PDF, save_all=True, append_images=pages[1:], resolution=DPI)
     v = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_Q, border=4)
     v.add_data(f"{BASE_URL}/?id=001"); v.make(fit=True)

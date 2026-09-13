@@ -1,10 +1,10 @@
 """Compact print sheet using the FULL "पूजा पत्रिका" cards (qr-codes/*.png),
-scaled to fit all 24 on 2 A4 pages (12 per page, 3x4), cards centred in
+scaled to fit every card on A4 pages (12 per page, 3x4), cards centred in
 their cell with even margins.
 
 The QR ends up ~3.8 cm — smaller than _print_sheet.py (6 pages, ~5.8 cm)
 and _print_sheet_compact.py (2 pages, 5.4 cm plain B/W). Since the cards
-now use square modules + EC-Q, all 24 still decode after rotation / blur
+now use square modules + EC-Q, every card still decodes after rotation / blur
 / JPEG-q45 / distance even at this scale (verified), but a home printer
 has less margin here than at full size — a quick test print is wise.
 
@@ -20,8 +20,9 @@ from PIL import Image, ImageDraw
 Image.init()
 
 ROOT = Path(__file__).resolve().parent
-SRC = ROOT / "qr-codes"
-OUT_PDF = SRC / "print-sheet-A4-patrika-compact.pdf"
+SRC = ROOT / "qr-codes" / "alternate-designs" / "patrika-cards"
+OUT_DIR = ROOT / "qr-codes" / "alternate-designs"
+OUT_PDF = OUT_DIR / "print-sheet-A4-patrika-compact.pdf"
 
 DPI = 300
 A4_W, A4_H = round(8.27 * DPI), round(11.69 * DPI)
@@ -64,6 +65,7 @@ def main():
                            outline=CUT, width=2)
         pages.append(page)
 
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
     pages[0].save(OUT_PDF, save_all=True, append_images=pages[1:], resolution=DPI)
     print(f"{len(files)} cards -> {len(pages)} A4 page(s) -> {OUT_PDF}")
     print(f"card scale {scale:.3f}; QR approx {qr_cm:.1f} cm; "

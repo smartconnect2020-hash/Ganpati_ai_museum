@@ -20,8 +20,11 @@ from _text_shape import paste_centered, NIRMALA, NIRMALA_BOLD_INDEX
 Image.init()  # force-register format plugins before any .save() (see _print_sheet.py note)
 
 ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "qr-codes"
-OUT.mkdir(exist_ok=True)
+# "पूजा पत्रिका" cards — source material for the alternate designs
+# (_print_sheet.py, _print_sheet_patrika_compact.py, _contact_sheet.py),
+# not the current recommended print deliverable — see qr-codes/README.md.
+OUT = ROOT / "qr-codes" / "alternate-designs" / "patrika-cards"
+OUT.mkdir(parents=True, exist_ok=True)
 
 BASE_URL = "https://smartconnect2020-hash.github.io/Ganpati_ai_museum"
 
@@ -125,11 +128,12 @@ def make_card(title_mr: str, subtitle: str, url: str, logo_path: Path | None, ou
 
 def main():
     d = json.loads((ROOT / "data.json").read_text(encoding="utf-8"))
+    total = len(d["items"])   # dynamic — never hardcode the item count here again
 
     # Home / index QR
     make_card(
-        "आमचं घर संग्रहालय",
-        "सर्व २३ आयुधे — मुख्य यादी",
+        "श्री गणेश आयुध माहिती",
+        f"सर्व {to_devanagari(total)} आयुधे — मुख्य यादी",
         f"{BASE_URL}/",
         None,
         OUT / "000-home.png",
@@ -152,8 +156,9 @@ def main():
     print(f"Item card ~= {sample.width / PRINT_DPI * 2.54:.1f} x "
           f"{sample.height / PRINT_DPI * 2.54:.1f} cm; QR square ~= {qr_cm:.1f} cm "
           f"(module {QR_MODULE_PX / PRINT_DPI * 25.4:.2f} mm)")
-    print("Stress-verified: all 24 codes survive rotation / blur / JPEG-q45 / "
-          "distance. Fine to print smaller than the full card if space is tight.")
+    print("Stress-verified design (rotation / blur / JPEG-q45 / distance) — "
+          "re-run _stress_test_qr.py after any regeneration to confirm this batch too. "
+          "Fine to print smaller than the full card if space is tight.")
 
 
 if __name__ == "__main__":

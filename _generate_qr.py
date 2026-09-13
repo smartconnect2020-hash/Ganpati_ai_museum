@@ -3,6 +3,12 @@
 Uses only local libraries (qrcode + Pillow) — no external QR service,
 no watermark, no upload, no signup. Palette matches the "पूजा पत्रिका"
 theme already defined in styles.css.
+
+Title font: Noto Sans Devanagari (variable, wght=800 for the item name) —
+same fix as print-sheet-A4-side-label.pdf. Nirmala's ग्न and ग्र conjuncts
+render pixel-identical (verified), so item 023 अग्नी read as अग्री on
+these cards too; Noto carries a distinct ग्न ligature. See
+_tile_common.py's docstring for the full font investigation.
 """
 from __future__ import annotations
 
@@ -15,7 +21,8 @@ from qrcode.image.styles.colormasks import SolidFillColorMask
 from PIL import Image, ImageDraw
 
 # Devanagari needs HarfBuzz shaping — Pillow's draw.text() mangles conjuncts.
-from _text_shape import paste_centered, NIRMALA, NIRMALA_BOLD_INDEX
+from _text_shape import paste_centered
+from _tile_common import NOTO_DEVANAGARI, TITLE_WGHT
 
 Image.init()  # force-register format plugins before any .save() (see _print_sheet.py note)
 
@@ -115,13 +122,13 @@ def make_card(title_mr: str, subtitle: str, url: str, logo_path: Path | None, ou
 
     ty = qr_y + qr_box + 30
     paste_centered(card, title_mr, CARD_W // 2, ty, 52, MAROON,
-                   path=NIRMALA, index=NIRMALA_BOLD_INDEX)
+                   path=NOTO_DEVANAGARI, variations=TITLE_WGHT)
 
     sy = ty + 78
-    paste_centered(card, subtitle, CARD_W // 2, sy, 30, INK)
+    paste_centered(card, subtitle, CARD_W // 2, sy, 30, INK, path=NOTO_DEVANAGARI)
 
     foot = "श्री गणेश आयुधे · स्कॅन करून ऐका"
-    paste_centered(card, foot, CARD_W // 2, sy + 52, 22, GOLD)
+    paste_centered(card, foot, CARD_W // 2, sy + 52, 22, GOLD, path=NOTO_DEVANAGARI)
 
     card.save(out_path, "PNG", dpi=(PRINT_DPI, PRINT_DPI))
 

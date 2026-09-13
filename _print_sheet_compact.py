@@ -27,6 +27,7 @@ import qrcode
 from PIL import Image, ImageDraw
 
 from _text_shape import paste_centered   # HarfBuzz-shaped Devanagari
+from _tile_common import NOTO_DEVANAGARI   # ग्न/ग्र fix — see _tile_common.py docstring
 
 Image.init()
 
@@ -84,7 +85,7 @@ def draw_tile(page, draw, cx, top, iid, mr, en, url):
     for text, px, fill, adv in ((f"#{dev(int(iid))}", NUM_PX, MAROON, NUM_ADV),
                                 (mr, MR_PX, INK, MR_ADV),
                                 (en, EN_PX, GREY, EN_ADV)):
-        paste_centered(page, text, cx, y, px, fill)
+        paste_centered(page, text, cx, y, px, fill, path=NOTO_DEVANAGARI)
         y += adv
 
 

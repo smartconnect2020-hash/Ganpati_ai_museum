@@ -266,6 +266,52 @@ button { touch-action: manipulation; }
 
 .home-hero p { margin: 0 auto; color: var(--color-muted); max-width: 40ch; }
 
+/* ---------- Decoration video (whole-shrine "आरास", home page only) ---------- */
+
+.decoration-section {
+  margin: 1.3rem 0 1.6rem;
+  padding: 0.9rem 0.9rem 1rem;
+  text-align: center;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.decoration-title {
+  margin: 0 0 0.7rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-primary);
+}
+
+.decoration-video {
+  width: 100%;
+  max-width: 100%;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-gold);
+  background: #000;
+  display: block;
+  margin: 0 auto;
+}
+
+.decoration-caption {
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.decoration-error {
+  margin: 0.6rem 0 0;
+  padding: 1.4rem 1rem;
+  border: 1.5px dashed var(--color-gold);
+  border-radius: var(--radius-sm);
+  color: var(--color-muted);
+  font-size: 0.88rem;
+  background: var(--color-gold-soft);
+}
+
 .item-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

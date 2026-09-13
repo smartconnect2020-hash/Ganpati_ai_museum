@@ -29,19 +29,34 @@ NIRMALA_BOLD_INDEX = 1          # Nirmala.ttc: 0 = regular, 1 = bold
 
 
 @lru_cache(maxsize=8)
-def _faces(path: str, index: int):
+def _faces(path: str, index: int, variations: tuple = ()):
     with open(path, "rb") as fh:
         data = fh.read()
     hb_face = hb.Face(data, index)
     hb_font = hb.Font(hb_face)
     ft_face = freetype.Face(path, index=index)
+    if variations:
+        var = dict(variations)
+        hb_font.set_variations(var)
+        # FreeType wants design-space coords in declared axis order, keyed
+        # by 4-letter axis TAG ("wght"), not the human-readable axis name.
+        axes = ft_face.get_variation_info().axes
+        coords = [var.get(ax.tag, ax.default) for ax in axes]
+        ft_face.set_var_design_coords(coords)
     return hb_font, ft_face
 
 
 def render_text(text: str, px: int, color=(0, 0, 0), *,
-                path: str = NIRMALA, index: int = 0) -> Image.Image:
-    """Return an RGBA image of `text` shaped + rasterised at `px` pixels."""
-    hb_font, ft_face = _faces(path, index)
+                path: str = NIRMALA, index: int = 0,
+                variations: dict | None = None) -> Image.Image:
+    """Return an RGBA image of `text` shaped + rasterised at `px` pixels.
+
+    `variations`: for variable fonts, e.g. {"wght": 800} to pick a weight
+    that has no static instance file (see fonts/NotoSansDevanagari.ttf,
+    which ships weight 100-900 as a single variable font, no separate
+    Bold/ExtraBold .ttf).
+    """
+    hb_font, ft_face = _faces(path, index, tuple(sorted((variations or {}).items())))
     hb_font.scale = (px * 64, px * 64)
     hb.ot_font_set_funcs(hb_font)
 
@@ -83,8 +98,9 @@ def render_text(text: str, px: int, color=(0, 0, 0), *,
     return canvas
 
 
-def text_width(text: str, px: int, *, path: str = NIRMALA, index: int = 0) -> int:
-    hb_font, _ = _faces(path, index)
+def text_width(text: str, px: int, *, path: str = NIRMALA, index: int = 0,
+              variations: dict | None = None) -> int:
+    hb_font, _ = _faces(path, index, tuple(sorted((variations or {}).items())))
     hb_font.scale = (px * 64, px * 64)
     hb.ot_font_set_funcs(hb_font)
     buf = hb.Buffer()
@@ -95,9 +111,10 @@ def text_width(text: str, px: int, *, path: str = NIRMALA, index: int = 0) -> in
 
 
 def paste_centered(page: Image.Image, text: str, cx: int, top: int, px: int,
-                   color=(0, 0, 0), *, path: str = NIRMALA, index: int = 0):
+                   color=(0, 0, 0), *, path: str = NIRMALA, index: int = 0,
+                   variations: dict | None = None):
     """Paste `text` horizontally centred on cx, its top edge at `top`."""
-    img = render_text(text, px, color, path=path, index=index)
+    img = render_text(text, px, color, path=path, index=index, variations=variations)
     page.paste(img, (int(cx - img.width / 2), int(top)), img)
     return img.height
 

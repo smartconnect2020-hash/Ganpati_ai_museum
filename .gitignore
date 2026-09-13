@@ -10,6 +10,10 @@ qr-codes/
 # are actually used by the site; this folder is just the working stash.
 all images/
 audio-scripts/*.wav
+
+# TTS iteration drafts (_tts_part.py) — listen/approve locally, then the
+# approved file gets copied into media/item-XXX/ by hand.
+audio-drafts/
 icons/_ai-kalash-raw.jpeg
 icons/_ai-kalash-cutout.png
 icons/_grid1.jpeg
@@ -23,3 +27,4 @@ icons/_grid2.png
 __pycache__/
 *.pyc
 _tmp.webp
+.gstack/

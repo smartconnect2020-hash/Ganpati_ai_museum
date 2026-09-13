@@ -239,6 +239,47 @@
     `;
   }
 
+  /* Whole-shrine decoration video: one clip for the entire "आरास" (all 23
+     weapons arranged together), shown only on the home/list page — this is
+     not per-item media, so it lives in data.meta, not on any single item. */
+  function renderDecorationVideo() {
+    const dv = data.meta.decoration_video;
+    if (!dv) return '';
+    const title = dv.title ? dv.title[lang] || dv.title.mr : '';
+    const caption = dv.caption ? dv.caption[lang] || dv.caption.mr : '';
+    return `
+      <section class="decoration-section" aria-label="${escapeHtml(title)}">
+        <h2 class="decoration-title">${escapeHtml(title)}</h2>
+        <video
+          class="decoration-video"
+          id="decoration-video"
+          controls
+          preload="metadata"
+          playsinline
+          src="${dv.src}"
+          ${dv.poster ? `poster="${dv.poster}"` : ''}
+        ></video>
+        ${caption ? `<p class="decoration-caption">${escapeHtml(caption)}</p>` : ''}
+      </section>
+    `;
+  }
+
+  function bindDecorationVideo() {
+    const video = document.getElementById('decoration-video');
+    if (!video) return;
+    video.addEventListener('error', () => {
+      const section = video.closest('.decoration-section');
+      if (!section || section.querySelector('.decoration-error')) return;
+      const note = document.createElement('p');
+      note.className = 'decoration-error';
+      note.textContent =
+        lang === 'mr'
+          ? 'सजावटीचा व्हिडिओ लवकरच जोडला जाईल.'
+          : 'Decoration video coming soon.';
+      video.replaceWith(note);
+    });
+  }
+
   function renderHome() {
     const u = t();
     const meta = data.meta;
@@ -274,9 +315,11 @@
         <h1>${meta.site_title[lang]}</h1>
         <p>${u.homeLead}</p>
       </section>
+      ${renderDecorationVideo()}
       <div class="scallop" aria-hidden="true"></div>
       <div class="item-grid">${cards}</div>
     `;
+    bindDecorationVideo();
   }
 
   function bindPlayer(item) {

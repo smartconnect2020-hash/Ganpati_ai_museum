@@ -10,3 +10,10 @@ pyzbar            # QR decode verification (_stress_test_qr.py) — needs the
                   # ZBar shared library on the system as well
 uharfbuzz         # Devanagari text shaping (_text_shape.py) — Pillow's
 freetype-py       # draw.text() cannot shape Marathi conjuncts without these
+
+# Optional — only for _generate_audio_tts.py / _tts_part.py (Sarvam Bulbul v3
+# narration + local child-voice pitch shift). Needs SARVAM_API_KEY in the
+# environment. `pip install sarvamai librosa soundfile`
+# sarvamai
+# librosa
+# soundfile

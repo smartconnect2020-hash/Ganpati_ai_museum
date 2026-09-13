@@ -175,7 +175,7 @@ def sniff(blob: bytes) -> str:
 # --------------------------------------------------------------------------- #
 # Sarvam call with retry
 # --------------------------------------------------------------------------- #
-def synth(client, text: str, *, speaker: str, sample_rate: int, pace: float, codec: str) -> bytes:
+def synth(client, text: str, *, speaker: str, sample_rate: int, pace: float, temperature: float, codec: str) -> bytes:
     from sarvamai.core.api_error import ApiError
 
     kwargs = dict(
@@ -185,6 +185,7 @@ def synth(client, text: str, *, speaker: str, sample_rate: int, pace: float, cod
         speaker=speaker,
         speech_sample_rate=sample_rate,
         pace=pace,
+        temperature=temperature,
     )
     if codec != "wav":
         kwargs["output_audio_codec"] = codec
@@ -211,6 +212,7 @@ def main() -> int:
     ap.add_argument("--force", action="store_true", help="include item-001 too")
     ap.add_argument("--speaker", default="shubh", help="Bulbul v3 voice (lowercase)")
     ap.add_argument("--pace", type=float, default=1.0, help="0.5–2.0")
+    ap.add_argument("--temperature", type=float, default=0.6, help="0.01–1.0 (bulbul:v3 expressiveness)")
     ap.add_argument("--sample-rate", type=int, default=24000,
                     choices=[8000, 16000, 22050, 24000, 32000, 44100, 48000])
     ap.add_argument("--codec", default="wav", choices=["wav", "mp3"],
@@ -286,7 +288,7 @@ def main() -> int:
             blobs = []
             for i, chunk in enumerate(chunks):
                 blob = synth(client, chunk, speaker=args.speaker, sample_rate=args.sample_rate,
-                             pace=args.pace, codec=args.codec)
+                             pace=args.pace, temperature=args.temperature, codec=args.codec)
                 got = sniff(blob)
                 if args.codec == "wav" and got == "mp3":
                     print("    note: API returned mp3, not wav — switch to --codec mp3", file=sys.stderr)

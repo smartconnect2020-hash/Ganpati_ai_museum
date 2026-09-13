@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>आरास व्हिडिओ ऑप्टिमायझर</title>
+<style>
+  :root {
+    --bg: #fbf1de; --surface: #fff9ec; --text: #3a0f16; --muted: #7a5c46;
+    --primary: #7a1e2b; --gold: #8f6224; --border: rgba(143,98,36,.32);
+  }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, "Segoe UI", "Noto Sans Devanagari", sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 1.2rem; line-height: 1.55; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { color: var(--primary); font-size: 1.4rem; margin: 0 0 0.3rem; }
+  .sub { color: var(--muted); font-size: 0.9rem; margin: 0 0 1.2rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+  .card h2 { font-size: 1rem; margin: 0 0 0.6rem; color: var(--primary); }
+  label { display: block; font-size: 0.85rem; color: var(--muted); margin: 0.6rem 0 0.25rem; }
+  input[type=text], input[type=file] { width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; font: inherit; background: #fff; }
+  .drop { border: 2px dashed var(--gold); border-radius: 10px; padding: 1.4rem; text-align: center; color: var(--muted); cursor: pointer; background: #fffdf7; }
+  .drop.drag { background: #fdf1dc; }
+  button { font: inherit; background: var(--primary); color: #f6e6c4; border: none; padding: 0.65rem 1.1rem; border-radius: 8px; cursor: pointer; margin-top: 0.8rem; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  button.secondary { background: transparent; color: var(--primary); border: 1.5px solid var(--gold); }
+  #log { white-space: pre-wrap; font-family: ui-monospace, Consolas, monospace; font-size: 0.78rem; background: #fffdf7; border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem; max-height: 220px; overflow-y: auto; margin-top: 0.7rem; }
+  .bar { height: 8px; border-radius: 4px; background: #eee2c6; overflow: hidden; margin-top: 0.6rem; }
+  .bar-fill { height: 100%; width: 0%; background: var(--primary); transition: width .2s; }
+  .out { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.8rem; }
+  .out video, .out img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); }
+  .out .meta { font-size: 0.82rem; color: var(--muted); }
+  .warn { background: #f6e7be; border: 1px solid #d9b96a; border-radius: 8px; padding: 0.7rem; font-size: 0.85rem; margin-bottom: 1rem; }
+  a.dl { display: inline-block; margin-top: 0.3rem; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>आरास व्हिडिओ ऑप्टिमायझर</h1>
+  <p class="sub">हे पूर्णपणे तुमच्या ब्राउझरमध्येच चालतं — व्हिडिओ इंटरनेटवर कुठेही अपलोड होत नाही (ffmpeg.wasm, ऑफलाइन प्रोसेसिंग, बॅकग्राउंड Worker मध्ये — त्यामुळे प्रोसेसिंग चालू असताना पेज गोठत नाही). फक्त पहिल्यांदा उघडताना ~३० MB इंजिन डाउनलोड होईल.</p>
+
+  <div class="warn">⚠️ आउटपुट फाइल्स सेव्ह करताना ब्राउझरचा डिफॉल्ट "Downloads" फोल्डर नाही तर थेट प्रोजेक्ट फोल्डर निवडा:<br>
+  <code>E:\Ganpati_audio_qr_project\media\decoration\</code> — कारण C: ड्राइव्हवर जागा शिल्लक नाहीये.</div>
+
+  <div class="card">
+    <h2>१. इंजिन लोड करा</h2>
+    <button id="loadBtn">ffmpeg इंजिन लोड करा</button>
+    <div class="bar"><div class="bar-fill" id="loadBar"></div></div>
+  </div>
+
+  <div class="card">
+    <h2>२. तुमचा कच्चा व्हिडिओ निवडा</h2>
+    <div class="drop" id="drop">फाइल इथे ड्रॉप करा किंवा क्लिक करून निवडा (mp4 / mov / कोणताही फोन-रेकॉर्डिंग फॉरमॅट)</div>
+    <input type="file" id="fileInput" accept="video/*" style="display:none" />
+    <div class="meta" id="fileInfo"></div>
+
+    <label>कॉपीराइट मजकूर (व्हिडिओ फाइलमध्ये व साइटवर दोन्हीकडे वापरला जाईल)</label>
+    <input type="text" id="copyrightText" value="Developed by Nilesh — केवळ वैयक्तिक अवलोकनासाठी. डाउनलोड/पुनर्प्रकाशन करू नये." />
+
+    <label>शीर्षक (फाइल मेटाडेटामध्ये)</label>
+    <input type="text" id="titleText" value="Ganpati Ayudh Decoration - Aaras" />
+
+    <button id="runBtn" disabled>ऑप्टिमाइझ करा (HD + SD + पोस्टर)</button>
+    <button id="testBtn" class="secondary" disabled>🧪 आधी नमुना टेस्ट क्लिपवर वापरून बघा</button>
+  </div>
+
+  <div class="card">
+    <h2>प्रगती / लॉग</h2>
+    <div class="bar"><div class="bar-fill" id="runBar"></div></div>
+    <div id="log">तयार आहे…</div>
+  </div>
+
+  <div class="card" id="outputsCard" style="display:none">
+    <h2>३. परिणाम — डाउनलोड करा</h2>
+    <div class="out" id="outputs"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  /* Custom minimal worker around @ffmpeg/core (Emscripten build), used
+     directly instead of the @ffmpeg/ffmpeg wrapper package: that wrapper's
+     bundled worker chunk (classWorkerURL) reliably failed to import
+     ffmpeg-core.js when loaded from a CDN in testing, while this hand-rolled
+     worker (plain importScripts + createFFmpegCore) works. Running ffmpeg
+     inside a Worker (not the main thread) matters for real usage, not just
+     cleanliness: ffmpeg-core's exec() blocks synchronously for as long as
+     encoding takes — doing that on the main thread would freeze the whole
+     tab ("Page Unresponsive") for the entire optimize run. */
+  const CORE_URL = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js';
+  const WASM_URL = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.wasm';
+
+  const WORKER_SRC = `
+    let core;
+    self.onmessage = async ({ data }) => {
+      try {
+        if (data.type === 'load') {
+          importScripts(data.coreURL);
+          core = await self.createFFmpegCore({
+            mainScriptUrlOrBlob: data.coreURL + '#' + btoa(JSON.stringify({ wasmURL: data.wasmURL })),
+          });
+          core.setLogger((e) => self.postMessage({ type: 'log', message: (e && e.message) || String(e) }));
+          self.postMessage({ type: 'loaded' });
+        } else if (data.type === 'write') {
+          core.FS.writeFile(data.name, data.data);
+          self.postMessage({ type: 'wrote', id: data.id });
+        } else if (data.type === 'run') {
+          core.exec(...data.args);
+          const ret = core.ret;
+          core.reset();
+          const files = data.reads.map((name) => ({ name, data: core.FS.readFile(name) }));
+          for (const f of files) { try { core.FS.unlink(f.name); } catch (e) {} }
+          self.postMessage({ type: 'result', id: data.id, ret, files }, files.map((f) => f.data.buffer));
+        }
+      } catch (e) {
+        self.postMessage({ type: 'error', id: data.id, message: e.toString() });
+      }
+    };
+  `;
+
+  let worker = null;
+  let loaded = false;
+  let reqId = 0;
+  const pending = new Map();
+  let onLoaded = () => {};
+
+  function makeWorker() {
+    const blob = new Blob([WORKER_SRC], { type: 'text/javascript' });
+    const w = new Worker(URL.createObjectURL(blob));
+    w.onmessage = ({ data }) => {
+      if (data.type === 'log') { log(data.message); return; }
+      if (data.type === 'loaded') { onLoaded(); return; }
+      const p = pending.get(data.id);
+      if (!p) return;
+      pending.delete(data.id);
+      if (data.type === 'error') p.reject(new Error(data.message));
+      else p.resolve(data);
+    };
+    w.onerror = (ev) => log('Worker त्रुटी: ' + (ev.message || 'अज्ञात'));
+    return w;
+  }
+
+  function writeInput(name, data) {
+    const id = ++reqId;
+    return new Promise((resolve, reject) => {
+      pending.set(id, { resolve, reject });
+      worker.postMessage({ type: 'write', id, name, data }, [data.buffer]);
+    });
+  }
+
+  function run(args, reads) {
+    const id = ++reqId;
+    return new Promise((resolve, reject) => {
+      pending.set(id, { resolve, reject });
+      worker.postMessage({ type: 'run', id, args, reads });
+    });
+  }
+
+  const logEl = document.getElementById('log');
+  const loadBtn = document.getElementById('loadBtn');
+  const loadBar = document.getElementById('loadBar');
+  const runBtn = document.getElementById('runBtn');
+  const testBtn = document.getElementById('testBtn');
+  const runBar = document.getElementById('runBar');
+  const drop = document.getElementById('drop');
+  const fileInput = document.getElementById('fileInput');
+  const fileInfo = document.getElementById('fileInfo');
+  const outputsCard = document.getElementById('outputsCard');
+  const outputs = document.getElementById('outputs');
+
+  let selectedFile = null;
+
+  function log(msg) {
+    logEl.textContent += '\n' + msg;
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  loadBtn.addEventListener('click', () => {
+    loadBtn.disabled = true;
+    log('इंजिन डाउनलोड होत आहे (सुमारे ३० MB, एकदाच — काही सेकंद ते १ मिनिट लागू शकतो)...');
+    worker = makeWorker();
+    onLoaded = () => {
+      loaded = true;
+      loadBar.style.width = '100%';
+      log('इंजिन तयार आहे. आता व्हिडिओ निवडा.');
+      runBtn.disabled = !selectedFile;
+      testBtn.disabled = false;
+    };
+    worker.postMessage({ type: 'load', coreURL: CORE_URL, wasmURL: WASM_URL });
+    setTimeout(() => {
+      if (!loaded) {
+        log('चूक: इंजिन ६० सेकंदात लोड झालं नाही — इंटरनेट कनेक्शन तपासून पुन्हा प्रयत्न करा.');
+        loadBtn.disabled = false;
+      }
+    }, 60000);
+  });
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('drag'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('drag'));
+  drop.addEventListener('drop', (e) => {
+    e.preventDefault();
+    drop.classList.remove('drag');
+    if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) setFile(fileInput.files[0]);
+  });
+
+  function setFile(f) {
+    selectedFile = f;
+    fileInfo.textContent = `निवडलं: ${f.name} — ${(f.size / 1024 / 1024).toFixed(1)} MB`;
+    runBtn.disabled = !loaded;
+  }
+
+  function fmtMB(bytes) { return (bytes / 1024 / 1024).toFixed(1) + ' MB'; }
+
+  /* Scale filter: cap the "short side" at the tier resolution regardless of
+     landscape/portrait input, downscale-only (never upscale), even dims. */
+  function scaleFilter(tier) {
+    return `scale=w='if(gte(iw,ih),-2,min(iw,${tier}))':h='if(gte(iw,ih),min(ih,${tier}),-2)'`;
+  }
+
+  async function encodeTier(inputName, tier, crf, maxrate, bufsize, outName, copyright, title) {
+    const res = await run([
+      '-i', inputName,
+      '-vf', scaleFilter(tier),
+      '-r', '30',
+      '-c:v', 'libx264', '-profile:v', 'main', '-level', '4.0', '-pix_fmt', 'yuv420p',
+      '-preset', 'veryfast', '-crf', String(crf),
+      '-maxrate', maxrate, '-bufsize', bufsize,
+      '-g', '60', '-keyint_min', '60', '-sc_threshold', '0',
+      '-c:a', 'aac', '-b:a', '128k', '-ar', '44100', '-ac', '2',
+      '-movflags', '+faststart',
+      '-metadata', `copyright=${copyright}`,
+      '-metadata', `title=${title}`,
+      '-metadata', 'comment=Personal family archive - not for redistribution',
+      outName,
+    ], [outName]);
+    return res.files[0].data;
+  }
+
+  async function makePoster(inputName, outName) {
+    const res = await run([
+      '-ss', '00:00:01', '-i', inputName, '-vframes', '1',
+      '-vf', "scale=w='min(iw,1280)':h='min(ih,720)':force_original_aspect_ratio=decrease",
+      '-update', '1', '-q:v', '4', outName,
+    ], [outName]);
+    return res.files[0].data;
+  }
+
+  function addOutput(label, filename, blob, isImage) {
+    const box = document.createElement('div');
+    const el = document.createElement(isImage ? 'img' : 'video');
+    const url = URL.createObjectURL(blob);
+    if (!isImage) { el.controls = true; el.playsInline = true; }
+    el.src = url;
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = `${label} — ${fmtMB(blob.size)}`;
+    const link = document.createElement('a');
+    link.className = 'dl';
+    link.href = url;
+    link.download = filename;
+    link.textContent = `⬇ ${filename} डाउनलोड करा`;
+    box.appendChild(el);
+    box.appendChild(meta);
+    box.appendChild(link);
+    outputs.appendChild(box);
+  }
+
+  async function runPipeline(fileBytes) {
+    runBtn.disabled = true;
+    testBtn.disabled = true;
+    outputs.innerHTML = '';
+    outputsCard.style.display = 'none';
+    runBar.style.width = '10%';
+    const copyright = document.getElementById('copyrightText').value || '';
+    const title = document.getElementById('titleText').value || '';
+
+    try {
+      log('इनपुट फाइल इंजिनमध्ये लोड होत आहे...');
+      await writeInput('input.mp4', fileBytes);
+      runBar.style.width = '25%';
+
+      log('HD आवृत्ती (कमाल ७२० लघु-बाजू, ~1.5–2.5 Mbps) बनवत आहे...');
+      const hd = await encodeTier('input.mp4', 720, 25, '2000k', '4000k', 'aaras.mp4', copyright, title);
+      runBar.style.width = '55%';
+
+      log('SD आवृत्ती (कमाल ४८० लघु-बाजू, संथ नेटवर्कसाठी) बनवत आहे...');
+      const sd = await encodeTier('input.mp4', 480, 28, '700k', '1400k', 'aaras-sd.mp4', copyright, title);
+      runBar.style.width = '80%';
+
+      log('पोस्टर थंबनेल काढत आहे...');
+      const poster = await makePoster('input.mp4', 'aaras-poster.jpg');
+      runBar.style.width = '100%';
+
+      outputsCard.style.display = 'block';
+      addOutput('HD (media/decoration/aaras.mp4)', 'aaras.mp4', new Blob([hd.buffer], { type: 'video/mp4' }), false);
+      addOutput('SD (media/decoration/aaras-sd.mp4)', 'aaras-sd.mp4', new Blob([sd.buffer], { type: 'video/mp4' }), false);
+      addOutput('पोस्टर (media/decoration/aaras-poster.jpg)', 'aaras-poster.jpg', new Blob([poster.buffer], { type: 'image/jpeg' }), true);
+
+      log('पूर्ण झालं. वरील तीन फाइल्स "⬇ डाउनलोड करा" वर क्लिक करून media/decoration/ फोल्डरमध्ये सेव्ह करा.');
+    } catch (e) {
+      log('चूक आली: ' + e.message);
+    } finally {
+      runBtn.disabled = !selectedFile;
+      testBtn.disabled = false;
+    }
+  }
+
+  runBtn.addEventListener('click', async () => {
+    if (!selectedFile) return;
+    const bytes = new Uint8Array(await selectedFile.arrayBuffer());
+    runPipeline(bytes);
+  });
+
+  testBtn.addEventListener('click', async () => {
+    testBtn.disabled = true;
+    runBtn.disabled = true;
+    log('नमुना टेस्ट क्लिप (३ सेकंद, रंगीत पॅटर्न) तयार करत आहे...');
+    try {
+      const res = await run([
+        '-f', 'lavfi', '-i', 'testsrc=duration=3:size=1280x720:rate=30',
+        '-f', 'lavfi', '-i', 'sine=frequency=1000:duration=3',
+        '-shortest', 'sample-input.mp4',
+      ], ['sample-input.mp4']);
+      await runPipeline(res.files[0].data);
+    } catch (e) {
+      log('टेस्ट क्लिप चूक: ' + e.message);
+      testBtn.disabled = false;
+      runBtn.disabled = !selectedFile;
+    }
+  });
+})();
+</script>
+</body>
+</html>

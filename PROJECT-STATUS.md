@@ -3,7 +3,7 @@
 **अपडेट तारीख:** 25 Aug 2026
 **Repo नाव:** `Ganpati_ai_museum`
 **GitHub अकाउंट:** `smartconnect2020-hash`
-**कुटुंब:** Nil
+**कुटुंब:** Nilesh
 **फोल्डर:** `e:\Ganpati_audio_qr_project`
 **स्पेक:** `home-audio-guide-build-spec.md` (मूळ) + `home-audio-guide-build-spec` नंतर २३-आयुध मूर्तीशास्त्र गाईडवर विस्तारित
 **Repo URL:** https://github.com/smartconnect2020-hash/Ganpati_ai_museum

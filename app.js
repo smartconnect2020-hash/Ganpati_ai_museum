@@ -129,10 +129,11 @@
   function applyChrome() {
     const meta = data && data.meta;
     const title = meta ? meta.site_title[lang] : t().loading;
-    const family = meta ? meta.family_name : '';
+    const family = (meta && meta.family_name) || 'Nilesh';
+    const developedBy = `Developed by ${family}`;
     brandTitle.textContent = title;
-    brandFamily.textContent = family;
-    footerText.textContent = t().footer(family || 'Nil');
+    brandFamily.textContent = developedBy;
+    footerText.textContent = t().footer(developedBy);
     document.title = title;
     document.documentElement.lang = lang === 'mr' ? 'mr' : 'en';
     updateLangToggle();
@@ -234,19 +235,34 @@
         ${ICON.error.replace('<svg ', '<svg class="state-icon" style="color:var(--color-error)" ')}
         <h1>${u.errorTitle}</h1>
         <p>${u.errorBody}</p>
-        <a class="back-home" href="./">${ICON.back}${u.homeCta}</a>
+        <a class="back-home" href="?">${ICON.back}${u.homeCta}</a>
       </div>
     `;
   }
 
   /* Whole-shrine decoration video: one clip for the entire "आरास" (all 23
      weapons arranged together), shown only on the home/list page — this is
-     not per-item media, so it lives in data.meta, not on any single item. */
+     not per-item media, so it lives in data.meta, not on any single item.
+
+     Delivery note: GitHub Pages is static file hosting — there is no server
+     to pick a rendition, so "adaptive" here means picking one of two
+     pre-encoded files (HD/SD) with JS before the browser ever requests
+     bytes, based on viewport width + connection info. Real ABR (HLS/DASH)
+     needs segmented streams a static host can't produce; this is the
+     practical equivalent for a two-rendition personal site. */
   function renderDecorationVideo() {
     const dv = data.meta.decoration_video;
     if (!dv) return '';
     const title = dv.title ? dv.title[lang] || dv.title.mr : '';
     const caption = dv.caption ? dv.caption[lang] || dv.caption.mr : '';
+    const copyright =
+      dv.copyright && dv.copyright[lang]
+        ? dv.copyright[lang]
+        : lang === 'mr'
+        ? `Developed by ${data.meta.family_name || ''} — केवळ वैयक्तिक अवलोकनासाठी. डाउनलोड/पुनर्प्रकाशन करू नये.`
+        : `Developed by ${data.meta.family_name || ''} — for personal viewing only. Do not download or republish.`;
+    const srcHd = (dv.sources && dv.sources.hd) || dv.src || '';
+    const srcSd = (dv.sources && dv.sources.sd) || '';
     return `
       <section class="decoration-section" aria-label="${escapeHtml(title)}">
         <h2 class="decoration-title">${escapeHtml(title)}</h2>
@@ -254,12 +270,16 @@
           class="decoration-video"
           id="decoration-video"
           controls
+          controlsList="nodownload noremoteplayback"
+          disablePictureInPicture
           preload="metadata"
           playsinline
-          src="${dv.src}"
+          data-src-hd="${srcHd}"
+          data-src-sd="${srcSd}"
           ${dv.poster ? `poster="${dv.poster}"` : ''}
         ></video>
         ${caption ? `<p class="decoration-caption">${escapeHtml(caption)}</p>` : ''}
+        <p class="decoration-copyright">${escapeHtml(copyright)}</p>
       </section>
     `;
   }
@@ -267,6 +287,18 @@
   function bindDecorationVideo() {
     const video = document.getElementById('decoration-video');
     if (!video) return;
+
+    /* Pick HD vs SD once at load: small/slow connections and small screens
+       get the lighter file. Not live-updated on resize/connection change —
+       not worth the complexity for a one-clip personal page. */
+    const conn = navigator.connection || navigator.webkitConnection;
+    const wantsLight =
+      window.innerWidth < 480 ||
+      (conn && (conn.saveData || /^(slow-2g|2g|3g)$/.test(conn.effectiveType || '')));
+    const sd = video.dataset.srcSd;
+    const hd = video.dataset.srcHd;
+    video.src = wantsLight && sd ? sd : hd || sd;
+
     video.addEventListener('error', () => {
       const section = video.closest('.decoration-section');
       if (!section || section.querySelector('.decoration-error')) return;
@@ -278,6 +310,16 @@
           : 'Decoration video coming soon.';
       video.replaceWith(note);
     });
+
+    /* Casual download deterrents only — NOT real protection. The browser
+       must still fetch the raw file to play it, so anyone checking dev
+       tools / view-source can find the direct URL. controlsList="nodownload"
+       is Chromium-only and only hides the button; it does not block the
+       request. True DRM would need EME + a license server, which a static
+       GitHub Pages site cannot host. This just stops the one-click "Save
+       video as" from the right-click menu for casual visitors. */
+    video.addEventListener('contextmenu', (e) => e.preventDefault());
+    video.setAttribute('draggable', 'false');
   }
 
   function renderHome() {
@@ -310,12 +352,12 @@
       .join('');
 
     app.innerHTML = `
+      ${renderDecorationVideo()}
       <section class="home-hero">
         <span class="home-eyebrow">${eyebrow}</span>
         <h1>${meta.site_title[lang]}</h1>
         <p>${u.homeLead}</p>
       </section>
-      ${renderDecorationVideo()}
       <div class="scallop" aria-hidden="true"></div>
       <div class="item-grid">${cards}</div>
     `;
@@ -395,11 +437,22 @@
     });
 
     audioEl.addEventListener('error', () => {
+      /* Most items still carry a silent placeholder MP3 (real recording
+         pending) rather than a genuinely missing file — a raw "failed to
+         load, check the media folder" message is a developer-debug string,
+         not something a family member scanning a QR code should see. Show
+         a "not recorded yet" note instead, and disable the controls so a
+         second tap doesn't also hit the play() rejection error below. */
       showError(
         lang === 'mr'
-          ? 'ऑडिओ फाइल लोड झाली नाही (media फोल्डर तपासा).'
-          : 'Audio file failed to load (check media folder).'
+          ? 'हा आवाज अजून रेकॉर्ड झालेला नाही — लवकरच येईल.'
+          : 'This audio has not been recorded yet — coming soon.'
       );
+      playBtn.disabled = true;
+      skipBack.disabled = true;
+      skipFwd.disabled = true;
+      const durationLabel = document.getElementById('duration-label');
+      if (durationLabel) durationLabel.textContent = '';
     });
 
     audioEl.addEventListener('timeupdate', () => {
@@ -411,7 +464,16 @@
     });
 
     audioEl.addEventListener('loadedmetadata', () => {
-      timeTotal.textContent = formatTime(audioEl.duration || item.duration_sec || 0);
+      /* Only trust the real, loaded audio file's own duration here — never
+         the pre-recording duration_sec estimate in data.json. That field is
+         a script-writing estimate ("how long we expect the reading to
+         take"), not a measurement, and showing it as if it were the actual
+         clip length is misleading, especially once real audio is recorded
+         and its true length differs from the estimate. */
+      if (!Number.isFinite(audioEl.duration)) return;
+      timeTotal.textContent = formatTime(audioEl.duration);
+      const durationLabel = document.getElementById('duration-label');
+      if (durationLabel) durationLabel.textContent = u.duration(Math.round(audioEl.duration));
     });
 
     audioEl.addEventListener('ended', async () => {
@@ -525,7 +587,7 @@
         <h1 class="item-title">${item.title[lang]}</h1>
         <div class="flourish" aria-hidden="true"><span class="ln"></span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 7.5H22l-6 4.5 2.5 7.5L12 17l-6.5 4.5L8 14 2 9.5h7.5z"/></svg><span class="ln"></span></div>
         ${subhead}
-        <span class="duration">${u.duration(item.duration_sec || 0)}</span>
+        <span class="duration" id="duration-label">${u.duration('--')}</span>
 
         <div class="player">
           <audio id="item-audio" preload="metadata" playsinline></audio>
@@ -539,7 +601,7 @@
             <input type="range" class="progress-bar" id="progress" min="0" max="100" value="0" aria-label="Progress" style="--pct:0" />
             <div class="time-row">
               <span id="time-current">0:00</span>
-              <span id="time-total">${formatTime(item.duration_sec || 0)}</span>
+              <span id="time-total">--:--</span>
             </div>
           </div>
         </div>
@@ -558,7 +620,7 @@
                </section>`
         }
 
-        <a class="back-home" href="./">${ICON.back}${u.homeCta}</a>
+        <a class="back-home" href="?">${ICON.back}${u.homeCta}</a>
       </article>
     `;
 
@@ -627,7 +689,19 @@
       await loadData();
       route();
     } catch (err) {
-      app.innerHTML = `<div class="error-box"><h1>Error</h1><p>${String(err.message || err)}</p></div>`;
+      /* Most common real-world cause: a flaky/offline connection on first
+         load, before the service worker has cached the shell — the network
+         fetch and the cache fallback can both miss, surfacing as a raw
+         "Failed to fetch". A retry button covers that case without a
+         confusing dead-end error screen. */
+      app.innerHTML = `
+        <div class="error-box">
+          <h1>${lang === 'mr' ? 'लोड होऊ शकलं नाही' : 'Could not load'}</h1>
+          <p>${lang === 'mr' ? 'इंटरनेट कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.' : 'Check your internet connection and try again.'}</p>
+          <p class="error-detail">${escapeHtml(String(err.message || err))}</p>
+          <button type="button" class="retry-btn" onclick="location.reload()">${lang === 'mr' ? 'पुन्हा प्रयत्न करा' : 'Retry'}</button>
+        </div>
+      `;
     }
   }
 

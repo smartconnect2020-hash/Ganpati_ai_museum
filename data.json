@@ -4,7 +4,7 @@
       "mr": "श्री गणेश आयुधे",
       "en": "Shri Ganesh's Weapons"
     },
-    "family_name": "Nil",
+    "family_name": "Nilesh",
     "version": "1.0",
     "repo": "Ganpati_ai_museum",
     "decoration_video": {
@@ -13,11 +13,18 @@
         "en": "Ganpati Ayudh Decoration - Aaras"
       },
       "caption": {
-        "mr": "घरच्या मखरातील सर्व २३ आयुधांच्या सजावटीची एक झलक.",
-        "en": "A glimpse of the home decoration featuring all 23 weapons."
+        "mr": "घरच्या मखरातील आयुधांच्या सजावटीची एक झलक.",
+        "en": "A glimpse of the home decoration of the weapons."
       },
-      "src": "media/decoration/aaras.mp4",
-      "poster": ""
+      "poster": "",
+      "sources": {
+        "hd": "media/decoration/aaras.mp4",
+        "sd": "media/decoration/aaras-sd.mp4"
+      },
+      "copyright": {
+        "mr": "",
+        "en": ""
+      }
     }
   },
   "items": [
@@ -750,7 +757,7 @@
       "symbol": "media/item-014/symbol.png"
     },
     {
-      "id": "016",
+      "id": "015",
       "title": {
         "mr": "वज्रशूळ",
         "en": "Vajra Shool"
@@ -761,11 +768,11 @@
         "en": "Main puja space"
       },
       "audio": {
-        "mr": "media/item-016/audio-mr.mp3",
-        "en": "media/item-016/audio-en.mp3"
+        "mr": "media/item-015/audio-mr.mp3?v=2",
+        "en": "media/item-015/audio-en.mp3?v=2"
       },
       "images": [
-        "media/item-016/design-ref.jpg"
+        "media/item-015/design-ref.jpg?v=2"
       ],
       "story": {
         "mr": "आपल्या समोरील चित्रातील अद्भुत शस्त्रांकडे आणि बाप्पाच्या हातातील चमकणाऱ्या वज्रशूळाकडे नीट पहा. आता चला, बाप्पाच्या हातातील प्रमुख शस्त्रांमागील आणि या वज्रशूळामागील रंजक कथा आणि रहस्ये जाणून घेऊया!",
@@ -773,7 +780,7 @@
       },
       "guide": {
         "mr": {
-          "docTitle": "१६. वज्रशूळ (The Lightning Bolt / Vajra Shool)",
+          "docTitle": "१५. वज्रशूळ (The Lightning Bolt / Vajra Shool)",
           "intro": "आपल्या समोरील चित्रातील अद्भुत शस्त्रांकडे आणि बाप्पाच्या हातातील चमकणाऱ्या वज्रशूळाकडे नीट पहा. आता चला, बाप्पाच्या हातातील प्रमुख शस्त्रांमागील आणि या वज्रशूळामागील रंजक कथा आणि रहस्ये जाणून घेऊया!",
           "sections": [
             {
@@ -799,10 +806,10 @@
         }
       },
       "duration_sec": 75,
-      "symbol": "media/item-016/symbol.png"
+      "symbol": "media/item-015/symbol.png?v=2"
     },
     {
-      "id": "017",
+      "id": "016",
       "title": {
         "mr": "वेताळ अस्त्र",
         "en": "Vetala"
@@ -813,11 +820,11 @@
         "en": "Main puja space"
       },
       "audio": {
-        "mr": "media/item-017/audio-mr.mp3",
-        "en": "media/item-017/audio-en.mp3"
+        "mr": "media/item-016/audio-mr.mp3?v=2",
+        "en": "media/item-016/audio-en.mp3?v=2"
       },
       "images": [
-        "media/item-017/design-ref.jpg"
+        "media/item-016/design-ref.jpg?v=2"
       ],
       "story": {
         "mr": "आपल्या समोरील चित्रातील अद्भुत शस्त्रांकडे आणि बाप्पाच्या डाव्या हातातील उग्र वेताळ अस्त्राकडे नीट पहा. आता चला, बाप्पाच्या हातातील प्रमुख शस्त्रांमागील आणि या वेताळ अस्त्रामागील रंजक कथा आणि रहस्ये जाणून घेऊया!",
@@ -825,7 +832,7 @@
       },
       "guide": {
         "mr": {
-          "docTitle": "१७. वेताळ अस्त्र (The Ghoul-Force Scepter / Vetala)",
+          "docTitle": "१६. वेताळ अस्त्र (The Ghoul-Force Scepter / Vetala)",
           "intro": "आपल्या समोरील चित्रातील अद्भुत शस्त्रांकडे आणि बाप्पाच्या डाव्या हातातील उग्र वेताळ अस्त्राकडे नीट पहा. आता चला, बाप्पाच्या हातातील प्रमुख शस्त्रांमागील आणि या वेताळ अस्त्रामागील रंजक कथा आणि रहस्ये जाणून घेऊया!",
           "sections": [
             {
@@ -851,10 +858,10 @@
         }
       },
       "duration_sec": 80,
-      "symbol": "media/item-017/symbol.png"
+      "symbol": "media/item-016/symbol.png?v=2"
     },
     {
-      "id": "018",
+      "id": "017",
       "title": {
         "mr": "खेटक",
         "en": "Khetaka"
@@ -865,11 +872,11 @@
         "en": "Main puja space"
       },
       "audio": {
-        "mr": "media/item-018/audio-mr.mp3",
-        "en": "media/item-018/audio-en.mp3"
+        "mr": "media/item-017/audio-mr.mp3?v=2",
+        "en": "media/item-017/audio-en.mp3?v=2"
       },
       "images": [
-        "media/item-018/design-ref.jpg"
+        "media/item-017/design-ref.jpg?v=2"
       ],
       "story": {
         "mr": "आपल्या समोरील चित्रातील अद्भुत शस्त्रांकडे आणि बाप्पाच्या डाव्या हातात धरलेल्या अभेद्य सुवर्ण ढालीकडे (खेटक) नीट पहा. आता चला, बाप्पाच्या हातातील प्रमुख शस्त्रांमागील आणि या ढालीमागील रंजक कथा आणि रहस्ये जाणून घेऊया!",
@@ -877,7 +884,7 @@
       },
       "guide": {
         "mr": {
-          "docTitle": "१८. खेटक / ढाल (The Shield of Protection / Khetaka)",
+          "docTitle": "१७. खेटक / ढाल (The Shield of Protection / Khetaka)",
           "intro": "आपल्या समोरील चित्रातील अद्भुत शस्त्रांकडे आणि बाप्पाच्या डाव्या हातात धरलेल्या अभेद्य सुवर्ण ढालीकडे (खेटक) नीट पहा. आता चला, बाप्पाच्या हातातील प्रमुख शस्त्रांमागील आणि या ढालीमागील रंजक कथा आणि रहस्ये जाणून घेऊया!",
           "sections": [
             {
@@ -903,10 +910,10 @@
         }
       },
       "duration_sec": 75,
-      "symbol": "media/item-018/symbol.png"
+      "symbol": "media/item-017/symbol.png?v=2"
     },
     {
-      "id": "020",
+      "id": "018",
       "title": {
         "mr": "पाषाणधारण",
         "en": "Pasanadharana"
@@ -917,11 +924,11 @@
         "en": "Main puja space"
       },
       "audio": {
-        "mr": "media/item-020/audio-mr.mp3",
-        "en": "media/item-020/audio-en.mp3"
+        "mr": "media/item-018/audio-mr.mp3?v=2",
+        "en": "media/item-018/audio-en.mp3?v=2"
       },
       "images": [
-        "media/item-020/design-ref.jpg"
+        "media/item-018/design-ref.jpg?v=2"
       ],
       "story": {
         "mr": "आपल्या समोरील चित्रातील अद्भुत शस्त्रांकडे आणि बाप्पाच्या हातातील भक्कम टिकावाकडे (पाषाणधारण) नीट पहा. आता चला, बाप्पाच्या हातातील प्रमुख शस्त्रांमागील आणि या टिकावामागील रंजक कथा आणि रहस्ये जाणून घेऊया!",
@@ -929,7 +936,7 @@
       },
       "guide": {
         "mr": {
-          "docTitle": "२०. पाषाणधारण / टिकाव (The Pickaxe / Pasanadharana)",
+          "docTitle": "१८. पाषाणधारण / टिकाव (The Pickaxe / Pasanadharana)",
           "intro": "आपल्या समोरील चित्रातील अद्भुत शस्त्रांकडे आणि बाप्पाच्या हातातील भक्कम टिकावाकडे (पाषाणधारण) नीट पहा. आता चला, बाप्पाच्या हातातील प्रमुख शस्त्रांमागील आणि या टिकावामागील रंजक कथा आणि रहस्ये जाणून घेऊया!",
           "sections": [
             {
@@ -955,10 +962,10 @@
         }
       },
       "duration_sec": 75,
-      "symbol": "media/item-020/symbol.png"
+      "symbol": "media/item-018/symbol.png?v=2"
     },
     {
-      "id": "021",
+      "id": "019",
       "title": {
         "mr": "नांगर",
         "en": "Hala"
@@ -969,11 +976,11 @@
         "en": "Main puja space"
       },
       "audio": {
-        "mr": "media/item-021/audio-mr.mp3",
-        "en": "media/item-021/audio-en.mp3"
+        "mr": "media/item-019/audio-mr.mp3?v=2",
+        "en": "media/item-019/audio-en.mp3?v=2"
       },
       "images": [
-        "media/item-021/design-ref.jpg"
+        "media/item-019/design-ref.jpg?v=2"
       ],
       "story": {
         "mr": "आपल्या समोरील चित्रातील अद्भुत शस्त्रांकडे आणि बाप्पाच्या हातातील जड नांगराकडे (हळ) नीट पहा. आता चला, बाप्पाच्या हातातील प्रमुख शस्त्रांमागील आणि या नांगरामागील रंजक कथा आणि रहस्ये जाणून घेऊया!",
@@ -981,7 +988,7 @@
       },
       "guide": {
         "mr": {
-          "docTitle": "२१. नांगर / हळ (The Plough / Hala)",
+          "docTitle": "१९. नांगर / हळ (The Plough / Hala)",
           "intro": "आपल्या समोरील चित्रातील अद्भुत शस्त्रांकडे आणि बाप्पाच्या हातातील जड नांगराकडे (हळ) नीट पहा. आता चला, बाप्पाच्या हातातील प्रमुख शस्त्रांमागील आणि या नांगरामागील रंजक कथा आणि रहस्ये जाणून घेऊया!",
           "sections": [
             {
@@ -1007,10 +1014,10 @@
         }
       },
       "duration_sec": 70,
-      "symbol": "media/item-021/symbol.png"
+      "symbol": "media/item-019/symbol.png?v=2"
     },
     {
-      "id": "023",
+      "id": "020",
       "title": {
         "mr": "अग्नी",
         "en": "Agni"
@@ -1021,11 +1028,11 @@
         "en": "Main puja space"
       },
       "audio": {
-        "mr": "media/item-023/audio-mr.mp3",
-        "en": "media/item-023/audio-en.mp3"
+        "mr": "media/item-020/audio-mr.mp3?v=2",
+        "en": "media/item-020/audio-en.mp3?v=2"
       },
       "images": [
-        "media/item-023/design-ref.jpg"
+        "media/item-020/design-ref.jpg?v=2"
       ],
       "story": {
         "mr": "आपल्या समोरील चित्रातील अद्भुत शस्त्रांकडे आणि बाप्पाच्या उघड्या तळहातावर धगधगणाऱ्या अग्नीकडे नीट पहा. आता चला, बाप्पाच्या हातातील प्रमुख शस्त्रांमागील आणि या अग्नीमागील रंजक कथा आणि रहस्ये जाणून घेऊया!",
@@ -1033,7 +1040,7 @@
       },
       "guide": {
         "mr": {
-          "docTitle": "२३. अग्नी (The Sacred Fire / Agni)",
+          "docTitle": "२०. अग्नी (The Sacred Fire / Agni)",
           "intro": "आपल्या समोरील चित्रातील अद्भुत शस्त्रांकडे आणि बाप्पाच्या उघड्या तळहातावर धगधगणाऱ्या अग्नीकडे नीट पहा. आता चला, बाप्पाच्या हातातील प्रमुख शस्त्रांमागील आणि या अग्नीमागील रंजक कथा आणि रहस्ये जाणून घेऊया!",
           "sections": [
             {
@@ -1059,7 +1066,7 @@
         }
       },
       "duration_sec": 70,
-      "symbol": "media/item-023/symbol.png"
+      "symbol": "media/item-020/symbol.png?v=2"
     }
   ]
 }

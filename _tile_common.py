@@ -55,7 +55,7 @@ HOME_TITLE = "श्री गणेश आयुध माहिती"       #
 # Discontinued items — see backup-removed-items-2026-09-13/ for a full copy
 # of data.json + media/ + audio-scripts/ from before removal.
 EXCLUDED_IDS = {"015", "019", "022"}       # पुष्पबाण, खंजीर, कवच
-FEATURED_FIRST_ID = "023"                  # अग्नी — pinned to the first / top-left tile
+FEATURED_FIRST_ID = "020"                  # अग्नी — pinned to the first / top-left tile (renumbered from 023 after sequential 001-020 renumbering)
 
 FONT_DIR = ROOT / "fonts"
 NOTO_DEVANAGARI = str(FONT_DIR / "NotoSansDevanagari.ttf")   # variable: wght 100-900

@@ -138,8 +138,7 @@ button { touch-action: manipulation; }
   font-size: 0.76rem;
   color: var(--color-gold);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
 }
 
 /* Hidden until English guide content exists for the docx-based items (§ audio-scripts).
@@ -216,6 +215,20 @@ button { touch-action: manipulation; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .error-box h1 { color: var(--color-error); font-size: 1.3rem; margin: 0 0 0.5rem; }
+
+.error-detail { font-size: 0.76rem; opacity: 0.6; margin-top: 0.4rem; }
+
+.retry-btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1.3rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-gold);
+  background: var(--color-surface-2);
+  color: var(--color-primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
 
 .site-footer {
   max-width: var(--max-wide);
@@ -301,6 +314,18 @@ button { touch-action: manipulation; }
   font-size: 0.85rem;
   color: var(--color-muted);
 }
+
+.decoration-copyright {
+  margin: 0.35rem 0 0;
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  opacity: 0.75;
+}
+
+/* Chromium's native "download" glyph in the controls bar respects
+   controlsList="nodownload" already; this just keeps the video from being
+   picked up by drag-to-desktop gestures on desktop browsers. */
+.decoration-video { -webkit-user-drag: none; user-select: none; }
 
 .decoration-error {
   margin: 0.6rem 0 0;
@@ -550,6 +575,7 @@ article { text-align: center; }
 }
 
 .play-btn:active { transform: scale(0.94); }
+.play-btn:disabled, .skip-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .play-btn svg { width: 1.8rem; height: 1.8rem; }
 
 .play-btn::after {

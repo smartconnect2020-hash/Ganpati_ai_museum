@@ -10,12 +10,12 @@
  * dropped in 'activate' and everything re-fetches fresh.
  */
 
-const CACHE_NAME = 'ghar-museum-v10';
+const CACHE_NAME = 'ghar-museum-v18';
 const SHELL = [
   './',
   './index.html',
-  './styles.css?v=10',
-  './app.js?v=10',
+  './styles.css?v=16',
+  './app.js?v=17',
   './data.json',
   './manifest.json',
   './icons/icon-192.png',
@@ -23,8 +23,17 @@ const SHELL = [
 ];
 
 self.addEventListener('install', (event) => {
+  /* cache.addAll() lets each request use default fetch semantics, which can
+     be satisfied by the browser's own HTTP cache — so a stale disk-cached
+     copy of index.html/app.js could get baked into a "fresh" install even
+     right after bumping CACHE_NAME. Fetching with cache: 'reload' forces a
+     real network round-trip for every shell file on install. */
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then((cache) =>
+        Promise.all(SHELL.map((url) => fetch(url, { cache: 'reload' }).then((res) => cache.put(url, res))))
+      )
+      .then(() => self.skipWaiting())
   );
 });
 

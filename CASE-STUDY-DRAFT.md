@@ -69,9 +69,51 @@ Stack        →  Vanilla HTML/CSS/JS · PWA + Service Worker · single data.jso
                 · Python (qrcode / Pillow / pyzbar / uharfbuzz) · Claude Code
                 · Sarvam Bulbul v3 TTS · AI image tools
 Results      →  ✅ २०/२० आयटम्सचा खरा आवाज (१ मानवी + १९ AI-TTS, पडताळलं)
-                ❗ Guest testing अजून बाकी — तांत्रिक पडताळणी पूर्ण (QR 24/24
-                decode सर्व ५ stress-परिस्थितींत, live 200 OK)
+                ❗ Guest testing अजून बाकी — तांत्रिक पडताळणी पूर्ण (QR 21/21
+                decode सर्व ५ stress-परिस्थितींत 【३dc3ae7 नुसार — 24 नव्हे,
+                item-count 23→20 झाल्यावर आकडा बदलला】, live 200 OK)
 Impact       →  Maharashtra मधल्या घरांसाठी / गणेशोत्सव मंडळांसाठी productizable template
+```
+
+---
+
+## 🌐 English toggle — योजना (साइटच्याच पॅटर्नने)
+
+> साइटवर आधीच language-toggle mechanism आहे (सध्या लपवलेला, कारण इंग्रजी मजकूर नाही). केस स्टडीतही तोच MR/EN जोडी-पॅटर्न वापरणार — जेव्हा हे प्रकाशित करू (Notion/Artifact/webpage), तेव्हा प्रत्येक विभागाखाली EN block, वर टॉगल बटण.
+
+**आत्ता भाषांतर केलं** (स्थिर विभाग — बदलण्याची शक्यता कमी):
+- ✅ Section 0 Hook
+- ✅ Section 1 TL;DR
+
+**मुद्दाम भाषांतर केलेलं नाही अजून** (अस्थिर — Section 2 खरी आठवण अजून लिहायचीय, Section 4/7 guest-testing नंतर भरायचेत, Section 5/8 पूर्ण refresh बाकी) — **आधी मराठी मजकूर अंतिम करा, मग भाषांतर करा** — नाहीतर दोनदा काम होईल. मराठी अंतिम झाल्यावर सांगा, उरलेलं भाषांतर करतो.
+
+### Section 0 — Hook (EN)
+
+# I gave my family's Ganpati idol an audio guide. Every weapon in his hands has its own story.
+
+*Scan a QR or tap NFC — Marathi audio stories for the 20 ritual weapons/attributes (आयुधे) in Ganpati's hands (Ekadanta, Parashu, Ankusha, Sudarshan Chakra, Khatvanga…), sourced verbatim from the original scripture guide. ₹0 hosting, no framework, works offline.
+
+**[▶ Live demo](https://smartconnect2020-hash.github.io/Ganpati_ai_museum/)** &nbsp;&nbsp; **[GitHub](https://github.com/smartconnect2020-hash/Ganpati_ai_museum)**
+
+### Section 1 — TL;DR (EN)
+
+```
+Problem      →  Every weapon in Ganpati's idol carries real scriptural meaning —
+                but during the festival no one explains it to guests/kids;
+                the reference text stays shut in a cupboard
+Solution     →  QR + NFC audio guide, 20 items, Marathi-first, offline PWA,
+                text verbatim from the source guide + AI-TTS narration
+My role      →  Solo — research + UX + visual design + no-framework build
+                + QR/NFC pipeline + TTS pipeline + AI-workflow orchestration
+Timeline     →  First commit 20 Aug 2026 → active through 14 Sep 2026
+                (~3.5 weeks, in phases)
+Stack        →  Vanilla HTML/CSS/JS · PWA + Service Worker · single data.json
+                · Python (qrcode / Pillow / pyzbar / uharfbuzz) · Claude Code
+                · Sarvam Bulbul v3 TTS · AI image tools
+Results      →  ✅ Real audio for 20/20 items (1 human + 19 AI-TTS, verified)
+                ❗ Guest testing still pending — technical verification done
+                (QR 21/21 decode across 5 stress conditions, live 200 OK)
+Impact       →  Productizable template for Maharashtra households / Ganeshotsav mandals
 ```
 
 ---
@@ -125,6 +167,32 @@ Impact       →  Maharashtra मधल्या घरांसाठी / ग�
 - non-technical संपादकाला नवीन आयुध जोडता येतं का — मदतीशिवाय?
 
 *(खरी observation + थेट quotes इथे. Synthesized personas नकोत.)*
+
+### 🧰 Guest-testing किट (आता प्रत्यक्ष वापरण्यासाठी तयार — १४ Sep 2026)
+
+> मी (Claude) प्रत्यक्ष पाहुण्यांना भेटू शकत नाही किंवा मुलाखत घेऊ शकत नाही — फक्त **साधनं तयार करू शकतो.** खाली दिलेलं सर्व रिकामं/टेम्प्लेट आहे — एकही सेल आधीच भरलेला नाही. गणेशोत्सव/पाहुणे आल्यावर हेच वापरून थेट Section 4 व 7 भरता येतील.
+
+**पाहुण्याला सांगायचं (संमती + framing):**
+> *"आमच्याकडे गणपतीच्या आयुधांची QR-ऑडिओ गाईड आहे — स्कॅन करून बघता का? नंतर २ मिनिटं feedback विचारेन, चालेल का?"*
+
+**Live observation log** (प्रत्येक पाहुण्यासाठी एक ओळ — स्कॅन करतानाच भरा):
+
+| पाहुणा (वय/नातं) | QR की NFC वापरलं | scan → audio सुरू (सेकंद) | पूर्ण ऐकलं / मध्येच थांबवलं (कुठे) | पुन्हा दुसरं आयुध बघितलं का | अडचण आली का (काय) |
+|---|---|---|---|---|---|
+| *(रिकामं)* | | | | | |
+| *(रिकामं)* | | | | | |
+
+**अनुभवानंतरचे ३ प्रश्न** (३० सेकंदांत उत्तर द्यायला हवेत — जास्त लांबलं तर पाहुणा कंटाळतो):
+1. "आयुधाची गोष्ट आधी माहीत होती का? आत्ता नवीन काय कळलं?"
+2. "स्कॅन करणं सोपं वाटलं की किचकट?" (मोकळेपणाने बोलू द्या, हो/नाही मध्ये अडकवू नका)
+3. "अजून काय हवं वाटलं — इंग्रजी, अधिक फोटो, अजून काही?"
+
+**संपादक-चाचणी** (कुटुंबातल्या एका बिगर-तांत्रिक व्यक्तीला मदतीशिवाय):
+- कार्य: `data.json` मध्ये एक (काल्पनिक) नवीन आयुध entry जोडून बघा — किती वेळ लागला, कुठे अडखळले, मदत लागली का
+- हे Decision "JSON-as-CMS" च्या दाव्याची खरी पडताळणी आहे (Section 5)
+
+**Section 7 च्या मेट्रिक्स टेबलमध्ये भरायला — याच किट मधून थेट मिळेल:**
+वरच्या log मधून "scan → audio सुरू" सरासरी काढा, "पूर्ण ऐकलं" चं प्रमाण काढा, संपादक-चाचणीचा वेळ नोंदवा — कुठलाही आकडा अंदाजाने टाकू नका.
 
 ---
 

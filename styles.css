@@ -239,16 +239,6 @@ button { touch-action: manipulation; }
   font-size: 0.84rem;
 }
 
-/* ---------- Scallop divider ---------- */
-
-.scallop {
-  height: 9px;
-  margin: 0.7rem 0 1.5rem;
-  background-image: radial-gradient(circle at 5px 0, transparent 5px, var(--color-gold) 5.5px, transparent 6px);
-  background-size: 10px 10px;
-  background-repeat: repeat-x;
-  opacity: 0.6;
-}
 
 /* ---------- Home ---------- */
 
@@ -337,108 +327,214 @@ button { touch-action: manipulation; }
   background: var(--color-gold-soft);
 }
 
-.item-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.9rem;
+/* आयुध-चक्र — items radiate from a center medallion instead of a grid.
+   Each .wheel-node's left/top (%) is computed once in app.js from its
+   index, so the circular layout holds at any .wheel-wrap size — the
+   breakpoint below only changes how big that size is. */
+.wheel-wrap {
+  position: relative;
+  width: min(100%, 520px);
+  aspect-ratio: 1 / 1;
+  margin: 1.6rem auto 1.2rem;
 }
 
-.item-card {
-  position: relative;
+.wheel-spokes { position: absolute; inset: 0; width: 100%; height: 100%; }
+.wheel-spokes line { stroke: var(--color-border); stroke-width: 1; vector-effect: non-scaling-stroke; }
+
+.wheel-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 22%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 3px solid var(--color-gold);
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-play-text);
+  box-shadow: var(--shadow-md);
+  font-size: clamp(1.3rem, 6vw, 1.9rem);
+  line-height: 1;
+}
+
+.wheel-node {
+  position: absolute;
+  width: clamp(44px, 15%, 64px);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
   text-decoration: none;
   color: inherit;
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  overflow: visible;
-  box-shadow: var(--shadow-sm);
-  min-height: 100%;
-  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
 }
 
 /* The hidden state lives only inside the keyframes, never in the base rule, so
    content stays visible if the animation is unsupported or never ticks. */
 @media (prefers-reduced-motion: no-preference) {
-  .item-card {
+  .wheel-node {
     animation: card-in var(--dur) var(--ease) both;
     animation-delay: calc(var(--i, 0) * 45ms);
   }
 }
+@media (prefers-reduced-motion: reduce) {
+  .wheel-node { opacity: 1; }
+}
 
 @keyframes card-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; transform: translate(-50%, calc(-50% + 10px)); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
 }
 
-.item-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--color-gold); }
-.item-card:active { transform: scale(0.98); }
-
-.item-card-media { position: relative; margin: 0.4rem 0.4rem 0; border-radius: 6px; overflow: hidden; }
-
-.item-card-img {
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+.wheel-node-media {
+  position: relative;
   width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--color-gold);
   background: var(--color-gold-soft);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
 }
 
-/* AI reference sheets are dense multi-panel diagrams on a white ground —
-   cover-cropping them at thumbnail size would slice into the panel labels,
-   so they get letterboxed in full instead of cropped. */
-.item-card-img.is-ref {
+.wheel-node:hover .wheel-node-media,
+.wheel-node:focus-visible .wheel-node-media {
+  transform: scale(1.12);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.wheel-node-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Same reasoning as the old .item-card-img.is-ref: AI reference sheets are
+   dense multi-panel diagrams with baked-in labels — cover-cropping them
+   into a small circle would slice into that text, so they're letterboxed
+   in full instead. */
+.wheel-node-img.is-ref {
   object-fit: contain;
   background: #fbfaf7;
-  padding: 0.3rem;
+  padding: 8%;
 }
 
-.item-card-badge {
+.wheel-node-badge {
   position: absolute;
-  top: -0.5rem;
-  right: -0.5rem;
-  width: 1.7rem;
-  height: 1.7rem;
+  top: -3px;
+  left: -3px;
+  width: 1.15rem;
+  height: 1.15rem;
   border-radius: 50%;
   background: var(--color-primary);
   color: var(--color-play-text);
-  border: 2px solid var(--color-gold);
+  border: 1.5px solid var(--color-gold);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.68rem;
+  font-size: 0.6rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   box-shadow: var(--shadow-sm);
 }
 
-.item-card-body {
-  padding: 0.7rem 0.7rem 0.85rem;
+.wheel-node-visited {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--color-gold);
+  color: var(--color-surface);
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
-  flex: 1;
-  text-align: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+}
+.wheel-node-visited svg { width: 0.6rem; height: 0.6rem; }
+
+/* Always-visible labels were tried first and measured against the actual
+   layout: at 20 nodes on one ring, neighboring node centers land ~57px
+   apart on a typical phone width, but a legible label needs ~69px+ — so
+   any label wide enough to read WILL overlap its neighbor, for every
+   item, regardless of font-size tuning. That's a geometry problem, not a
+   CSS-tuning one. Fix: the wheel stays a pure visual/number index, and
+   the full, always-legible name list lives in .wheel-legend below (the
+   same split a physical museum floor-map + numbered legend uses) — this
+   chip is now a hover/keyboard-focus-only quick-check, not the only way
+   to read a title. */
+.wheel-node-label {
+  position: absolute;
+  top: 108%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  white-space: nowrap;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.15rem 0.5rem;
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease);
+  z-index: 3;
+}
+.wheel-node:hover .wheel-node-label,
+.wheel-node:focus-visible .wheel-node-label {
+  opacity: 1;
 }
 
-.item-card-title { font-weight: 700; font-size: 0.94rem; line-height: 1.32; }
-.item-card-meta { font-size: 0.78rem; color: var(--color-muted); font-variant-numeric: tabular-nums; }
+.wheel-legend {
+  list-style: none;
+  margin: 0 0 0.4rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.3rem 0.7rem;
+}
 
-.visited-pill {
-  margin-top: 0.3rem;
-  display: inline-flex;
+.wheel-legend a {
+  display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
+  min-height: var(--tap);
+  padding: 0.2rem 0.3rem;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--color-text);
+  font-size: 0.86rem;
+  transition: background var(--dur-fast) var(--ease);
+}
+.wheel-legend a:hover, .wheel-legend a:focus-visible { background: var(--color-gold-soft); }
+
+.wheel-legend-num {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.18rem 0.5rem;
-  border-radius: 999px;
-  background: var(--color-gold-soft);
-  color: var(--color-gold);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
-.visited-pill svg { width: 0.8rem; height: 0.8rem; }
+.wheel-legend-title { flex: 1; line-height: 1.2; }
+.wheel-legend svg { width: 0.85rem; height: 0.85rem; color: var(--color-gold); flex-shrink: 0; }
 
 /* ---------- Item detail ---------- */
 
@@ -904,5 +1000,6 @@ article { text-align: center; }
 
 @media (min-width: 860px) {
   .main { max-width: 760px; padding: 2.2rem 2rem 2.6rem; }
-  .item-grid { grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+  .wheel-wrap { width: min(100%, 640px); margin: 2rem auto 1.4rem; }
+  .wheel-legend { grid-template-columns: repeat(3, 1fr); }
 }

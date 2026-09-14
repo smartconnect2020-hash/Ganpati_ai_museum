@@ -322,28 +322,72 @@
     video.setAttribute('draggable', 'false');
   }
 
+  /* आयुध-चक्र — items arranged as a wheel radiating from a center medallion
+     instead of a grid. Positions are computed here (not via a bind-time DOM
+     pass) since they depend only on each item's index and the current
+     total, both already known while building this HTML string. R/cx/cy are
+     percentages of .wheel-wrap, so the layout stays correct at any size —
+     see the matching CSS which does the actual visual sizing/breakpoints. */
   function renderHome() {
     const u = t();
     const meta = data.meta;
     const eyebrow = u.eyebrow;
-    const cards = data.items
+    const total = data.items.length;
+    const R = 42;
+    const cx = 50;
+    const cy = 50;
+
+    function nodePos(i) {
+      const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+      return { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle) };
+    }
+
+    const spokes = data.items
       .map((item, i) => {
+        const { x, y } = nodePos(i);
+        return `<line x1="${cx}%" y1="${cy}%" x2="${x}%" y2="${y}%" />`;
+      })
+      .join('');
+
+    const nodes = data.items
+      .map((item, i) => {
+        const { x, y } = nodePos(i);
         const thumb = item.images[0] || '';
         const visited = isVisited(item.id)
-          ? `<span class="visited-pill">${ICON.check}${u.visited}</span>`
+          ? `<span class="wheel-node-visited" role="img" aria-label="${escapeHtml(u.visited)}">${ICON.check}</span>`
           : '';
         return `
-          <a class="item-card" href="?id=${item.id}" style="--i:${i}">
-            <div class="item-card-media">
-              <img class="item-card-img${isDesignRef(thumb) ? ' is-ref' : ''}" src="${thumb}" alt="" loading="lazy" width="400" height="300" />
-            </div>
-            <span class="item-card-badge">${displayNum(item.id)}</span>
-            <div class="item-card-body">
-              <span class="item-card-title">${item.title[lang]}</span>
-              <span class="item-card-meta">${item.year || '—'}</span>
+          <a class="wheel-node" href="?id=${item.id}" style="left:${x}%; top:${y}%; --i:${i}">
+            <span class="wheel-node-media">
+              <img class="wheel-node-img${isDesignRef(thumb) ? ' is-ref' : ''}" src="${thumb}" alt="" loading="lazy" width="120" height="120" />
+              <span class="wheel-node-badge">${displayNum(item.id)}</span>
               ${visited}
-            </div>
+            </span>
+            <span class="wheel-node-label">${item.title[lang]}</span>
           </a>
+        `;
+      })
+      .join('');
+
+    /* The wheel above is a visual/number index only (see the comment on
+       .wheel-node-label in styles.css for why it can't also carry
+       always-readable text) — this legend is the actual readable list,
+       and the only way keyboard/screen-reader users reach every item in
+       a normal, linear order (the wheel's DOM order matches this list's
+       order, so tab order is identical either way). */
+    const legend = data.items
+      .map((item, i) => {
+        const visited = isVisited(item.id)
+          ? `<span role="img" aria-label="${escapeHtml(u.visited)}">${ICON.check}</span>`
+          : '';
+        return `
+          <li>
+            <a href="?id=${item.id}">
+              <span class="wheel-legend-num">${displayNum(item.id)}</span>
+              <span class="wheel-legend-title">${item.title[lang]}</span>
+              ${visited}
+            </a>
+          </li>
         `;
       })
       .join('');
@@ -355,8 +399,12 @@
         <h1>${meta.site_title[lang]}</h1>
         <p>${u.homeLead}</p>
       </section>
-      <div class="scallop" aria-hidden="true"></div>
-      <div class="item-grid">${cards}</div>
+      <div class="wheel-wrap">
+        <svg class="wheel-spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${spokes}</svg>
+        <span class="wheel-center" aria-hidden="true">ॐ</span>
+        ${nodes}
+      </div>
+      <ul class="wheel-legend">${legend}</ul>
     `;
     bindDecorationVideo();
   }

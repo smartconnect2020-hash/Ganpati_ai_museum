@@ -286,7 +286,7 @@ Play/pause बटण आधी `ऐका`/`थांबवा` मजकूर 
 | **`ui-ux-pro-max` skill** | Color/typography/style domain search | पॅलेट व फाँट-जोड्या सुचवल्या; **अंतिम निवड माझी** + manual WCAG गणित |
 | **`design:design-critique` दृष्टिकोन** | Review lens | सध्याच्या साइटचा designer's-eye रिव्ह्यू, मग redesign |
 | **Claude Browser (in-app)** | Live testing | DOM / console / accessibility-tree + click-tests. **Pixel screenshot उपलब्ध नव्हता** — पडताळणी computed-style वर आधारित |
-| **AI image tools (OpenArt / Seedream 4.5)** | आयकॉन-निर्मिती | App icon (कलश) + ९ आयुध-बॅज AI-चित्रित; credits संपल्यावर उरलेले १३ बॅज Claude ने vector आर्ट म्हणून काढले (cubic-bezier, दुरंगी gold gradient) |
+| **AI image tools (OpenArt / Seedream 4.5)** | आयकॉन-निर्मिती | App icon (कलश) + ९ आयुध-बॅज AI-चित्रित; credits संपल्यावर उरलेले बॅज Claude ने vector आर्ट म्हणून काढले (cubic-bezier, दुरंगी gold gradient). 【मूळ १३ होते (३० Aug नोंद) — नंतर ३ आयुधे बंद झाल्याने (कवच/खंजीर/पुष्पबाण) आता **१०** उरले आहेत — १४ Sep ला data.json शी पडताळून दुरुस्त केलं】 |
 | **Python (qrcode / Pillow / pyzbar)** | QR pipeline | २४ सानुकूल QR कार्ड्स local generate + pyzbar ने २४/२४ decode-पडताळणी + stress-test (तिरकं/अंधुक/लांबून) |
 | **आवाज — एकदंत (००१)** | मानवी रेकॉर्डिंग | `media/item-001/audio-mr.wav` (६.२ MB, ~६५ से). Commit message नुसार "item-001's human recording untouched" — मानवी आवाज, TTS नाही. |
 | **🆕 Sarvam Bulbul v3 (TTS)** | बाकी १९ आयुधांचा आवाज | `_generate_audio_tts.py`. Voice "ritu", pace 0.98, temperature 1.0. **STT (speech-to-text) ने परत मजकूर काढून approved script शी cross-check** — म्हणजे उच्चार-अचूकतेची स्वयंचलित पडताळणी, फक्त "ऐकून ठीक वाटलं" नाही. हे केस स्टडीसाठी **सर्वात मजबूत AI-वर्कफ्लो पुरावा** आहे — पूर्ण मजकूर उत्पादनासाठी न वापरता, अचूकता-पडताळणीसह वापरलं. |
@@ -376,7 +376,7 @@ Play/pause बटण आधी `ऐका`/`थांबवा` मजकूर 
 - [ ] **Guest testing** — पाहुणे बोलावून निरीक्षण + मुलाखत → Section 4 + 7 भरणे
 - [ ] **केस स्टडी पूर्ण refresh** — हा मसुदा अजून जुन्या (२३-आयुध) आकड्यांवर आहे बऱ्याच ठिकाणी
 - [ ] **CMS upgrade** (ऐच्छिक) — Google Sheets → n8n → JSON → GitHub push pipeline
-- [ ] **आयकॉन** — credits आल्यावर १३ vector बॅज AI-चित्रणाने बदलणे
+- [ ] **आयकॉन** — credits आल्यावर **१०** vector बॅज AI-चित्रणाने बदलणे (आयटम: ०११,०१२,०१३,०१४,०१६,०१७,०१८,०२०,०२१,०२३ — १४ Sep ला data.json शी पडताळून मोजलं; आधी १३ म्हटलं जायचं, ३ आयुधे बंद झाल्याने कमी झाले)
 - [ ] **v2** — multi-family / गणेशोत्सव-मंडळ template म्हणून productized service; प्रति-आयुध WhatsApp bot
 - [ ] **Custom domain**
 - [ ] `OWNERSHIP.md` मधलं legal name placeholder भरणे (AI भरू शकत नाही — फक्त तुम्ही)

@@ -22,6 +22,7 @@
       story: 'कहाणी',
       visited: 'पाहिले',
       revisit: 'तुम्ही ही वस्तू आताच पाहिली',
+      eyebrow: 'श्री गणेशाच्या प्रत्येक आयुधामागील रंजक कथा',
       homeLead: 'QR किंवा NFC स्कॅन करून प्रत्येक वस्तूची कहाणी ऐका.',
       location: 'स्थळ',
       year: 'वर्ष',
@@ -39,6 +40,7 @@
       story: 'Story',
       visited: 'Visited',
       revisit: 'You just viewed this item',
+      eyebrow: 'The fascinating story behind each of Shri Ganesh’s weapons',
       homeLead: 'Scan QR or NFC to hear each object’s story.',
       location: 'Location',
       year: 'Year',
@@ -323,10 +325,7 @@
   function renderHome() {
     const u = t();
     const meta = data.meta;
-    const count = data.items.length;
-    const countStr = lang === 'mr' ? displayNum(String(count)) : String(count);
-    const eyebrow =
-      lang === 'mr' ? `${countStr} वस्तू · ${countStr} कहाण्या` : `${countStr} objects · ${countStr} stories`;
+    const eyebrow = u.eyebrow;
     const cards = data.items
       .map((item, i) => {
         const thumb = item.images[0] || '';

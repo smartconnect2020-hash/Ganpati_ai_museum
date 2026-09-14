@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://smartconnect2020-hash.github.io/Ganpati_ai_museum/sitemap.xml

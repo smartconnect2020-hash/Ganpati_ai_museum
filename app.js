@@ -19,7 +19,6 @@
       play: 'ऐका',
       pause: 'थांबवा',
       replay: 'पुन्हा ऐका',
-      duration: (s) => `${s} सेकंद ऐका`,
       story: 'कहाणी',
       visited: 'पाहिले',
       revisit: 'तुम्ही ही वस्तू आताच पाहिली',
@@ -37,7 +36,6 @@
       play: 'Play',
       pause: 'Pause',
       replay: 'Play again',
-      duration: (s) => `Listen · ${s} sec`,
       story: 'Story',
       visited: 'Visited',
       revisit: 'You just viewed this item',
@@ -451,8 +449,6 @@
       playBtn.disabled = true;
       skipBack.disabled = true;
       skipFwd.disabled = true;
-      const durationLabel = document.getElementById('duration-label');
-      if (durationLabel) durationLabel.textContent = '';
     });
 
     audioEl.addEventListener('timeupdate', () => {
@@ -472,8 +468,6 @@
          and its true length differs from the estimate. */
       if (!Number.isFinite(audioEl.duration)) return;
       timeTotal.textContent = formatTime(audioEl.duration);
-      const durationLabel = document.getElementById('duration-label');
-      if (durationLabel) durationLabel.textContent = u.duration(Math.round(audioEl.duration));
     });
 
     audioEl.addEventListener('ended', async () => {
@@ -540,7 +534,6 @@
       ${symbol ? `<img class="symbol-medallion" src="${symbol}" alt="" width="100" height="100" />` : ''}
       <p class="guide-intro">${escapeHtml(g.intro)}</p>
       ${sections}
-      <p class="darshanik">${escapeHtml(g.darshanik)}</p>
       <aside class="guide-outro">
         <p class="next-guide">${escapeHtml(g.nextGuide)}</p>
       </aside>
@@ -587,7 +580,6 @@
         <h1 class="item-title">${item.title[lang]}</h1>
         <div class="flourish" aria-hidden="true"><span class="ln"></span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 7.5H22l-6 4.5 2.5 7.5L12 17l-6.5 4.5L8 14 2 9.5h7.5z"/></svg><span class="ln"></span></div>
         ${subhead}
-        <span class="duration" id="duration-label">${u.duration('--')}</span>
 
         <div class="player">
           <audio id="item-audio" preload="metadata" playsinline></audio>

@@ -511,17 +511,6 @@ article { text-align: center; }
 .item-meta span { display: inline-flex; align-items: center; gap: 0.3rem; }
 .item-meta svg { width: 1rem; height: 1rem; color: var(--color-gold); flex-shrink: 0; }
 
-.duration {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  margin-top: 0.7rem;
-  font-size: 0.85rem;
-  color: var(--color-primary);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
 /* ---------- Player: mudra (seal) button + dori (thread) progress ---------- */
 
 .player {
@@ -745,16 +734,6 @@ article { text-align: center; }
 }
 
 .granth-line svg { width: 1rem; height: 1rem; flex-shrink: 0; margin-top: 0.2rem; color: var(--color-gold); }
-
-.darshanik {
-  margin: 2rem 0 0;
-  text-align: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.02rem;
-  letter-spacing: 0.02em;
-  color: var(--color-primary);
-}
 
 .guide-outro {
   margin-top: 1.5rem;

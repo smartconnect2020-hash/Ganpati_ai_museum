@@ -55,7 +55,15 @@ HOME_TITLE = "श्री गणेश आयुध माहिती"       #
 # Discontinued items — see backup-removed-items-2026-09-13/ for a full copy
 # of data.json + media/ + audio-scripts/ from before removal.
 EXCLUDED_IDS = {"015", "019", "022"}       # पुष्पबाण, खंजीर, कवच
-FEATURED_FIRST_ID = "020"                  # अग्नी — pinned to the first / top-left tile (renumbered from 023 after sequential 001-020 renumbering)
+FEATURED_FIRST_ID = "023"                  # अग्नी — pinned to the first / top-left tile
+# NOTE: a separate session's "renumber items sequentially" commit briefly
+# moved अग्नी to id "020" (and shifted 5 other items too) to make the id
+# sequence contiguous — but every physical QR code was already printed
+# against the ORIGINAL ids, so that renumbering was reverted for those 6
+# items (see commit "Fix printed-QR mismatch"). If you're re-introducing
+# a renumbering in the future, regenerate every print PDF/PNG in
+# qr-codes/ FIRST (they encode ?id=<this value> directly), then update
+# this constant to match — never the other way around.
 
 FONT_DIR = ROOT / "fonts"
 NOTO_DEVANAGARI = str(FONT_DIR / "NotoSansDevanagari.ttf")   # variable: wght 100-900

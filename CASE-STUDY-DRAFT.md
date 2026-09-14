@@ -1,10 +1,17 @@
 # श्री गणेश आयुधे — UX केस स्टडी (पहिला मसुदा)
 
-> **स्थिती:** पहिला draft. Sections 5 व 6 मध्ये `DESIGN-DECISIONS.md` मधला खरा मजकूर विलीन केला आहे.
+> **स्थिती:** पहिला draft (१–२ Sep 2026 पर्यंत verified). ⚠️ **१४ Sep 2026 ला मोठे बदल झाले जे अजून या draft मध्ये उतरलेले नाहीत** — बघा खालचा "१४ Sep अपडेट" बॉक्स. Sections 2/4/5/7/8/10 अजून जुन्या (२३-आयुध, फक्त-१-आवाज) स्थितीवर आधारित आहेत — पूर्ण refresh बाकी आहे.
 > Section 4 (research) आणि Section 7 (user metrics) **मुद्दाम मोकळे** — खरं guest testing झाल्यावरच भरायचे, इथे काहीही fabricate केलेलं नाही.
 > **खुणा:** `【युजरने भरायचं】` = वैयक्तिक/खरी आठवण · `❗` = testing नंतरचा भाग · `【पडताळा】` = तपासून खात्री करायची गोष्ट.
-> **Source of truth:** `PROJECT-STATUS.md` (25 Aug 2026), `DESIGN-DECISIONS.md` (21 Aug 2026), git log (20–31 Aug 2026), `styles.css` / `app.js` (verified), live site.
+> **Source of truth (१–२ Sep आवृत्तीसाठी):** `PROJECT-STATUS.md` (25 Aug 2026 — हाही आता स्टेल), `DESIGN-DECISIONS.md`, git log, `styles.css` / `app.js`, live site.
 >
+> ### 🆕 १४ Sep 2026 अपडेट — मोठे बदल (git log नुसार, कोड वाचून पडताळलं)
+> - **वस्तू २३ → २० झाल्या** (३ आयुधे बंद केली, id मध्ये १५/१९/२२ अंतर आहेत — ००१-०१४, ०१६-०१८, ०२०, ०२१, ०२३)
+> - **आवाज आता २०/२० खरा** (पडताळलं — प्रत्येक फाइल १ MB+, placeholder नाही) — Sarvam **Bulbul v3 TTS** (आवाज: "ritu", STT ने cross-check करून), फक्त ००१ एकदंत खरा मानवी रेकॉर्डिंग. **हे मूळ "माणसाचाच खरा आवाज" या डिझाइन-निर्णयाच्या उलट आहे — केस स्टडीत याबद्दल प्रामाणिक स्पष्टीकरण लागेल (खाली प्रश्न ३ बघा)**
+> - **नवीन फीचर: "सजावट आरास" व्हिडिओ** (संपूर्ण मखर/सजावटीचा व्हिडिओ, कोड तयार पण फाइल अजून नाही — `media/decoration/README.md`)
+> - फाँट Nirmala → **Noto Sans Devanagari**; ब्रँडिंग "Nil" → **"Developed by Nilesh"**
+> - QR: साइड-लेबल डिझाइन, ३ बंद आयुधांसाठी pipeline अपडेट, sw.js cache v19
+> - Ownership/IP-protection scaffolding जोडलं (`LICENSE`, `OWNERSHIP.md`)
 > **पडताळणीची स्थिती (प्रामाणिकपणे, १ Sep 2026 ला स्वतंत्र तपासणी):**
 > - ✅ *कोड/फाइल पाहून खात्री:* रंग-टोकन (styles.css), Wake Lock + Media Session API (app.js), build-spec = १८ विभाग, git-तारखा, आयटम-संख्या = २३ (data.json), फाँट/dark-mode काढल्याच्या नोंदी (styles.css कमेंट्स), कंटेंट पूर्ण + placeholder-मुक्त (data.json), आवाज १ खरा/२२ placeholder, QR DPI 300 + चौरस ~५.८ सेमी + रुंदी ७.६ सेमी + EC-Q + square modules (`_generate_qr.py`), center-logo-काढल्याचं कारण.
 > - ⚠️ *बाकी छोटं:* home QR कार्डवर अजून जुनं नाव "आमचं घर संग्रहालय"; कार्ड-उंची आयकॉन-बॅजनुसार बदलते (~१०.५ सेमी आयटम, ~८.५ home).
@@ -15,11 +22,32 @@
 
 ---
 
+## 📷 फोटो / व्हिज्युअल्स — प्लेसहोल्डर यादी
+
+तुम्ही rough तयारीचे फोटो देणार आहात — इथे प्रत्येक स्लॉट कुठे लागेल आणि काय हवं ते. प्रकाशित करण्याआधी प्रत्येक `[PHOTO: ...]` जागी खरा फोटो टाका.
+
+| # | कुठे लागेल | काय फोटो हवा | स्थिती |
+|---|---|---|---|
+| 1 | Section 0 Hook (cover) | मोबाईलमध्ये live साइट उघडलेली, हातात धरलेली — किंवा गणपती मूर्ती + फोन scan करतानाचा शॉट | 🔲 |
+| 2 | Section 2 (सुरुवात) | घरचा देव्हारा / गणपती मूर्ती — आयुधं दिसतील असा वाइड शॉट | 🔲 |
+| 3 | Section 2 (सुरुवात) | `००३ अंकुश` चा खरा कुटुंब-फोटो (`ankush.jpg`) — **हा आधीच आहे**, वापरता येईल | ✅ existing |
+| 4 | Section 5 (Design decisions) | Redesign च्या ३ संकल्पनांचा तुलना-स्क्रीनशॉट (संग्रहालय फलक / पूजा पत्रिका / दिवा प्रकाश) — जर screenshot घेतला असेल | 🔲 |
+| 5 | Section 5 / QR निर्णय | जुनं (गोल modules) vs नवं (चौरस modules) QR कार्ड side-by-side | 🔲 |
+| 6 | Section 6 (AI workflow) | Claude Code / टर्मिनल स्क्रीनशॉट — काम करतानाचा (ऐच्छिक, पण "process दाखवणं" recruiter ला आवडतं — संशोधनात सापडलं) | 🔲 |
+| 7 | **नवीन — सजावट आरास** | तयारी/मखर सजावटीचे rough फोटो — QR/NFC कसे लावले, प्रत्यक्ष शेल्फ/देव्हारा सेटअप | 🔲 **तुम्ही आता देणार आहात** |
+| 8 | Section 7 (Testing) | पाहुणे प्रत्यक्ष QR स्कॅन करतानाचा फोटो/व्हिडिओ (guest testing झाल्यावर) | 🔲 testing नंतर |
+| 9 | Section 9 / प्रिंट | छापलेली QR कार्ड्स + NFC टॅग लावलेला फोटो | 🔲 |
+| 10 | Cover / hero (केस स्टडी प्लॅटफॉर्मसाठी) | 1200×630 social-share कव्हर इमेज (Canva) | 🔲 |
+
+**नियम:** खरा फोटो येईपर्यंत `[PHOTO: विवरण]` असं मार्कर ठेवा — रिकामी जागा किंवा stock फोटो वापरू नका (Section 8 "काय चाललं नाही" च्या प्रामाणिकपणाच्या भावनेशी विसंगत होईल).
+
+---
+
 ## Section 0 — Hook
 
 # मी घरातल्या गणपतीच्या मूर्तीला ऑडिओ गाईड दिला. प्रत्येक आयुधाची स्वतःची कथा आहे.
 
-*QR / NFC स्कॅन करा — बाप्पाच्या हातातल्या २३ आयुधांची (एकदंत, परशू, अंकुश, सुदर्शन चक्र, खट्वांग…) मराठी ऑडिओ कहाणी, मूळ ग्रंथसंदर्भासह. ₹० होस्टिंगवर, framework शिवाय, ऑफलाइनही चालतं.*
+*QR / NFC स्कॅन करा — बाप्पाच्या हातातल्या २० आयुधांची (एकदंत, परशू, अंकुश, सुदर्शन चक्र, खट्वांग…) मराठी ऑडिओ कहाणी, मूळ ग्रंथसंदर्भासह. ₹० होस्टिंगवर, framework शिवाय, ऑफलाइनही चालतं. 【पडताळा: संख्या २३→२० झाली, हुक-वाक्य अपडेट केलं पण पूर्ण मसुदा अजून जुना आहे】
 
 **[▶ लाइव्ह डेमो](https://smartconnect2020-hash.github.io/Ganpati_ai_museum/)** &nbsp;&nbsp; **[GitHub](https://github.com/smartconnect2020-hash/Ganpati_ai_museum)** &nbsp;&nbsp; **[केस स्टडी वाचा ↓]**
 
@@ -31,16 +59,18 @@
 Problem      →  गणपतीच्या मूर्तीतल्या प्रत्येक आयुधाला शास्त्रीय अर्थ आहे —
                 पण उत्सवात पाहुण्यांना/मुलांना तो सांगणारं कुणी नसतं;
                 गाईड-ग्रंथ कपाटात बंद राहतो
-Solution     →  QR + NFC ऑडिओ गाईड, २३ आयुधे, मराठी-first, offline PWA,
-                मजकूर मूळ ग्रंथातून verbatim
+Solution     →  QR + NFC ऑडिओ गाईड, २० आयुधे, मराठी-first, offline PWA,
+                मजकूर मूळ ग्रंथातून verbatim + AI-TTS कथन
 My role      →  एकटा — संशोधन + UX + व्हिज्युअल डिझाइन + no-framework build
-                + QR/NFC pipeline + AI-workflow orchestration
-Timeline     →  २० Aug 2026 पहिला commit (साइट लगेच live) → ३१ Aug शेवटचा
-                code commit (~१२ दिवसांचा commit-पट्टा; रोजचे तास 【पडताळा】)
+                + QR/NFC pipeline + TTS pipeline + AI-workflow orchestration
+Timeline     →  २० Aug 2026 पहिला commit → १४ Sep 2026 पर्यंत सक्रिय
+                (~३.५ आठवडे, टप्प्याटप्प्याने; रोजचे तास 【पडताळा】)
 Stack        →  Vanilla HTML/CSS/JS · PWA + Service Worker · single data.json
-                · Python (qrcode / Pillow / pyzbar) · Claude Code · AI image tools
-Results      →  ❗ Guest testing बाकी — तांत्रिक पडताळणी पूर्ण (QR 24/24 decode,
-                299/299 content fields, live 200 OK, 375px mobile layout)
+                · Python (qrcode / Pillow / pyzbar / uharfbuzz) · Claude Code
+                · Sarvam Bulbul v3 TTS · AI image tools
+Results      →  ✅ २०/२० आयटम्सचा खरा आवाज (१ मानवी + १९ AI-TTS, पडताळलं)
+                ❗ Guest testing अजून बाकी — तांत्रिक पडताळणी पूर्ण (QR 24/24
+                decode सर्व ५ stress-परिस्थितींत, live 200 OK)
 Impact       →  Maharashtra मधल्या घरांसाठी / गणेशोत्सव मंडळांसाठी productizable template
 ```
 
@@ -190,13 +220,27 @@ Play/pause बटण आधी `ऐका`/`थांबवा` मजकूर 
 | **Claude Browser (in-app)** | Live testing | DOM / console / accessibility-tree + click-tests. **Pixel screenshot उपलब्ध नव्हता** — पडताळणी computed-style वर आधारित |
 | **AI image tools (OpenArt / Seedream 4.5)** | आयकॉन-निर्मिती | App icon (कलश) + ९ आयुध-बॅज AI-चित्रित; credits संपल्यावर उरलेले १३ बॅज Claude ने vector आर्ट म्हणून काढले (cubic-bezier, दुरंगी gold gradient) |
 | **Python (qrcode / Pillow / pyzbar)** | QR pipeline | २४ सानुकूल QR कार्ड्स local generate + pyzbar ने २४/२४ decode-पडताळणी + stress-test (तिरकं/अंधुक/लांबून) |
-| **आवाज (एकदंत ००१)** — 【पडताळा】 | ऑडिओ स्रोत अनिश्चित | `media/item-001/audio-mr.wav` (६.२ MB, ~६५ से) फक्त एकदंतसाठी आहे; बाकी २२ शांत placeholder. जुनं फाइलनाव `multi-speaker_एकदंत.wav` होतं → AI-निर्मित असू शकतं, पण repo मध्ये पुष्टी नाही. **खरा रेकॉर्ड की ElevenLabs/AI — केस स्टडीत लिहिण्याआधी नक्की करा.** (टेम्प्लेटमधली "grandma voice → uncanny → real recording" कथा या प्रोजेक्टला लागू आहे की नाही तेही तपासा) |
+| **आवाज — एकदंत (००१)** | मानवी रेकॉर्डिंग | `media/item-001/audio-mr.wav` (६.२ MB, ~६५ से). Commit message नुसार "item-001's human recording untouched" — मानवी आवाज, TTS नाही. |
+| **🆕 Sarvam Bulbul v3 (TTS)** | बाकी १९ आयुधांचा आवाज | `_generate_audio_tts.py`. Voice "ritu", pace 0.98, temperature 1.0. **STT (speech-to-text) ने परत मजकूर काढून approved script शी cross-check** — म्हणजे उच्चार-अचूकतेची स्वयंचलित पडताळणी, फक्त "ऐकून ठीक वाटलं" नाही. हे केस स्टडीसाठी **सर्वात मजबूत AI-वर्कफ्लो पुरावा** आहे — पूर्ण मजकूर उत्पादनासाठी न वापरता, अचूकता-पडताळणीसह वापरलं. |
 
 **प्रामाणिक self-assessment:**
 - **AI ने चांगलं केलं:** repetitive scaffolding, syntax, edge-case enumeration, contrast गणित, QR stress-simulation
 - **मी override केलं:** धार्मिक/शास्त्रीय मजकुराची verbatim अचूकता, emotional design, dark-mode काढण्याचा निर्णय, फाँट काढण्याचा निर्णय, prioritization
 - **धडा:** AI execution-वेळ compress करतो. Design judgment माणसाकडेच.
 - **मर्यादा:** या सेशनमध्ये pixel-screenshot QA शक्य नव्हतं; खरी device-चाचणी बाकी.
+
+### AI × UX ची सांगड — मुलाखतीत विचारले जाणारे प्रश्न (draft उत्तरं — पडताळून अंतिम करा)
+
+> Recruiter/मुलाखतकार अनेकदा "AI वापरलंस, पण UX चं काम कुठे आहे?" असं विचारतात. या प्रोजेक्टमध्ये उत्तर स्पष्ट लिहायला हवं:
+
+1. **"खरी समस्या काय होती, आणि AI का लागलं?"**
+   *उत्तर-मसुदा:* समस्या UX ची होती (लोकांना आयुधांचा अर्थ माहीत नाही, वाचायला वेळ/इच्छा नाही) — तंत्रज्ञानाची नाही. उपाय ठरवताना (ऑडिओ-गाईड, QR/NFC, मराठी-first) AI आलंच नाही — तो **निर्णय संशोधन/constraints मधून आला.** AI आलं **अंमलबजावणीत**: १८-विभागी spec पासून implementation पर्यंतचा वेळ compress करायला, आणि २० आवाज एकट्याने रेकॉर्ड करणं अशक्य असताना (वेळ, आवाजाचा दर्जा सुसंगत ठेवणं) TTS ने ते शक्य केलं.
+
+2. **"AI च्या आउटपुटवर तुझा UX निर्णय कुठे दिसतो?"**
+   *उत्तर-मसुदा:* डिझाइन-रंग/फाँट AI ने सुचवले, पण अंतिम निवड + WCAG गणित माणसाने केलं (Decision 2, 3). TTS आवाज निवडताना नुसतं "generate करून वापरणं" नाही — **STT ने परत पडताळणी** ही स्वतः जोडलेली quality-gate पायरी आहे, जी कुठल्याही AI tool मध्ये आपोआप येत नाही. हीच UX/product-thinking ची जागा — "AI आउटपुट विश्वासार्ह आहे का" हे ठरवणं.
+
+3. **"मानवी आवाजाऐवजी AI आवाज वापरणं — हे विरोधाभासी नाही का (परंपरा जपण्यासाठी बनवलेल्या प्रोजेक्टमध्ये)?"**
+   *उत्तर-मसुदा (प्रामाणिक, तुम्ही अंतिम करा):* मूळ योजना मानवी आवाज होती (एकदंतसाठी अजूनही आहे). पण २० आयुधांचं सुसंगत-दर्जाचं रेकॉर्डिंग एकट्याने करणं व्यवहार्य नव्हतं. **निवड:** मजकूर १००% मूळ ग्रंथातून verbatim ठेवला (सामग्रीची सत्यता), आवाजासाठी AI वापरला पण अचूकता-पडताळणी (STT cross-check) जोडली (आवाजाच्या विश्वासार्हतेची हमी). *"परंपरा मजकुरात जपली, तंत्रज्ञान पोहोचवण्यासाठी वापरलं"* — ही framing खरी आहे आणि केस स्टडीच्या नावाशीही जुळते (खाली सुचवलेली नावं बघा).
 
 ---
 
@@ -255,13 +299,19 @@ Play/pause बटण आधी `ऐका`/`थांबवा` मजकूर 
 
 ## Section 9 — पुढे काय
 
-- **खरा आवाज** — उरलेल्या २२ आयुधांचा मराठी आवाज (स्क्रिप्ट्स `audio-scripts/` मध्ये तयार, फक्त वाचून रेकॉर्ड करायचं)
-- **English** — इंग्रजी ऑडिओ + English toggle पुन्हा चालू (आत्ता तात्पुरता लपवलेला)
-- **भौतिक पायरी** — २४ QR कार्ड्स रंगीत प्रिंट · खरा फोन-कॅमेरा scan-टेस्ट · NFC टॅग्स (NTAG213, `qr-urls.txt` मधले URL) · लाकूड/कार्डबोर्ड मागे लावणे (धातू नाही)
-- **CMS upgrade** (ऐच्छिक) — Google Sheets → n8n → JSON → GitHub push pipeline (स्पेकमधलं मूळ ध्येय)
-- **आयकॉन** — credits आल्यावर १३ vector बॅज AI-चित्रणाने बदलणे
-- **v2** — multi-family / गणेशोत्सव-मंडळ template म्हणून productized service; प्रति-आयुध WhatsApp bot conversational deep-dive
-- **Custom domain**
+> 🆕 **१४ Sep स्थितीनुसार अपडेट** — आवाज आता पूर्ण झाला, यादी बदलली:
+
+- [x] ~~खरा आवाज~~ — **पूर्ण** (२०/२०, Sarvam Bulbul v3 TTS + १ मानवी)
+- [ ] **सजावट आरास व्हिडिओ** — कोड/फीचर तयार, फक्त फाइल अपलोड बाकी (`media/decoration/README.md` मधल्या पायऱ्या)
+- [ ] **भौतिक पायरी** — QR कार्ड्स रंगीत प्रिंट (३ फॉरमॅट तयार, verified) · खरा फोन-कॅमेरा scan-टेस्ट · NFC टॅग्स (NTAG213) · लाकूड/कार्डबोर्ड मागे लावणे
+- [ ] **English** — इंग्रजी ऑडिओ + English toggle पुन्हा चालू (आत्ता तात्पुरता लपवलेला)
+- [ ] **Guest testing** — पाहुणे बोलावून निरीक्षण + मुलाखत → Section 4 + 7 भरणे
+- [ ] **केस स्टडी पूर्ण refresh** — हा मसुदा अजून जुन्या (२३-आयुध) आकड्यांवर आहे बऱ्याच ठिकाणी
+- [ ] **CMS upgrade** (ऐच्छिक) — Google Sheets → n8n → JSON → GitHub push pipeline
+- [ ] **आयकॉन** — credits आल्यावर १३ vector बॅज AI-चित्रणाने बदलणे
+- [ ] **v2** — multi-family / गणेशोत्सव-मंडळ template म्हणून productized service; प्रति-आयुध WhatsApp bot
+- [ ] **Custom domain**
+- [ ] `OWNERSHIP.md` मधलं legal name placeholder भरणे (AI भरू शकत नाही — फक्त तुम्ही)
 
 ---
 

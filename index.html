@@ -4,6 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#7A1E2B" />
+
+  <!-- GA4 property: "Shri Ganesh Ayudhe" account, "Ganpati Museum Web Stream" -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E3SHSB62WD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-E3SHSB62WD', { send_page_view: false });
+    gtag('event', 'page_view', {
+      page_location: location.href,
+      item_id: new URLSearchParams(location.search).get('id') || 'home'
+    });
+  </script>
   <meta name="description" content="Nilesh कुटुंबाचे श्री गणेश आयुधे — घरच्या गणपती देखाव्यातील प्रत्येक आयुधाची QR कोड स्कॅन करून ऐका मराठी ऑडिओ माहिती. Ganpati decoration audio guide — scan QR, listen in Marathi." />
   <meta name="keywords" content="श्री गणेश आयुधे, गणपती आयुध माहिती, गणपती देखावा QR, गणपती ऑडिओ गाइड, Ganpati decoration audio guide, Ganpati QR code, गणेश शस्त्रे, Ganesh weapons audio" />
 

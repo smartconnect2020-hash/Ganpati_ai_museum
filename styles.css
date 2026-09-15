@@ -114,7 +114,7 @@ button { touch-action: manipulation; }
 }
 
 .brand-mark {
-  width: 0.72rem;
+  width: 1.19rem;
   height: 1.45rem;
   object-fit: contain;
   flex-shrink: 0;
@@ -374,6 +374,12 @@ button { touch-action: manipulation; }
   box-shadow: var(--shadow-md);
   font-size: clamp(1.3rem, 6vw, 1.9rem);
   line-height: 1;
+}
+
+.wheel-center-img {
+  width: 58%;
+  height: auto;
+  object-fit: contain;
 }
 
 .wheel-node {

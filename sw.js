@@ -10,12 +10,12 @@
  * dropped in 'activate' and everything re-fetches fresh.
  */
 
-const CACHE_NAME = 'ghar-museum-v31';
+const CACHE_NAME = 'ghar-museum-v32';
 const SHELL = [
   './',
   './index.html',
   './styles.css?v=20',
-  './app.js?v=22',
+  './app.js?v=23',
   './data.json',
   './manifest.json',
   './icons/icon-192.png',

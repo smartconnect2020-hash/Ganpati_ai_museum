@@ -379,15 +379,19 @@
        order, so tab order is identical either way). */
     const legend = data.items
       .map((item, i) => {
+        const thumb = item.images[0] || '';
         const visited = isVisited(item.id)
-          ? `<span role="img" aria-label="${escapeHtml(u.visited)}">${ICON.check}</span>`
+          ? `<span class="wheel-legend-visited" role="img" aria-label="${escapeHtml(u.visited)}">${ICON.check}</span>`
           : '';
         return `
           <li>
             <a href="?id=${item.id}">
-              <span class="wheel-legend-num">${displayNum(i + 1)}</span>
+              <span class="wheel-legend-thumb">
+                <img class="wheel-legend-img${isDesignRef(thumb) ? ' is-ref' : ''}" src="${thumb}" alt="" loading="lazy" width="72" height="72" />
+                <span class="wheel-legend-num">${displayNum(i + 1)}</span>
+                ${visited}
+              </span>
               <span class="wheel-legend-title">${item.title[lang]}</span>
-              ${visited}
             </a>
           </li>
         `;
@@ -425,6 +429,11 @@
   function bindWheelRotation() {
     const wrap = document.querySelector('.wheel-wrap');
     if (!wrap) return;
+    // Hidden below phone width (see the .wheel-wrap { display:none } media
+    // query in styles.css) — nothing to animate or drag there, so skip the
+    // rAF loop and pointer listeners entirely rather than spend battery on
+    // an invisible element.
+    if (getComputedStyle(wrap).display === 'none') return;
 
     const AUTO_PERIOD_MS = 150000; // one full turn every 150s — ambient, not distracting
     const RESUME_DELAY_MS = 2500;

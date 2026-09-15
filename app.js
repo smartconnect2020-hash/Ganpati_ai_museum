@@ -494,22 +494,31 @@
       return Math.atan2(y - (r.top + r.height / 2), x - (r.left + r.width / 2)) * (180 / Math.PI);
     }
 
+    let activePointerId = null;
+
     wrap.addEventListener('pointerdown', (e) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       dragging = true;
       dragMoved = false;
+      activePointerId = e.pointerId;
       pause();
       startX = e.clientX;
       startY = e.clientY;
       startAngle = angleAt(e.clientX, e.clientY);
       rotationAtStart = rotation;
-      wrap.setPointerCapture(e.pointerId);
+      // No setPointerCapture here on purpose: capturing on every press (even
+      // a plain click that never moves) makes the browser retarget the
+      // resulting click event's target to .wheel-wrap instead of the <a>
+      // that was actually pressed — so the link's own navigation silently
+      // never fires. Capture is taken lazily below, only once real drag
+      // movement is confirmed, so an ordinary click is never touched by it.
     });
 
     wrap.addEventListener('pointermove', (e) => {
       if (!dragging) return;
       if (!dragMoved && Math.hypot(e.clientX - startX, e.clientY - startY) > DRAG_THRESHOLD_PX) {
         dragMoved = true;
+        wrap.setPointerCapture(activePointerId);
       }
       if (dragMoved) {
         setRotation(rotationAtStart + (angleAt(e.clientX, e.clientY) - startAngle));

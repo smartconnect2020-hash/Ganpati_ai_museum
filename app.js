@@ -358,12 +358,14 @@
           : '';
         return `
           <a class="wheel-node" href="?id=${item.id}" style="left:${x}%; top:${y}%; --i:${i}">
-            <span class="wheel-node-media">
-              <img class="wheel-node-img${isDesignRef(thumb) ? ' is-ref' : ''}" src="${thumb}" alt="" loading="lazy" width="120" height="120" />
-              <span class="wheel-node-badge">${displayNum(i + 1)}</span>
-              ${visited}
+            <span class="wheel-node-inner">
+              <span class="wheel-node-media">
+                <img class="wheel-node-img${isDesignRef(thumb) ? ' is-ref' : ''}" src="${thumb}" alt="" loading="lazy" width="120" height="120" />
+                <span class="wheel-node-badge">${displayNum(i + 1)}</span>
+                ${visited}
+              </span>
+              <span class="wheel-node-label">${item.title[lang]}</span>
             </span>
-            <span class="wheel-node-label">${item.title[lang]}</span>
           </a>
         `;
       })
@@ -400,13 +402,120 @@
         <p>${u.homeLead}</p>
       </section>
       <div class="wheel-wrap">
-        <svg class="wheel-spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${spokes}</svg>
+        <div class="wheel-ring">
+          <svg class="wheel-spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${spokes}</svg>
+          ${nodes}
+        </div>
         <span class="wheel-center" aria-hidden="true">ॐ</span>
-        ${nodes}
       </div>
       <ul class="wheel-legend">${legend}</ul>
     `;
     bindDecorationVideo();
+    bindWheelRotation();
+  }
+
+  /* चक्र rotation — a slow ambient auto-spin (paused on hover/drag/hidden
+     tab, off entirely under prefers-reduced-motion) plus manual drag-to-turn.
+     One --wheel-rotation custom property on .wheel-wrap drives both the
+     ring's rotation and every node's equal-and-opposite counter-rotation
+     (see .wheel-ring / .wheel-node-inner in styles.css) — nodes orbit the
+     fixed ॐ center while their own image/label stay upright and readable at
+     any angle. No JS/no motion still renders correctly: both CSS rules fall
+     back to 0deg via var(--wheel-rotation, 0deg), i.e. today's static wheel. */
+  function bindWheelRotation() {
+    const wrap = document.querySelector('.wheel-wrap');
+    if (!wrap) return;
+
+    const AUTO_PERIOD_MS = 150000; // one full turn every 150s — ambient, not distracting
+    const RESUME_DELAY_MS = 2500;
+    const DRAG_THRESHOLD_PX = 6;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let rotation = 0;
+    let autoBase = 0;
+    let autoStart = null;
+    let paused = reduceMotion;
+    let resumeTimer = null;
+    let dragging = false;
+    let dragMoved = false;
+    let startX = 0, startY = 0, startAngle = 0, rotationAtStart = 0;
+
+    function setRotation(deg) {
+      rotation = deg;
+      wrap.style.setProperty('--wheel-rotation', deg + 'deg');
+    }
+
+    function tick(ts) {
+      if (!wrap.isConnected) return; // home re-rendered (e.g. language toggle) — stop this loop
+      if (!paused && !dragging) {
+        if (autoStart === null) autoStart = ts;
+        setRotation(autoBase + ((ts - autoStart) / AUTO_PERIOD_MS) * 360);
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    function pause() {
+      paused = true;
+      if (resumeTimer) { clearTimeout(resumeTimer); resumeTimer = null; }
+    }
+    function scheduleResume() {
+      if (reduceMotion || dragging) return;
+      if (resumeTimer) clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => {
+        autoBase = rotation;
+        autoStart = null;
+        paused = false;
+      }, RESUME_DELAY_MS);
+    }
+
+    wrap.addEventListener('pointerenter', pause);
+    wrap.addEventListener('pointerleave', () => { if (!dragging) scheduleResume(); });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) pause(); else scheduleResume();
+    });
+
+    function angleAt(x, y) {
+      const r = wrap.getBoundingClientRect();
+      return Math.atan2(y - (r.top + r.height / 2), x - (r.left + r.width / 2)) * (180 / Math.PI);
+    }
+
+    wrap.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      dragging = true;
+      dragMoved = false;
+      pause();
+      startX = e.clientX;
+      startY = e.clientY;
+      startAngle = angleAt(e.clientX, e.clientY);
+      rotationAtStart = rotation;
+      wrap.setPointerCapture(e.pointerId);
+    });
+
+    wrap.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      if (!dragMoved && Math.hypot(e.clientX - startX, e.clientY - startY) > DRAG_THRESHOLD_PX) {
+        dragMoved = true;
+      }
+      if (dragMoved) {
+        setRotation(rotationAtStart + (angleAt(e.clientX, e.clientY) - startAngle));
+      }
+    });
+
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false;
+      try { wrap.releasePointerCapture(e.pointerId); } catch (err) { /* already released */ }
+      scheduleResume();
+    }
+    wrap.addEventListener('pointerup', endDrag);
+    wrap.addEventListener('pointercancel', endDrag);
+
+    // A real drag ending over a .wheel-node would otherwise fire a click and
+    // navigate to that item by accident — swallow just that one click.
+    wrap.addEventListener('click', (e) => {
+      if (dragMoved) { e.preventDefault(); e.stopPropagation(); dragMoved = false; }
+    }, true);
   }
 
   function bindPlayer(item) {

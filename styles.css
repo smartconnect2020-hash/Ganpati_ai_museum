@@ -336,6 +336,22 @@ button { touch-action: manipulation; }
   width: min(100%, 520px);
   aspect-ratio: 1 / 1;
   margin: 1.6rem auto 1.2rem;
+  touch-action: none; /* dragging turns the wheel — see bindWheelRotation() in app.js */
+  cursor: grab;
+}
+.wheel-wrap:active { cursor: grabbing; }
+
+/* Everything that orbits the center lives in here, so .wheel-center itself
+   (a sibling, not a child) never rotates — a fixed axis with items turning
+   around it. --wheel-rotation is written by bindWheelRotation() in app.js
+   on .wheel-wrap; it inherits down to both this and every .wheel-node-inner
+   below, which applies the exact opposite angle to stay upright. */
+.wheel-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(var(--wheel-rotation, 0deg));
 }
 
 .wheel-spokes { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -367,10 +383,20 @@ button { touch-action: manipulation; }
   transform: translate(-50%, -50%);
   text-decoration: none;
   color: inherit;
+  opacity: 0;
+}
+
+/* Counter-rotates by the exact opposite of .wheel-ring's angle (same
+   --wheel-rotation variable, negated) so each node's own image/badge/label
+   stay upright and legible while its position still orbits with the ring. */
+.wheel-node-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  opacity: 0;
+  transform: rotate(calc(-1 * var(--wheel-rotation, 0deg)));
 }
 
 /* The hidden state lives only inside the keyframes, never in the base rule, so

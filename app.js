@@ -659,6 +659,19 @@
                </section>`
         }
 
+        ${(() => {
+          const idx = data.items.findIndex((it) => it.id === item.id);
+          const prevItem = idx > 0 ? data.items[idx - 1] : null;
+          const nextItem = idx >= 0 && idx < data.items.length - 1 ? data.items[idx + 1] : null;
+          if (!prevItem && !nextItem) return '';
+          return `
+            <nav class="item-pager" aria-label="इतर आयुधे">
+              ${prevItem ? `<a class="back-home" href="?id=${prevItem.id}">← ${escapeHtml(prevItem.title[lang])}</a>` : ''}
+              ${nextItem ? `<a class="back-home" href="?id=${nextItem.id}">${escapeHtml(nextItem.title[lang])} →</a>` : ''}
+            </nav>
+          `;
+        })()}
+
         <a class="back-home" href="?">${ICON.back}${u.homeCta}</a>
       </article>
     `;

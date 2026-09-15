@@ -17,6 +17,48 @@
       item_id: new URLSearchParams(location.search).get('id') || 'home'
     });
   </script>
+
+  <!-- Structured data (JSON-LD): self-contained, fetches data.json itself so it
+       never depends on app.js's render pipeline or timing. -->
+  <script>
+    fetch('data.json').then((r) => r.json()).then((data) => {
+      var base = 'https://smartconnect2020-hash.github.io/Ganpati_ai_museum/';
+      var id = new URLSearchParams(location.search).get('id');
+      var item = id ? data.items.find(function (it) { return it.id === id; }) : null;
+      var graph = [{ '@type': 'WebSite', name: data.meta.site_title.mr, url: base }];
+      if (item) {
+        graph.push({
+          '@type': 'CreativeWork',
+          name: item.title.mr,
+          description: item.story.mr,
+          url: base + '?id=' + item.id,
+          image: item.images && item.images[0] ? base + item.images[0] : undefined,
+          inLanguage: 'mr',
+          isPartOf: { '@type': 'WebSite', name: data.meta.site_title.mr, url: base }
+        });
+        graph.push({
+          '@type': 'FAQPage',
+          mainEntity: [{
+            '@type': 'Question',
+            name: item.title.mr + ' चा अर्थ काय आहे?',
+            acceptedAnswer: { '@type': 'Answer', text: item.story.mr }
+          }]
+        });
+      } else {
+        graph.push({
+          '@type': 'ItemList',
+          itemListElement: data.items.map(function (it, i) {
+            return { '@type': 'ListItem', position: i + 1, name: it.title.mr, url: base + '?id=' + it.id };
+          })
+        });
+      }
+      var s = document.createElement('script');
+      s.type = 'application/ld+json';
+      s.textContent = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
+      document.head.appendChild(s);
+    }).catch(function () { /* schema is a bonus, never block the page on it */ });
+  </script>
+
   <meta name="description" content="Nilesh कुटुंबाचे श्री गणेश आयुधे — घरच्या गणपती देखाव्यातील प्रत्येक आयुधाची QR कोड स्कॅन करून ऐका मराठी ऑडिओ माहिती. Ganpati decoration audio guide — scan QR, listen in Marathi." />
   <meta name="keywords" content="श्री गणेश आयुधे, गणपती आयुध माहिती, गणपती देखावा QR, गणपती ऑडिओ गाइड, Ganpati decoration audio guide, Ganpati QR code, गणेश शस्त्रे, Ganesh weapons audio" />
 

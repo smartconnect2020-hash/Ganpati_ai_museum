@@ -374,10 +374,17 @@ button { touch-action: manipulation; }
 }
 
 /* The hidden state lives only inside the keyframes, never in the base rule, so
-   content stays visible if the animation is unsupported or never ticks. */
+   content stays visible if the animation is unsupported or never ticks.
+   Own keyframe (not the shared card-in below) because .wheel-node's resting
+   transform is translate(-50%,-50%) (self-centering on its left/top point,
+   not translateY(0) like a normal in-flow element) — reusing card-in here
+   once made every .movement section on every item page (which also
+   animates with card-in) end up offset by half its own width/height after
+   the animation finished, since both were sharing one keyframe with two
+   incompatible "settled" transforms. */
 @media (prefers-reduced-motion: no-preference) {
   .wheel-node {
-    animation: card-in var(--dur) var(--ease) both;
+    animation: wheel-node-in var(--dur) var(--ease) both;
     animation-delay: calc(var(--i, 0) * 45ms);
   }
 }
@@ -385,9 +392,14 @@ button { touch-action: manipulation; }
   .wheel-node { opacity: 1; }
 }
 
-@keyframes card-in {
+@keyframes wheel-node-in {
   from { opacity: 0; transform: translate(-50%, calc(-50% + 10px)); }
   to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
 }
 
 .wheel-node-media {

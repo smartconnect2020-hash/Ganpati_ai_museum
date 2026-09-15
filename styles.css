@@ -556,8 +556,21 @@ button { touch-action: manipulation; }
 }
 .wheel-legend a:hover, .wheel-legend a:focus-visible { background: var(--color-gold-soft); }
 
-.wheel-legend-num {
+/* .wheel-legend-thumb wraps the number badge (+ hidden image) at this
+   default/desktop size — the wheel itself already shows images here, so
+   .wheel-legend-img stays display:none until the mobile override below
+   turns this same markup into a proper image grid. */
+.wheel-legend-thumb {
   flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.wheel-legend-img { display: none; }
+
+.wheel-legend-num {
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 50%;
@@ -1031,6 +1044,109 @@ article { text-align: center; }
 }
 
 /* ---------- Responsive ---------- */
+
+/* 20 nodes on one ring is a hard geometry limit, not a CSS-tuning one (see
+   the comment on .wheel-node-label above): on a typical phone, adjacent
+   node centers land close enough together that the node size floor
+   (44px, already the min tap target) makes neighbors overlap — measured
+   ~60px circles only ~44px apart on a 375px viewport. No amount of
+   padding-reclaiming buys back enough room (max ~5px) to fix that while
+   keeping all 20 on one ring.
+
+   So below phone width, the wheel itself is hidden and the already-existing
+   accessible .wheel-legend list becomes a horizontally swipeable row of big
+   circular thumbnails instead of a grid — a phone-native gesture (Spotify's
+   genre circles / Instagram Stories use the same pattern), it sidesteps the
+   column-width ceiling a grid would impose (so circles can be bigger, not
+   smaller), and the row's last circle sits half cut-off at rest so "there's
+   more" reads without any extra hint UI. One visual instead of a cramped
+   wheel plus a redundant list under it. */
+@media (max-width: 600px) {
+  .wheel-wrap { display: none; }
+
+  .wheel-legend {
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.9rem;
+    /* .main's own side padding is 1.35rem (see .main above) — cancel it here
+       so the row can scroll edge-to-edge, then reapply it as scroll padding
+       so the first/last circle still lines up with the rest of the page. */
+    margin: 1.2rem -1.35rem 0.4rem;
+    padding: 0.3rem 1.35rem 1rem;
+  }
+
+  .wheel-legend a {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    width: 84px;
+    flex-direction: column;
+    min-height: auto;
+    gap: 0.45rem;
+    padding: 0.2rem;
+    text-align: center;
+  }
+
+  .wheel-legend-thumb {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--color-gold);
+    background: var(--color-gold-soft);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .wheel-legend-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .wheel-legend-img.is-ref { object-fit: contain; background: #fbfaf7; padding: 8%; }
+
+  .wheel-legend-num {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    width: 1.15rem;
+    height: 1.15rem;
+    background: var(--color-primary);
+    color: var(--color-play-text);
+    border: 1.5px solid var(--color-gold);
+    font-size: 0.6rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .wheel-legend-visited {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--color-gold);
+    color: var(--color-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .wheel-legend-visited svg { width: 0.6rem; height: 0.6rem; }
+
+  .wheel-legend-title {
+    flex: none;
+    font-size: 0.74rem;
+    font-weight: 600;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
 
 @media (min-width: 560px) {
   .gallery img { flex-basis: 55%; }

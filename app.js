@@ -437,7 +437,12 @@
 
     const AUTO_PERIOD_MS = 150000; // one full turn every 150s — ambient, not distracting
     const RESUME_DELAY_MS = 2500;
-    const DRAG_THRESHOLD_PX = 6;
+    // A real mouse click almost always carries a few px of natural jitter
+    // between press and release — 6px was tight enough that ordinary clicks
+    // on a node were getting misread as a drag and swallowed, silently
+    // breaking navigation. 12px gives clicks realistic headroom while still
+    // being far below the movement a deliberate wheel-spin drag produces.
+    const DRAG_THRESHOLD_PX = 12;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let rotation = 0;

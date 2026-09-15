@@ -32,7 +32,11 @@
           name: item.title.mr,
           description: item.story.mr,
           url: base + '?id=' + item.id,
-          image: item.images && item.images[0] ? base + item.images[0] : undefined,
+          image: (function () {
+            if (item.symbol) return base + item.symbol;
+            var real = (item.images || []).find(function (src) { return src.indexOf('design-ref') === -1; });
+            return real ? base + real : (item.images && item.images[0] ? base + item.images[0] : undefined);
+          })(),
           inLanguage: 'mr',
           isPartOf: { '@type': 'WebSite', name: data.meta.site_title.mr, url: base }
         });

@@ -724,6 +724,18 @@
       }
     });
 
+    /* Every internal link here is a real <a href> (full navigation), not
+       client-side routing, so a fresh visit always re-runs route() via
+       init() below. The one gap: the browser's bfcache can restore an
+       earlier page entirely from memory on back/forward, skipping JS
+       execution and showing whatever was on screen at the moment the user
+       left - stale if that page was mid-edit/mid-cache-bug at the time.
+       Re-running route() on a persisted pageshow closes that regardless of
+       what caused the staleness. */
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) route();
+    });
+
     try {
       await loadData();
       route();

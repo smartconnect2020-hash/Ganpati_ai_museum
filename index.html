@@ -132,10 +132,35 @@
 
   <script src="app.js?v=24" defer></script>
   <script>
+    /* sw.js already calls skipWaiting()+clients.claim(), so a new SW takes
+       over the moment it finishes installing — but that alone only affects
+       *future* fetches, not the HTML/JS this page already loaded with. A
+       returning visitor was stuck seeing the old version until they hard-
+       refreshed by hand. Fix: nudge the browser to check for a new sw.js
+       right away (register()'s own update check can otherwise sit for a
+       while), and reload once — automatically — the moment a new SW
+       actually takes control. hadController distinguishes a genuine update
+       (reload) from this page's very first-ever install (no reload needed;
+       content is already fresh since nothing was cached yet to be stale). */
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw.js').catch(function () {
+        var hadController = !!navigator.serviceWorker.controller;
+
+        navigator.serviceWorker.register('sw.js').then(function (reg) {
+          reg.update();
+          document.addEventListener('visibilitychange', function () {
+            if (!document.hidden) reg.update();
+          });
+        }).catch(function () {
           /* silent — offline optional on first visit */
+        });
+
+        var reloading = false;
+        navigator.serviceWorker.addEventListener('controllerchange', function () {
+          if (!hadController) { hadController = true; return; }
+          if (reloading) return;
+          reloading = true;
+          window.location.reload();
         });
       });
     }

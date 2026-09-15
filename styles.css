@@ -114,10 +114,10 @@ button { touch-action: manipulation; }
 }
 
 .brand-mark {
-  width: 1.15rem;
+  width: 0.72rem;
   height: 1.45rem;
+  object-fit: contain;
   flex-shrink: 0;
-  color: var(--color-gold);
   transition: transform var(--dur) var(--ease);
 }
 

@@ -410,7 +410,7 @@
           <svg class="wheel-spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${spokes}</svg>
           ${nodes}
         </div>
-        <span class="wheel-center" aria-hidden="true">ॐ</span>
+        <span class="wheel-center" aria-hidden="true"><img class="wheel-center-img" src="icons/logo-mark-simple-light.png?v=1" alt="" /></span>
       </div>
       <ul class="wheel-legend">${legend}</ul>
     `;

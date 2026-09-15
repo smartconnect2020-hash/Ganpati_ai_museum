@@ -360,7 +360,7 @@
           <a class="wheel-node" href="?id=${item.id}" style="left:${x}%; top:${y}%; --i:${i}">
             <span class="wheel-node-media">
               <img class="wheel-node-img${isDesignRef(thumb) ? ' is-ref' : ''}" src="${thumb}" alt="" loading="lazy" width="120" height="120" />
-              <span class="wheel-node-badge">${displayNum(item.id)}</span>
+              <span class="wheel-node-badge">${displayNum(i + 1)}</span>
               ${visited}
             </span>
             <span class="wheel-node-label">${item.title[lang]}</span>
@@ -383,7 +383,7 @@
         return `
           <li>
             <a href="?id=${item.id}">
-              <span class="wheel-legend-num">${displayNum(item.id)}</span>
+              <span class="wheel-legend-num">${displayNum(i + 1)}</span>
               <span class="wheel-legend-title">${item.title[lang]}</span>
               ${visited}
             </a>
@@ -623,7 +623,7 @@
     app.innerHTML = `
       ${recent ? `<div class="banner" role="status">${ICON.info}${u.revisit}</div>` : ''}
       <article>
-        <span class="item-eyebrow">${u.itemNo(displayNum(item.id))}</span>
+        <span class="item-eyebrow">${u.itemNo(displayNum(data.items.findIndex((it) => it.id === item.id) + 1))}</span>
         <h1 class="item-title">${item.title[lang]}</h1>
         <div class="flourish" aria-hidden="true"><span class="ln"></span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 7.5H22l-6 4.5 2.5 7.5L12 17l-6.5 4.5L8 14 2 9.5h7.5z"/></svg><span class="ln"></span></div>
         ${subhead}

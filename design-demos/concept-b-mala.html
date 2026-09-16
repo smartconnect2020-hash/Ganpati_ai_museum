@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept B — कथांची माळ</title>
+<style>
+  :root {
+    --color-bg: #fbf1de;
+    --color-surface: #fff9ec;
+    --color-text: #3a0f16;
+    --color-muted: #7a5c46;
+    --color-primary: #7a1e2b;
+    --color-gold: #8f6224;
+    --color-gold-soft: rgba(143, 98, 36, 0.14);
+    --color-border: rgba(143, 98, 36, 0.32);
+    --shadow-sm: 0 2px 8px rgba(58, 15, 22, 0.1);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--color-text);
+    background:
+      radial-gradient(900px 480px at 8% -8%, var(--color-gold-soft), transparent 55%),
+      var(--color-bg);
+  }
+  .demo-banner {
+    background: var(--color-primary); color: #f6e6c4; text-align: center;
+    font-size: 0.8rem; padding: 0.5rem;
+  }
+  header { text-align: center; padding: 2rem 1rem 1rem; }
+  .eyebrow { color: var(--color-gold); font-weight: 700; font-size: 0.85rem; }
+  h1 { color: var(--color-primary); font-size: 2rem; margin: 0.35rem 0 0.4rem; }
+  .lead { color: var(--color-muted); font-size: 0.95rem; margin: 0 0 0.5rem; max-width: 32em; margin-inline: auto; }
+
+  .mala {
+    position: relative;
+    width: min(94vw, 480px);
+    margin: 1.5rem auto 3rem;
+    padding: 1rem 0 2rem;
+  }
+  .mala::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 50%;
+    width: 2px;
+    background: repeating-linear-gradient(
+      to bottom, var(--color-gold) 0 6px, transparent 6px 12px
+    );
+    transform: translateX(-50%);
+  }
+  .bead-row { display: flex; margin: 0.85rem 0; position: relative; }
+  .bead-row.left { justify-content: flex-start; }
+  .bead-row.right { justify-content: flex-end; }
+  .bead {
+    display: flex; align-items: center; gap: 0.6rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.3rem 1rem 0.3rem 0.3rem;
+    box-shadow: var(--shadow-sm);
+    text-decoration: none; color: var(--color-text);
+    max-width: 78%;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+  }
+  .bead-row.right .bead { flex-direction: row-reverse; padding: 0.3rem 0.3rem 0.3rem 1rem; }
+  .bead:hover { transform: scale(1.04); box-shadow: 0 6px 16px rgba(58,15,22,0.22); }
+  .bead img { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-gold); flex-shrink: 0; }
+  .bead .num { color: var(--color-gold); font-weight: 700; font-size: 0.78rem; }
+  .bead .title { font-weight: 700; color: var(--color-primary); font-size: 0.95rem; }
+
+  footer { text-align: center; color: var(--color-muted); font-size: 0.8rem; padding: 0 1rem 3rem; }
+</style>
+</head>
+<body>
+  <div class="demo-banner">DEMO — Concept B: कथांची माळ (String of Stories). Production site untouched.</div>
+  <header>
+    <div class="eyebrow">श्री गणेशाच्या प्रत्येक आयुधामागील रंजक कथा</div>
+    <h1>श्री गणेश आयुधे</h1>
+    <p class="lead">एका माळेतील मण्यांसारख्या २० कहाण्या — वरून खाली, एका सूत्रात गुंफलेल्या.</p>
+  </header>
+
+  <div class="mala" id="mala"></div>
+
+  <footer>Concept B — प्रत्येक मणी टॅप करून ती कहाणी उघडा.</footer>
+
+  <script>
+    const items = [
+      ["001","एकदंत","../media/item-001/design-ref.jpg"],
+      ["002","पाश","../media/item-002/design-ref.jpg"],
+      ["003","अंकुश","../media/item-003/ankush.jpg"],
+      ["004","परशू","../media/item-004/design-ref.jpg"],
+      ["005","सुदर्शन चक्र","../media/item-005/design-ref.jpg"],
+      ["006","गदा","../media/item-006/design-ref.jpg"],
+      ["007","खड्ग","../media/item-007/design-ref.jpg"],
+      ["008","त्रिशूळ","../media/item-008/design-ref.jpg"],
+      ["009","खट्वांग","../media/item-009/design-ref.jpg"],
+      ["010","मुद्गर","../media/item-010/design-ref.jpg"],
+      ["011","कुंत","../media/item-011/design-ref.jpg"],
+      ["012","धनुष्य","../media/item-012/design-ref.jpg"],
+      ["013","बाण","../media/item-013/design-ref.jpg"],
+      ["014","इक्षुकार्मुक","../media/item-014/design-ref.jpg"],
+      ["016","वज्रशूळ","../media/item-016/design-ref.jpg?v=2"],
+      ["017","वेताळ अस्त्र","../media/item-017/design-ref.jpg?v=2"],
+      ["018","खेटक","../media/item-018/design-ref.jpg?v=2"],
+      ["020","पाषाणधारण","../media/item-020/design-ref.jpg?v=2"],
+      ["021","नांगर","../media/item-021/design-ref.jpg?v=2"],
+      ["023","अग्नी","../media/item-023/design-ref.jpg?v=2"],
+    ];
+    const DEV = ['०','१','२','३','४','५','६','७','८','९'];
+    const toDev = (n) => String(n).replace(/[0-9]/g, d => DEV[+d]);
+
+    const mala = document.getElementById('mala');
+    items.forEach((it, i) => {
+      const row = document.createElement('div');
+      row.className = 'bead-row ' + (i % 2 === 0 ? 'left' : 'right');
+      row.innerHTML = `
+        <a class="bead" href="../?id=${it[0]}">
+          <img src="${it[2]}" alt="" loading="lazy" />
+          <span>
+            <span class="num">${toDev(i+1)}</span><br/>
+            <span class="title">${it[1]}</span>
+          </span>
+        </a>`;
+      mala.appendChild(row);
+    });
+  </script>
+</body>
+</html>

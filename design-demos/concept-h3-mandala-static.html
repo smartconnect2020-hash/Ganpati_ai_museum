@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept H3 — स्थिर मंडल (Static, Zero-Motion Mandala)</title>
+<style>
+  :root {
+    --color-bg: #fbf1de;
+    --color-surface: #fff9ec;
+    --color-text: #3a0f16;
+    --color-muted: #7a5c46;
+    --color-primary: #7a1e2b;
+    --color-gold: #8f6224;
+    --color-gold-text: #7c541c;
+    --color-gold-soft: rgba(143, 98, 36, 0.14);
+    --color-border: rgba(143, 98, 36, 0.32);
+    --color-play-text: #f6e6c4;
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--color-text);
+    background:
+      radial-gradient(900px 480px at 8% -8%, var(--color-gold-soft), transparent 55%),
+      var(--color-bg);
+    min-height: 100vh;
+    padding-bottom: 3rem;
+  }
+  .demo-banner {
+    background: var(--color-primary);
+    color: #f6e6c4;
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    letter-spacing: 0.02em;
+  }
+  .demo-banner a { color: #fff; }
+  header { text-align: center; padding: 2rem 1rem 0.5rem; }
+  .eyebrow { color: var(--color-gold-text); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.02em; }
+  h1 { color: var(--color-primary); font-size: 1.85rem; margin: 0.35rem 0 0.4rem; }
+  .lead { color: var(--color-muted); font-size: 0.95rem; margin: 0 auto 0.5rem; max-width: 46ch; }
+
+  .notes {
+    max-width: 640px;
+    margin: 0 auto 1.6rem;
+    padding: 0.9rem 1.1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  .notes b { color: var(--color-primary); }
+
+  .wheel-wrap {
+    position: relative;
+    width: min(94vw, 560px);
+    aspect-ratio: 1 / 1;
+    margin: 0 auto 2.2rem;
+    /* no cursor:grab, no touch-action:none — nothing here is draggable,
+       so no gesture-affordance lies to the user either. */
+  }
+
+  .ring { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .node { pointer-events: auto; }
+
+  svg.spokes { position: absolute; inset: 0; width: 100%; height: 100%; }
+  svg.spokes line { stroke: var(--color-border); stroke-width: 1; }
+
+  .node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-decoration: none;
+    opacity: 0;
+    animation: node-in 260ms cubic-bezier(.22,1,.36,1) both;
+    animation-delay: calc(var(--i, 0) * 35ms);
+  }
+  @keyframes node-in {
+    from { opacity: 0; transform: translate(-50%, calc(-50% + 8px)); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+  }
+  .node-inner { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; }
+
+  /* Same size for both rings — a size difference would visually read as
+     hierarchy/importance, but the split is only for spacing. Re-checked
+     chord-distance at this size for the inner ring: still clears. */
+  .outer-node, .inner-node { width: 12%; aspect-ratio: 1/1; }
+
+  .node-media {
+    position: relative;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--color-gold);
+    background: var(--color-gold-soft);
+    box-shadow: 0 2px 8px rgba(58,15,22,0.15);
+    transition: transform 160ms ease, box-shadow 160ms ease;
+  }
+  .inner-node .node-media { border-width: 1.5px; box-shadow: 0 1px 5px rgba(58,15,22,0.12); }
+  .node:hover .node-media, .node:focus-visible .node-media { transform: scale(1.16); box-shadow: 0 6px 18px rgba(58,15,22,0.3); z-index: 5; }
+  .node img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .node-badge {
+    position: absolute; top: -3px; left: -3px;
+    background: var(--color-primary); color: var(--color-play-text);
+    font-size: 0.56rem; font-weight: 700;
+    width: 1.05em; height: 1.05em; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 1.2px solid var(--color-gold);
+  }
+
+  .node-label {
+    position: absolute;
+    top: 104%; left: 50%; transform: translateX(-50%);
+    font-size: 0.56rem; font-weight: 700; color: var(--color-primary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    background: var(--color-surface);
+    padding: 0.08rem 0.32rem;
+    border-radius: 5px;
+    border: 1px solid var(--color-border);
+    z-index: 6;
+    pointer-events: none;
+  }
+  .outer-node .node-label { max-width: 72px; font-size: 0.6rem; }
+  .inner-node .node-label { max-width: 52px; }
+  .node:hover .node-label, .node:focus-visible .node-label { overflow: visible; max-width: none; z-index: 8; }
+
+  .center-btn {
+    position: absolute; top: 50%; left: 50%;
+    width: 24%; aspect-ratio: 1/1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 3px solid var(--color-surface);
+    box-shadow: 0 0 0 1.5px var(--color-gold), 0 10px 26px rgba(58, 15, 22, 0.25);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-play-text);
+    font-size: clamp(1.15rem, 4.6vw, 1.6rem);
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.15;
+    padding: 0;
+    z-index: 4;
+  }
+  .center-btn:active { transform: translate(-50%, -50%) scale(0.95); }
+  .center-btn:focus-visible { outline: 3px solid var(--color-gold); outline-offset: 3px; }
+  .center-btn::after {
+    content: "";
+    position: absolute; inset: -7px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-gold);
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .center-btn::after { animation: pulse-ring 2.6s ease infinite; }
+  }
+  @keyframes pulse-ring { 0% { opacity: 0.55; transform: scale(0.94); } 100% { opacity: 0; transform: scale(1.22); } }
+  .reveal-card {
+    max-width: 340px;
+    margin: 0.6rem auto 0;
+    padding: 0.85rem 1rem;
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-gold);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    box-shadow: 0 6px 18px rgba(58,15,22,0.12);
+    display: none;
+  }
+  .reveal-card.show { display: block; animation: fade-down 220ms ease; }
+  @keyframes fade-down { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .reveal-card b { color: var(--color-primary); }
+  .reveal-card a { color: var(--color-gold); font-weight: 700; text-decoration: none; }
+
+  footer { text-align: center; color: var(--color-muted); font-size: 0.8rem; padding: 2rem 1rem 1rem; }
+
+  @media (max-width: 480px) {
+    .outer-node, .inner-node { width: 14%; }
+  }
+
+  .ring-note {
+    text-align: center;
+    max-width: 46ch;
+    margin: 0.7rem auto 0;
+    font-size: 0.76rem;
+    color: var(--color-muted);
+  }
+</style>
+</head>
+<body>
+  <div class="demo-banner">DEMO — Concept H3: स्थिर मंडल (H चं शून्य-हालचाल, कमाल-साधं व्हर्जन). Production site untouched. <a href="index.html">← सर्व concepts</a></div>
+  <header>
+    <div class="eyebrow">H ची सर्वात सुरक्षित/सोपी आवृत्ती</div>
+    <h1>स्थिर आयुध-मंडल</h1>
+    <p class="lead">कुठलंही फिरणं नाही, कुठलाही लपलेला जेश्चर शिकावा लागत नाही — फक्त एक स्थिर, नेहमी वाचता येणारी मांडणी. टॅप करा, ऐका. एवढंच.</p>
+  </header>
+
+  <div class="notes">
+    <b>हे व्हर्जन कोणासाठी:</b> H आणि H2 मध्ये अजूनही एक ड्रॅग-जेश्चर शिकावा लागतो — बहुतेकांसाठी सोपा, पण घरातल्या ज्येष्ठ किंवा टेकसॅव्ही-नसलेल्या पाहुण्यासाठी "काहीतरी शिकावं लागणं" हाच एक अडथळा ठरू शकतो. इथे तो अडथळा पूर्णपणे काढला — दोन रिंगचा जागा-वाचवणारा फायदा (मोठी, न-आच्छादणारी वर्तुळं) तेवढाच ठेवला, हालचाल शून्य. सक्रिय केंद्र (यादृच्छिक आयुध) कायम ठेवलं — तेवढंच "टॅप करा" इतकं उघड आहे की शिकवण्याची गरज नाही.
+  </div>
+
+  <div class="wheel-wrap" id="wheel">
+    <div class="ring" id="ringOuter">
+      <svg class="spokes" id="spokesOuter" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="ring" id="ringInner">
+      <svg class="spokes" id="spokesInner" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+    </div>
+
+    <button type="button" class="center-btn" id="centerBtn" aria-label="यादृच्छिक आयुध सुचवा, टॅप करा">
+      ॐ<br /><span style="font-size:0.48em;font-weight:600;">आजचं आयुध</span>
+    </button>
+  </div>
+
+  <div class="reveal-card" id="revealCard"></div>
+  <p class="ring-note">टीप: आतली व बाहेरची रिंग फक्त जागेसाठी आहे — क्रमांकच खरा क्रम दाखवतो, कुठलंही महत्त्व नाही.</p>
+
+  <footer>Concept H3 — काहीही शिकावं लागत नाही: फक्त वर्तुळावर टॅप करा.</footer>
+
+  <script>
+    const items = [
+      ["001","एकदंत","../media/item-001/design-ref.jpg"],
+      ["002","पाश","../media/item-002/design-ref.jpg"],
+      ["003","अंकुश","../media/item-003/ankush.jpg"],
+      ["004","परशू","../media/item-004/design-ref.jpg"],
+      ["005","सुदर्शन चक्र","../media/item-005/design-ref.jpg"],
+      ["006","गदा","../media/item-006/design-ref.jpg"],
+      ["007","खड्ग","../media/item-007/design-ref.jpg"],
+      ["008","त्रिशूळ","../media/item-008/design-ref.jpg"],
+      ["009","खट्वांग","../media/item-009/design-ref.jpg"],
+      ["010","मुद्गर","../media/item-010/design-ref.jpg"],
+      ["011","कुंत","../media/item-011/design-ref.jpg"],
+      ["012","धनुष्य","../media/item-012/design-ref.jpg"],
+      ["013","बाण","../media/item-013/design-ref.jpg"],
+      ["014","इक्षुकार्मुक","../media/item-014/design-ref.jpg"],
+      ["016","वज्रशूळ","../media/item-016/design-ref.jpg?v=2"],
+      ["017","वेताळ अस्त्र","../media/item-017/design-ref.jpg?v=2"],
+      ["018","खेटक","../media/item-018/design-ref.jpg?v=2"],
+      ["020","पाषाणधारण","../media/item-020/design-ref.jpg?v=2"],
+      ["021","नांगर","../media/item-021/design-ref.jpg?v=2"],
+      ["023","अग्नी","../media/item-023/design-ref.jpg?v=2"],
+    ];
+    const DEV = ['०','१','२','३','४','५','६','७','८','९'];
+    const toDev = (n) => String(n).replace(/[0-9]/g, d => DEV[+d]);
+
+    const outerItems = items.slice(0, 10);
+    const innerItems = items.slice(10, 20);
+    const R_OUTER = 42, R_INNER = 23, cx = 50, cy = 50;
+
+    function nodePos(i, total, R) {
+      const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+      return { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle) };
+    }
+
+    function buildRing(ringEl, spokesEl, list, R, nodeClass, startIndex) {
+      let spokesHtml = '';
+      list.forEach((it, i) => {
+        const { x, y } = nodePos(i, list.length, R);
+        spokesHtml += `<line x1="${cx}%" y1="${cy}%" x2="${x}%" y2="${y}%" />`;
+        const a = document.createElement('a');
+        a.className = `node ${nodeClass}`;
+        a.style.left = x + '%';
+        a.style.top = y + '%';
+        a.style.setProperty('--i', startIndex + i);
+        a.href = `../?id=${it[0]}`;
+        a.innerHTML = `
+          <span class="node-inner">
+            <span class="node-media">
+              <img src="${it[2]}" alt="" loading="lazy" />
+              <span class="node-badge">${toDev(startIndex + i + 1)}</span>
+            </span>
+            <span class="node-label">${it[1]}</span>
+          </span>`;
+        ringEl.appendChild(a);
+      });
+      spokesEl.innerHTML = spokesHtml;
+    }
+
+    buildRing(document.getElementById('ringOuter'), document.getElementById('spokesOuter'), outerItems, R_OUTER, 'outer-node', 0);
+    buildRing(document.getElementById('ringInner'), document.getElementById('spokesInner'), innerItems, R_INNER, 'inner-node', 10);
+
+    const revealCard = document.getElementById('revealCard');
+    document.getElementById('centerBtn').addEventListener('click', () => {
+      const pick = items[Math.floor(Math.random() * items.length)];
+      revealCard.innerHTML = `आजचं आयुध — <b>${pick[1]}</b> <a href="../?id=${pick[0]}">ऐका →</a>`;
+      revealCard.classList.add('show');
+    });
+  </script>
+</body>
+</html>

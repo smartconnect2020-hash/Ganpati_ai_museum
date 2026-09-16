@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept E — पत्त्यांचा जुडगा</title>
+<style>
+  :root {
+    --color-bg: #fbf1de; --color-surface: #fff9ec; --color-text: #3a0f16;
+    --color-muted: #7a5c46; --color-primary: #7a1e2b; --color-gold: #8f6224;
+    --color-gold-soft: rgba(143,98,36,.14); --color-border: rgba(143,98,36,.32);
+    --shadow-md: 0 10px 26px rgba(58,15,22,.18);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:var(--font); color:var(--color-text); background:var(--color-bg); overscroll-behavior:none; }
+  .demo-banner { background:var(--color-primary); color:#f6e6c4; text-align:center; font-size:.8rem; padding:.5rem; }
+  header { text-align:center; padding:1.75rem 1rem .5rem; }
+  .eyebrow { color:var(--color-gold); font-weight:700; font-size:.85rem; }
+  h1 { color:var(--color-primary); font-size:1.9rem; margin:.3rem 0 .35rem; }
+  .lead { color:var(--color-muted); font-size:.9rem; margin:0 0 1.25rem; }
+
+  .deck-wrap { width:min(92vw, 360px); margin:0 auto; position:relative; height:460px; touch-action: pan-y; }
+  .card {
+    position:absolute; inset:0; background:var(--color-surface);
+    border:1px solid var(--color-border); border-radius:20px; overflow:hidden;
+    box-shadow:var(--shadow-md); user-select:none;
+    transition: transform 320ms cubic-bezier(.22,1,.36,1), opacity 320ms ease;
+    display:flex; flex-direction:column;
+  }
+  .card img { width:100%; height:60%; object-fit:cover; pointer-events:none; }
+  .card .body { padding:1rem 1.1rem; text-align:center; }
+  .card .num { color:var(--color-gold); font-weight:700; font-size:.8rem; }
+  .card .title { font-size:1.35rem; font-weight:700; color:var(--color-primary); margin:.2rem 0 .5rem; }
+  .card .open { color:var(--color-primary); font-size:.85rem; font-weight:700; text-decoration:none; border-bottom:1.5px solid var(--color-gold); }
+
+  .controls { display:flex; align-items:center; justify-content:center; gap:1.2rem; margin-top:1.3rem; }
+  .arrow-btn {
+    width:2.6rem; height:2.6rem; border-radius:50%; border:none; cursor:pointer;
+    background:var(--color-primary); color:#f6e6c4; font-size:1.1rem;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(58,15,22,.2);
+  }
+  .dots { font-size:.85rem; color:var(--color-muted); font-weight:700; min-width:5rem; text-align:center; }
+
+  footer { text-align:center; color:var(--color-muted); font-size:.8rem; padding:2rem 1rem 3rem; }
+</style>
+</head>
+<body>
+  <div class="demo-banner">DEMO — Concept E: पत्त्यांचा जुडगा (Swipeable deck). Production site untouched.</div>
+  <header>
+    <div class="eyebrow">श्री गणेशाच्या प्रत्येक आयुधामागील रंजक कथा</div>
+    <h1>श्री गणेश आयुधे</h1>
+    <p class="lead">कार्ड डावी-उजवीकडे सरकवा (स्वाईप करा) — एका मागोमाग एक आयुध बघा.</p>
+  </header>
+
+  <div class="deck-wrap" id="deck"></div>
+  <div class="controls">
+    <button class="arrow-btn" id="prev" aria-label="मागील">‹</button>
+    <span class="dots" id="dots">१ / २०</span>
+    <button class="arrow-btn" id="next" aria-label="पुढील">›</button>
+  </div>
+
+  <footer>Concept E — कार्डवर टॅप केल्यास पूर्ण कहाणी उघडेल.</footer>
+
+  <script>
+    const items = [
+      ["001","एकदंत","../media/item-001/design-ref.jpg"],
+      ["002","पाश","../media/item-002/design-ref.jpg"],
+      ["003","अंकुश","../media/item-003/ankush.jpg"],
+      ["004","परशू","../media/item-004/design-ref.jpg"],
+      ["005","सुदर्शन चक्र","../media/item-005/design-ref.jpg"],
+      ["006","गदा","../media/item-006/design-ref.jpg"],
+      ["007","खड्ग","../media/item-007/design-ref.jpg"],
+      ["008","त्रिशूळ","../media/item-008/design-ref.jpg"],
+      ["009","खट्वांग","../media/item-009/design-ref.jpg"],
+      ["010","मुद्गर","../media/item-010/design-ref.jpg"],
+      ["011","कुंत","../media/item-011/design-ref.jpg"],
+      ["012","धनुष्य","../media/item-012/design-ref.jpg"],
+      ["013","बाण","../media/item-013/design-ref.jpg"],
+      ["014","इक्षुकार्मुक","../media/item-014/design-ref.jpg"],
+      ["016","वज्रशूळ","../media/item-016/design-ref.jpg?v=2"],
+      ["017","वेताळ अस्त्र","../media/item-017/design-ref.jpg?v=2"],
+      ["018","खेटक","../media/item-018/design-ref.jpg?v=2"],
+      ["020","पाषाणधारण","../media/item-020/design-ref.jpg?v=2"],
+      ["021","नांगर","../media/item-021/design-ref.jpg?v=2"],
+      ["023","अग्नी","../media/item-023/design-ref.jpg?v=2"],
+    ];
+    const DEV = ['०','१','२','३','४','५','६','७','८','९'];
+    const toDev = (n) => String(n).replace(/[0-9]/g, d => DEV[+d]);
+
+    const deck = document.getElementById('deck');
+    const dotsEl = document.getElementById('dots');
+    let idx = 0;
+
+    function cardFor(i) {
+      const it = items[i];
+      const a = document.createElement('a');
+      a.className = 'card';
+      a.href = `../?id=${it[0]}`;
+      a.innerHTML = `
+        <img src="${it[2]}" alt="" />
+        <div class="body">
+          <div class="num">${toDev(i+1)} / २०</div>
+          <div class="title">${it[1]}</div>
+          <span class="open">पूर्ण कहाणी उघडा →</span>
+        </div>`;
+      return a;
+    }
+
+    function render() {
+      deck.innerHTML = '';
+      deck.appendChild(cardFor(idx));
+      dotsEl.textContent = `${toDev(idx+1)} / २०`;
+    }
+
+    function go(delta) {
+      const outgoing = deck.querySelector('.card');
+      if (outgoing) {
+        outgoing.style.transform = `translateX(${delta > 0 ? '-120%' : '120%'}) rotate(${delta > 0 ? -8 : 8}deg)`;
+        outgoing.style.opacity = '0';
+      }
+      idx = (idx + delta + items.length) % items.length;
+      setTimeout(() => {
+        render();
+        const incoming = deck.querySelector('.card');
+        incoming.style.transform = `translateX(${delta > 0 ? '120%' : '-120%'})`;
+        incoming.style.opacity = '0';
+        requestAnimationFrame(() => {
+          incoming.style.transform = 'translateX(0)';
+          incoming.style.opacity = '1';
+        });
+      }, 260);
+    }
+
+    document.getElementById('prev').addEventListener('click', () => go(-1));
+    document.getElementById('next').addEventListener('click', () => go(1));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') go(1);
+      if (e.key === 'ArrowLeft') go(-1);
+    });
+
+    // drag / swipe — a real drag must NOT also fire the card's own link
+    // navigation on release (an <a>'s native click still fires after
+    // pointerup regardless of what pointermove did to its transform), and
+    // must keep tracking the pointer even if a fast swipe exits the card's
+    // own box mid-drag (setPointerCapture keeps move/up events targeted at
+    // deck instead of losing them to whatever element is under the finger).
+    let startX = null, dragging = false, wasDragged = false;
+    deck.addEventListener('pointerdown', (e) => {
+      startX = e.clientX; dragging = true; wasDragged = false;
+      deck.setPointerCapture(e.pointerId);
+      deck.querySelector('.card').style.transition = 'none';
+    });
+    deck.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 6) wasDragged = true;
+      const card = deck.querySelector('.card');
+      card.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
+    });
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false;
+      const dx = (e.clientX || 0) - startX;
+      const card = deck.querySelector('.card');
+      card.style.transition = '';
+      if (Math.abs(dx) > 70) {
+        go(dx < 0 ? 1 : -1);
+      } else {
+        card.style.transform = 'translateX(0)';
+      }
+    }
+    deck.addEventListener('pointerup', endDrag);
+    deck.addEventListener('pointercancel', endDrag);
+    deck.addEventListener('click', (e) => {
+      if (wasDragged) { e.preventDefault(); wasDragged = false; }
+    }, true);
+
+    render();
+  </script>
+</body>
+</html>

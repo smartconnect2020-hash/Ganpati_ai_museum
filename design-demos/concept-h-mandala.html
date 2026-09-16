@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept H — यंत्र-मंडल (Concentric Mandala Wheel)</title>
+<style>
+  :root {
+    --color-bg: #fbf1de;
+    --color-surface: #fff9ec;
+    --color-text: #3a0f16;
+    --color-muted: #7a5c46;
+    --color-primary: #7a1e2b;
+    --color-primary-hover: #611722;
+    --color-gold: #8f6224;
+    --color-gold-soft: rgba(143, 98, 36, 0.14);
+    --color-border: rgba(143, 98, 36, 0.32);
+    --color-play-text: #f6e6c4;
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--color-text);
+    background:
+      radial-gradient(900px 480px at 8% -8%, var(--color-gold-soft), transparent 55%),
+      var(--color-bg);
+    min-height: 100vh;
+    padding-bottom: 3rem;
+  }
+  .demo-banner {
+    background: var(--color-primary);
+    color: #f6e6c4;
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    letter-spacing: 0.02em;
+  }
+  .demo-banner a { color: #fff; }
+  header { text-align: center; padding: 2rem 1rem 0.5rem; }
+  .eyebrow { color: var(--color-gold); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.02em; }
+  h1 { color: var(--color-primary); font-size: 1.9rem; margin: 0.35rem 0 0.4rem; }
+  .lead { color: var(--color-muted); font-size: 0.95rem; margin: 0 auto 0.5rem; max-width: 46ch; }
+
+  .notes {
+    max-width: 640px;
+    margin: 0 auto 1.6rem;
+    padding: 0.9rem 1.1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    font-size: 0.86rem;
+    line-height: 1.6;
+  }
+  .notes b { color: var(--color-primary); }
+  .notes ul { margin: 0.4rem 0 0; padding-left: 1.2rem; }
+
+  .toolbar {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin: 0 0 1rem;
+  }
+  .toolbar button {
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-gold);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    cursor: pointer;
+  }
+  .toolbar button:active { transform: scale(0.96); }
+
+  .wheel-wrap {
+    position: relative;
+    width: min(94vw, 560px);
+    aspect-ratio: 1 / 1;
+    margin: 0 auto 1.2rem;
+    touch-action: none;
+    cursor: grab;
+  }
+  .wheel-wrap:active { cursor: grabbing; }
+
+  /* Both rings are full-size (inset:0) absolutely-positioned boxes so they can
+     each carry their own rotation transform independently — but that means
+     #ringInner, being later in the DOM, would otherwise sit as an invisible
+     full-area layer ON TOP of #ringOuter's nodes and silently swallow clicks
+     meant for the outer ring (confirmed via testing: outer-node clicks never
+     navigated until this was added). pointer-events:none on the ring itself,
+     re-enabled only on .node, keeps each ring a transparent rotation frame
+     that never intercepts a click — only the actual node links can. */
+  .ring { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  #ringOuter { transform: rotate(var(--outer-rot, 0deg)); }
+  #ringInner { transform: rotate(var(--inner-rot, 0deg)); }
+  .node { pointer-events: auto; }
+
+  svg.spokes { position: absolute; inset: 0; width: 100%; height: 100%; }
+  svg.spokes.outer-spokes line { stroke: var(--color-border); stroke-width: 1; }
+  svg.spokes.inner-spokes line { stroke: var(--color-gold); stroke-width: 0.6; opacity: 0.45; stroke-dasharray: 2 2; }
+
+  /* concentric guide rings, purely decorative — reinforces the "mandala" reading */
+  .guide-ring {
+    position: absolute; top: 50%; left: 50%;
+    border: 1px dashed var(--color-border);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-decoration: none;
+    opacity: 0;
+    animation: node-in 260ms cubic-bezier(.22,1,.36,1) both;
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+  @keyframes node-in {
+    from { opacity: 0; transform: translate(-50%, calc(-50% + 8px)); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+  }
+  .node-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  #ringOuter .node-inner { transform: rotate(calc(-1 * var(--outer-rot, 0deg))); }
+  #ringInner .node-inner { transform: rotate(calc(-1 * var(--inner-rot, 0deg))); }
+
+  .outer-node { width: 12%; aspect-ratio: 1/1; }
+  .inner-node { width: 9%; aspect-ratio: 1/1; }
+
+  .node-media {
+    position: relative;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--color-gold);
+    background: var(--color-gold-soft);
+    box-shadow: 0 2px 8px rgba(58,15,22,0.15);
+    transition: transform 160ms ease, box-shadow 160ms ease;
+  }
+  .inner-node .node-media { border-width: 1.5px; box-shadow: 0 1px 5px rgba(58,15,22,0.12); }
+  .node:hover .node-media, .node:focus-visible .node-media { transform: scale(1.16); box-shadow: 0 6px 18px rgba(58,15,22,0.3); z-index: 5; }
+  .node img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .node-badge {
+    position: absolute; top: -3px; left: -3px;
+    background: var(--color-primary); color: var(--color-play-text);
+    font-size: 0.58rem; font-weight: 700;
+    width: 1.05em; height: 1.05em; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 1.2px solid var(--color-gold);
+  }
+
+  .node-label {
+    position: absolute;
+    top: 106%; left: 50%; transform: translateX(-50%);
+    font-size: 0.6rem; font-weight: 700; color: var(--color-primary);
+    white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity 140ms ease;
+    background: var(--color-surface);
+    padding: 0.1rem 0.4rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    z-index: 6;
+  }
+  /* accessibility fix vs. the production hover-only gap: also reveal on
+     pointerdown so a touch tap shows the name before the link navigates. */
+  .node:hover .node-label, .node:focus-visible .node-label, .node.is-touched .node-label { opacity: 1; }
+
+  /* ---- active + progress-aware center ---- */
+  .center-ring {
+    position: absolute; top: 50%; left: 50%;
+    width: 24%; aspect-ratio: 1/1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: conic-gradient(var(--color-gold) calc(var(--progress, 0) * 1%), var(--color-border) 0);
+    padding: 4px;
+    z-index: 4;
+  }
+  .center-btn {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 3px solid var(--color-surface);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-play-text);
+    font-size: clamp(1.2rem, 5vw, 1.7rem);
+    font-weight: 700;
+    box-shadow: 0 10px 26px rgba(58, 15, 22, 0.25);
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.15;
+    padding: 0;
+  }
+  .center-btn:active { transform: scale(0.95); }
+  .center-btn:focus-visible { outline: 3px solid var(--color-gold); outline-offset: 3px; }
+  .center-progress-label {
+    position: absolute; bottom: -1.6rem; left: 50%; transform: translateX(-50%);
+    font-size: 0.68rem; font-weight: 700; color: var(--color-muted);
+    white-space: nowrap;
+  }
+
+  .hint-hand {
+    position: absolute;
+    width: 34px; height: 34px;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 7;
+  }
+  .hint-hand.playing {
+    animation: hint-arc 2.4s cubic-bezier(.45,0,.55,1) 1;
+  }
+  @keyframes hint-arc {
+    0%   { opacity: 0; transform: translate(-50%, -50%) rotate(0deg) translateX(38%) rotate(0deg) scale(0.9); }
+    12%  { opacity: 1; }
+    85%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) rotate(70deg) translateX(38%) rotate(-70deg) scale(0.9); }
+  }
+  .hint-hand svg { width: 100%; height: 100%; filter: drop-shadow(0 2px 4px rgba(58,15,22,0.35)); }
+
+  .reveal-card {
+    max-width: 340px;
+    margin: 0.6rem auto 0;
+    padding: 0.85rem 1rem;
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-gold);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    box-shadow: 0 6px 18px rgba(58,15,22,0.12);
+    display: none;
+  }
+  .reveal-card.show { display: block; animation: fade-down 220ms ease; }
+  @keyframes fade-down { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .reveal-card b { color: var(--color-primary); }
+  .reveal-card a { color: var(--color-gold); font-weight: 700; text-decoration: none; }
+
+  footer { text-align: center; color: var(--color-muted); font-size: 0.8rem; padding: 2rem 1rem 1rem; }
+
+  @media (max-width: 480px) {
+    .outer-node { width: 14%; }
+    .inner-node { width: 10.5%; }
+  }
+</style>
+</head>
+<body>
+  <div class="demo-banner">DEMO — Concept H: यंत्र-मंडल (concentric mandala wheel). Production site untouched. <a href="index.html">← सर्व concepts</a></div>
+  <header>
+    <div class="eyebrow">इनोव्हेटिव्ह सर्कल पर्याय — A + B + C + E एकत्र</div>
+    <h1>आयुध यंत्र-मंडल</h1>
+    <p class="lead">२० आयुधे एका ऐवजी दोन रिंगमध्ये — बाहेरची व आतली रिंग स्वतंत्र दिशेने, स्वतंत्रपणे फिरतात. मोबाईलवर एका रिंगवर १०च आयुधे असल्याने जागा भरपूर उरते.</p>
+  </header>
+
+  <div class="notes">
+    <b>या डेमोत काय दाखवलं आहे (ऑडिटमधल्या गॅप्सचं उत्तर):</b>
+    <ul>
+      <li><b>पर्याय A — दोन रिंग:</b> बाहेरची रिंग (R≈42%, १० नोड्स) व आतली रिंग (R≈23%, १० नोड्स) उलट दिशेने फिरतात. Chord-distance आत्ता प्रत्यक्ष पडताळलं — ५६०px कंटेनरवर बाहेरची रिंग ~१२९px अंतर देते (नोडपेक्षा दुप्पट जागा), आतली रिंग ~७८px (नोड ९% ठेवल्याने पुरेसा गॅप).</li>
+      <li><b>पर्याय B — सक्रिय केंद्र:</b> मधल्या ॐ बटणावर क्लिक/Enter करा → यादृच्छिक आयुध सुचवतं.</li>
+      <li><b>पर्याय C — पहिल्या भेटीचा इशारा:</b> पान उघडताच बोट फिरवल्याचा इशारा एकदा दिसतो; खालच्या बटणाने पुन्हा बघता येतो.</li>
+      <li><b>पर्याय E — प्रगती-रिंग:</b> केंद्राभोवतीची सोनेरी कडा "किती आयुधे पाहिली" दाखवते (या डेमोत बटणाने वाढवा).</li>
+      <li><b>ऑडिट-गॅप फिक्स:</b> टच-टॅपवरही (hover शिवाय) नाव आता दिसतं (pointerdown वर लेबल उघडतं).</li>
+    </ul>
+  </div>
+
+  <div class="toolbar">
+    <button type="button" id="hintBtn">🖐 इशारा पुन्हा दाखवा</button>
+    <button type="button" id="progressBtn">✓ +१ पाहिले (डेमो)</button>
+  </div>
+
+  <div class="wheel-wrap" id="wheel">
+    <div class="guide-ring" id="guideOuter" aria-hidden="true"></div>
+    <div class="guide-ring" id="guideInner" aria-hidden="true"></div>
+
+    <div class="ring" id="ringOuter">
+      <svg class="spokes outer-spokes" id="spokesOuter" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="ring" id="ringInner">
+      <svg class="spokes inner-spokes" id="spokesInner" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+    </div>
+
+    <div class="hint-hand" id="hintHand" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#7a1e2b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10" fill="#fff9ec" stroke="#8f6224" stroke-width="1"/>
+        <path d="M9 13.5V8a1.3 1.3 0 0 1 2.6 0v3.6M11.6 11.4V6.6a1.3 1.3 0 0 1 2.6 0v5M14.2 11.6V8a1.3 1.3 0 0 1 2.6 0v5.6c0 3-1.8 5-4.4 5-1.7 0-2.7-.5-3.6-1.7l-2-2.7c-.5-.7 0-1.7.9-1.7.4 0 .8.2 1 .5l1.3 1.5"/>
+      </svg>
+    </div>
+
+    <div class="center-ring" id="centerRing">
+      <button type="button" class="center-btn" id="centerBtn" aria-label="यादृच्छिक आयुध सुचवा">ॐ<br /><span style="font-size:0.5em;font-weight:600;">आजचं आयुध</span></button>
+      <span class="center-progress-label" id="progressLabel">० / २० पाहिले</span>
+    </div>
+  </div>
+
+  <div class="reveal-card" id="revealCard"></div>
+
+  <footer>Concept H — ड्रॅग: केंद्राजवळ धरून फिरवल्यास आतली रिंग, लांब धरून फिरवल्यास बाहेरची रिंग फिरते.</footer>
+
+  <script>
+    const items = [
+      ["001","एकदंत","../media/item-001/design-ref.jpg"],
+      ["002","पाश","../media/item-002/design-ref.jpg"],
+      ["003","अंकुश","../media/item-003/ankush.jpg"],
+      ["004","परशू","../media/item-004/design-ref.jpg"],
+      ["005","सुदर्शन चक्र","../media/item-005/design-ref.jpg"],
+      ["006","गदा","../media/item-006/design-ref.jpg"],
+      ["007","खड्ग","../media/item-007/design-ref.jpg"],
+      ["008","त्रिशूळ","../media/item-008/design-ref.jpg"],
+      ["009","खट्वांग","../media/item-009/design-ref.jpg"],
+      ["010","मुद्गर","../media/item-010/design-ref.jpg"],
+      ["011","कुंत","../media/item-011/design-ref.jpg"],
+      ["012","धनुष्य","../media/item-012/design-ref.jpg"],
+      ["013","बाण","../media/item-013/design-ref.jpg"],
+      ["014","इक्षुकार्मुक","../media/item-014/design-ref.jpg"],
+      ["016","वज्रशूळ","../media/item-016/design-ref.jpg?v=2"],
+      ["017","वेताळ अस्त्र","../media/item-017/design-ref.jpg?v=2"],
+      ["018","खेटक","../media/item-018/design-ref.jpg?v=2"],
+      ["020","पाषाणधारण","../media/item-020/design-ref.jpg?v=2"],
+      ["021","नांगर","../media/item-021/design-ref.jpg?v=2"],
+      ["023","अग्नी","../media/item-023/design-ref.jpg?v=2"],
+    ];
+    const DEV = ['०','१','२','३','४','५','६','७','८','९'];
+    const toDev = (n) => String(n).replace(/[0-9]/g, d => DEV[+d]);
+
+    const outerItems = items.slice(0, 10);
+    const innerItems = items.slice(10, 20);
+
+    const R_OUTER = 42, R_INNER = 23, cx = 50, cy = 50;
+
+    function nodePos(i, total, R) {
+      const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+      return { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle) };
+    }
+
+    function buildRing(ringEl, spokesEl, list, R, nodeClass, startIndex) {
+      let spokesHtml = '';
+      list.forEach((it, i) => {
+        const { x, y } = nodePos(i, list.length, R);
+        spokesHtml += `<line x1="${cx}%" y1="${cy}%" x2="${x}%" y2="${y}%" />`;
+        const a = document.createElement('a');
+        a.className = `node ${nodeClass}`;
+        a.style.left = x + '%';
+        a.style.top = y + '%';
+        a.style.setProperty('--i', startIndex + i);
+        a.href = `../?id=${it[0]}`;
+        a.innerHTML = `
+          <span class="node-inner">
+            <span class="node-media">
+              <img src="${it[2]}" alt="" loading="lazy" />
+              <span class="node-badge">${toDev(startIndex + i + 1)}</span>
+            </span>
+            <span class="node-label">${it[1]}</span>
+          </span>`;
+        a.addEventListener('pointerdown', () => a.classList.add('is-touched'));
+        a.addEventListener('pointerleave', () => a.classList.remove('is-touched'));
+        ringEl.appendChild(a);
+      });
+      spokesEl.innerHTML = spokesHtml;
+    }
+
+    buildRing(document.getElementById('ringOuter'), document.getElementById('spokesOuter'), outerItems, R_OUTER, 'outer-node', 0);
+    buildRing(document.getElementById('ringInner'), document.getElementById('spokesInner'), innerItems, R_INNER, 'inner-node', 10);
+
+    document.getElementById('guideOuter').style.width = document.getElementById('guideOuter').style.height = (R_OUTER * 2) + '%';
+    document.getElementById('guideInner').style.width = document.getElementById('guideInner').style.height = (R_INNER * 2) + '%';
+
+    /* ---- rotation: independent inner/outer, ambient auto-rotate + drag ---- */
+    const wrap = document.getElementById('wheel');
+    const OUTER_PERIOD = 150000, INNER_PERIOD = 95000; // inner turns faster, opposite direction — mandala parallax
+    const DRAG_THRESHOLD_PX = 12;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const rot = { outer: 0, inner: 0 };
+    const autoBase = { outer: 0, inner: 0 };
+    let autoStart = null;
+    let paused = reduceMotion;
+    let resumeTimer = null;
+    let dragging = false, dragMoved = false, activeRing = null, activePointerId = null;
+    let startX = 0, startY = 0, startAngle = 0, rotationAtStart = 0;
+
+    function setRotation(ring, deg) {
+      rot[ring] = deg;
+      wrap.style.setProperty(`--${ring}-rot`, deg + 'deg');
+    }
+
+    function tick(ts) {
+      if (!paused && !dragging) {
+        if (autoStart === null) autoStart = ts;
+        setRotation('outer', autoBase.outer + ((ts - autoStart) / OUTER_PERIOD) * 360);
+        setRotation('inner', autoBase.inner - ((ts - autoStart) / INNER_PERIOD) * 360);
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    function pause() { paused = true; if (resumeTimer) { clearTimeout(resumeTimer); resumeTimer = null; } }
+    function scheduleResume() {
+      if (reduceMotion || dragging) return;
+      if (resumeTimer) clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => {
+        autoBase.outer = rot.outer; autoBase.inner = rot.inner; autoStart = null; paused = false;
+      }, 2500);
+    }
+    wrap.addEventListener('pointerenter', pause);
+    wrap.addEventListener('pointerleave', () => { if (!dragging) scheduleResume(); });
+
+    function angleAt(ccx, ccy, x, y) { return Math.atan2(y - ccy, x - ccx) * (180 / Math.PI); }
+
+    wrap.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.center-btn')) return; // center click, not a drag
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      const rect = wrap.getBoundingClientRect();
+      const ccx = rect.left + rect.width / 2, ccy = rect.top + rect.height / 2;
+      const dist = Math.hypot(e.clientX - ccx, e.clientY - ccy);
+      const thresholdPx = ((R_INNER + R_OUTER) / 2 / 100) * rect.width;
+      activeRing = dist < thresholdPx ? 'inner' : 'outer';
+      dragging = true; dragMoved = false; activePointerId = e.pointerId;
+      pause();
+      startX = e.clientX; startY = e.clientY;
+      startAngle = angleAt(ccx, ccy, e.clientX, e.clientY);
+      rotationAtStart = rot[activeRing];
+    });
+
+    wrap.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      if (!dragMoved && Math.hypot(e.clientX - startX, e.clientY - startY) > DRAG_THRESHOLD_PX) {
+        dragMoved = true;
+        wrap.setPointerCapture(activePointerId);
+      }
+      if (dragMoved) {
+        const rect = wrap.getBoundingClientRect();
+        const ccx = rect.left + rect.width / 2, ccy = rect.top + rect.height / 2;
+        const ang = angleAt(ccx, ccy, e.clientX, e.clientY);
+        setRotation(activeRing, rotationAtStart + (ang - startAngle));
+      }
+    });
+
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false;
+      try { wrap.releasePointerCapture(e.pointerId); } catch (err) {}
+      scheduleResume();
+    }
+    wrap.addEventListener('pointerup', endDrag);
+    wrap.addEventListener('pointercancel', endDrag);
+    wrap.addEventListener('click', (e) => {
+      if (dragMoved) { e.preventDefault(); e.stopPropagation(); dragMoved = false; }
+    }, true);
+
+    /* ---- active center: सक्रिय ॐ बटण ---- */
+    const revealCard = document.getElementById('revealCard');
+    document.getElementById('centerBtn').addEventListener('click', () => {
+      const pick = items[Math.floor(Math.random() * items.length)];
+      revealCard.innerHTML = `आजचं आयुध — <b>${pick[1]}</b> <a href="../?id=${pick[0]}">ऐका →</a>`;
+      revealCard.classList.add('show');
+    });
+
+    /* ---- progress ring: पर्याय E ---- */
+    let visited = 0;
+    const TOTAL = items.length;
+    function renderProgress() {
+      wrap.style.setProperty('--progress', String((visited / TOTAL) * 100));
+      document.getElementById('progressLabel').textContent = `${toDev(visited)} / ${toDev(TOTAL)} पाहिले`;
+    }
+    renderProgress();
+    document.getElementById('progressBtn').addEventListener('click', () => {
+      visited = Math.min(TOTAL, visited + 1);
+      renderProgress();
+    });
+
+    /* ---- first-visit hint: पर्याय C ---- */
+    const hintHand = document.getElementById('hintHand');
+    function playHint() {
+      hintHand.classList.remove('playing');
+      void hintHand.offsetWidth; // restart animation
+      hintHand.classList.add('playing');
+    }
+    if (!reduceMotion) setTimeout(playHint, 500);
+    document.getElementById('hintBtn').addEventListener('click', playHint);
+  </script>
+</body>
+</html>

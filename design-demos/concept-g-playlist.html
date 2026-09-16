@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept G — ध्वनी-यादी</title>
+<style>
+  :root {
+    --color-bg: #fbf1de; --color-surface: #fff9ec; --color-text: #3a0f16;
+    --color-muted: #7a5c46; --color-primary: #7a1e2b; --color-primary-hover:#611722; --color-gold: #8f6224;
+    --color-gold-soft: rgba(143,98,36,.14); --color-border: rgba(143,98,36,.32);
+    --shadow-sm: 0 2px 8px rgba(58,15,22,.1); --shadow-md: 0 -6px 20px rgba(58,15,22,.18);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:var(--font); color:var(--color-text); background:var(--color-bg); padding-bottom: 92px; }
+  .demo-banner { background:var(--color-primary); color:#f6e6c4; text-align:center; font-size:.8rem; padding:.5rem; }
+  header { text-align:center; padding:1.75rem 1rem 1rem; }
+  .eyebrow { color:var(--color-gold); font-weight:700; font-size:.85rem; }
+  h1 { color:var(--color-primary); font-size:1.9rem; margin:.3rem 0 .35rem; }
+  .lead { color:var(--color-muted); font-size:.9rem; margin:0 0 1.25rem; }
+
+  .playlist { width:min(94vw,560px); margin:0 auto 2rem; }
+  .row {
+    display:flex; align-items:center; gap:.8rem;
+    padding:.55rem .6rem; border-radius:12px; cursor:pointer;
+    border-bottom: 1px solid var(--color-border);
+    background: transparent; transition: background 140ms ease;
+  }
+  .row:hover { background: var(--color-gold-soft); }
+  .row.playing { background: var(--color-gold-soft); }
+  .row .num { width:1.6rem; text-align:center; color:var(--color-gold); font-weight:700; font-size:.85rem; flex-shrink:0; }
+  .row img { width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid var(--color-gold); flex-shrink:0; }
+  .row .title { font-weight:700; color:var(--color-primary); font-size:.95rem; flex:1; }
+  .row .wave { display:flex; align-items:flex-end; gap:2px; height:18px; flex-shrink:0; opacity:.6; }
+  .row .wave i { width:3px; background:var(--color-gold); border-radius:2px; display:block; }
+  .row.playing .wave i { background:var(--color-primary); animation: bounce 900ms ease-in-out infinite; }
+  .row.playing .wave i:nth-child(2) { animation-delay:.15s; }
+  .row.playing .wave i:nth-child(3) { animation-delay:.3s; }
+  @keyframes bounce { 0%,100% { transform: scaleY(.4); } 50% { transform: scaleY(1); } }
+
+  .player-bar {
+    position: fixed; left:0; right:0; bottom:0;
+    background: var(--color-surface); border-top:1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    display:flex; align-items:center; gap:.8rem;
+    padding:.55rem 1rem; z-index:10;
+  }
+  .player-bar img { width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid var(--color-gold); flex-shrink:0; }
+  .player-info { flex:1; min-width:0; }
+  .player-info .t { font-weight:700; color:var(--color-primary); font-size:.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .player-info .bar { width:100%; height:4px; background:var(--color-border); border-radius:4px; margin-top:.3rem; overflow:hidden; }
+  .player-info .bar i { display:block; height:100%; width:0%; background:var(--color-primary); }
+  .play-toggle {
+    width:2.6rem; height:2.6rem; border-radius:50%; border:none; cursor:pointer;
+    background:var(--color-primary); color:#f6e6c4; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .open-full { color:var(--color-primary); font-size:.78rem; font-weight:700; text-decoration:none; white-space:nowrap; flex-shrink:0; }
+</style>
+</head>
+<body>
+  <div class="demo-banner">DEMO — Concept G: ध्वनी-यादी (Audio-first playlist, खरा आवाज वाजतो). Production site untouched.</div>
+  <header>
+    <div class="eyebrow">श्री गणेशाच्या प्रत्येक आयुधामागील रंजक कथा</div>
+    <h1>श्री गणेश आयुधे</h1>
+    <p class="lead">ही मूळात ऑडिओ-गाईड आहे — म्हणून होमपेजच पहिल्यापासून "प्लेलिस्ट" सारखं वाटावं. कुठलीही ओळ टॅप करा, खरा आवाज सुरू होईल.</p>
+  </header>
+
+  <div class="playlist" id="playlist"></div>
+
+  <div class="player-bar" id="playerBar" style="display:none;">
+    <img id="pbImg" src="" alt="" />
+    <div class="player-info">
+      <div class="t" id="pbTitle">—</div>
+      <div class="bar"><i id="pbProgress"></i></div>
+    </div>
+    <button class="play-toggle" id="pbToggle" aria-label="play/pause">▶</button>
+    <a class="open-full" id="pbOpen" href="#">पूर्ण पान →</a>
+  </div>
+
+  <audio id="audioEl" preload="none"></audio>
+
+  <script>
+    const items = [
+      ["001","एकदंत","media/item-001/design-ref.jpg","media/item-001/audio-mr.wav"],
+      ["002","पाश","media/item-002/design-ref.jpg","media/item-002/audio-mr.mp3?v=2"],
+      ["003","अंकुश","media/item-003/ankush.jpg","media/item-003/audio-mr.mp3?v=2"],
+      ["004","परशू","media/item-004/design-ref.jpg","media/item-004/audio-mr.mp3?v=2"],
+      ["005","सुदर्शन चक्र","media/item-005/design-ref.jpg","media/item-005/audio-mr.mp3?v=2"],
+      ["006","गदा","media/item-006/design-ref.jpg","media/item-006/audio-mr.mp3?v=2"],
+      ["007","खड्ग","media/item-007/design-ref.jpg","media/item-007/audio-mr.mp3?v=2"],
+      ["008","त्रिशूळ","media/item-008/design-ref.jpg","media/item-008/audio-mr.mp3?v=2"],
+      ["009","खट्वांग","media/item-009/design-ref.jpg","media/item-009/audio-mr.mp3?v=2"],
+      ["010","मुद्गर","media/item-010/design-ref.jpg","media/item-010/audio-mr.mp3?v=2"],
+      ["011","कुंत","media/item-011/design-ref.jpg","media/item-011/audio-mr.mp3?v=2"],
+      ["012","धनुष्य","media/item-012/design-ref.jpg","media/item-012/audio-mr.mp3?v=2"],
+      ["013","बाण","media/item-013/design-ref.jpg","media/item-013/audio-mr.mp3?v=2"],
+      ["014","इक्षुकार्मुक","media/item-014/design-ref.jpg","media/item-014/audio-mr.mp3?v=2"],
+      ["016","वज्रशूळ","media/item-016/design-ref.jpg?v=2","media/item-016/audio-mr.mp3?v=2"],
+      ["017","वेताळ अस्त्र","media/item-017/design-ref.jpg?v=2","media/item-017/audio-mr.mp3?v=2"],
+      ["018","खेटक","media/item-018/design-ref.jpg?v=2","media/item-018/audio-mr.mp3?v=2"],
+      ["020","पाषाणधारण","media/item-020/design-ref.jpg?v=2","media/item-020/audio-mr.mp3?v=2"],
+      ["021","नांगर","media/item-021/design-ref.jpg?v=2","media/item-021/audio-mr.mp3?v=2"],
+      ["023","अग्नी","media/item-023/design-ref.jpg?v=2","media/item-023/audio-mr.mp3?v=2"],
+    ];
+    const DEV = ['०','१','२','३','४','५','६','७','८','९'];
+    const toDev = (n) => String(n).replace(/[0-9]/g, d => DEV[+d]);
+
+    const playlist = document.getElementById('playlist');
+    const audioEl = document.getElementById('audioEl');
+    const playerBar = document.getElementById('playerBar');
+    const pbImg = document.getElementById('pbImg');
+    const pbTitle = document.getElementById('pbTitle');
+    const pbToggle = document.getElementById('pbToggle');
+    const pbOpen = document.getElementById('pbOpen');
+    const pbProgress = document.getElementById('pbProgress');
+    let currentRow = null;
+
+    items.forEach((it, i) => {
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `
+        <span class="num">${toDev(i+1)}</span>
+        <img src="../${it[2]}" alt="" loading="lazy" />
+        <span class="title">${it[1]}</span>
+        <span class="wave"><i style="height:6px"></i><i style="height:14px"></i><i style="height:9px"></i></span>`;
+      row.addEventListener('click', () => playItem(i, row));
+      playlist.appendChild(row);
+    });
+
+    function playItem(i, row) {
+      const it = items[i];
+      if (currentRow) currentRow.classList.remove('playing');
+      currentRow = row;
+      row.classList.add('playing');
+
+      playerBar.style.display = 'flex';
+      pbImg.src = '../' + it[2];
+      pbTitle.textContent = it[1];
+      pbOpen.href = `../?id=${it[0]}`;
+      pbToggle.textContent = '❚❚';
+
+      audioEl.src = '../' + it[3];
+      audioEl.play().catch(() => { pbToggle.textContent = '▶'; });
+    }
+
+    pbToggle.addEventListener('click', () => {
+      if (audioEl.paused) { audioEl.play(); pbToggle.textContent = '❚❚'; }
+      else { audioEl.pause(); pbToggle.textContent = '▶'; }
+    });
+    audioEl.addEventListener('timeupdate', () => {
+      if (!audioEl.duration) return;
+      pbProgress.style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
+    });
+    audioEl.addEventListener('ended', () => {
+      pbToggle.textContent = '▶';
+      if (currentRow) currentRow.classList.remove('playing');
+    });
+    audioEl.addEventListener('error', () => {
+      pbTitle.textContent = (pbTitle.textContent || '') + ' — आवाज लोड होऊ शकला नाही';
+    });
+  </script>
+</body>
+</html>

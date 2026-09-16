@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept D — स्क्रोल कहाणी</title>
+<style>
+  :root {
+    --color-bg: #fbf1de; --color-surface: #fff9ec; --color-text: #3a0f16;
+    --color-muted: #7a5c46; --color-primary: #7a1e2b; --color-gold: #8f6224;
+    --color-gold-soft: rgba(143,98,36,.14); --color-border: rgba(143,98,36,.32);
+    --shadow-sm: 0 2px 8px rgba(58,15,22,.1); --shadow-md: 0 10px 26px rgba(58,15,22,.16);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:var(--font); color:var(--color-text); background:var(--color-bg); }
+  .demo-banner { background:var(--color-primary); color:#f6e6c4; text-align:center; font-size:.8rem; padding:.5rem; }
+  header { text-align:center; padding:1.75rem 1rem .5rem; }
+  .eyebrow { color:var(--color-gold); font-weight:700; font-size:.85rem; }
+  h1 { color:var(--color-primary); font-size:1.9rem; margin:.3rem 0 .35rem; }
+  .lead { color:var(--color-muted); font-size:.9rem; margin:0 0 1rem; }
+
+  .layout { display:flex; gap:1.5rem; max-width:900px; margin:0 auto; padding:0 1rem 4rem; }
+  .sticky-pane {
+    position: sticky; top: 1rem; align-self: flex-start;
+    width: 220px; flex-shrink:0; text-align:center;
+  }
+  .medallion {
+    width: 160px; height:160px; border-radius:50%; margin:0 auto 1rem;
+    background: var(--color-primary); border:4px solid var(--color-gold);
+    display:flex; align-items:center; justify-content:center;
+    color:#f6e6c4; font-size:2.6rem; font-weight:700; box-shadow:var(--shadow-md);
+    transition: transform 260ms ease;
+  }
+  .counter { font-weight:700; color:var(--color-primary); font-size:1.1rem; }
+  .counter span { color:var(--color-gold); }
+  .now-title { font-size:1.05rem; font-weight:700; color:var(--color-primary); margin-top:.4rem; min-height:1.4em; }
+
+  .story-list { flex:1; min-width:0; }
+  .story-row {
+    display:flex; gap:1rem; align-items:center;
+    background:var(--color-surface); border:1px solid var(--color-border);
+    border-radius:14px; padding:.8rem; margin-bottom:1rem;
+    text-decoration:none; color:var(--color-text);
+    opacity:0; transform: translateY(24px);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+  .story-row.in-view { opacity:1; transform:translateY(0); }
+  .story-row img { width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid var(--color-gold); flex-shrink:0; }
+  .story-row .num { color:var(--color-gold); font-weight:700; font-size:.8rem; }
+  .story-row .title { font-weight:700; color:var(--color-primary); font-size:1.05rem; }
+
+  @media (max-width: 700px) {
+    .layout { flex-direction:column; }
+    .sticky-pane { position: sticky; top:0; width:100%; background:var(--color-bg); padding:.75rem 0; z-index:5; display:flex; align-items:center; justify-content:center; gap:1rem; border-bottom:1px solid var(--color-border); }
+    .medallion { width:56px; height:56px; font-size:1.2rem; margin:0; border-width:2px; }
+    .now-title { margin-top:0; font-size:.85rem; }
+  }
+</style>
+</head>
+<body>
+  <div class="demo-banner">DEMO — Concept D: स्क्रोल कहाणी (Scroll-reveal). Production site untouched.</div>
+  <header>
+    <div class="eyebrow">श्री गणेशाच्या प्रत्येक आयुधामागील रंजक कथा</div>
+    <h1>श्री गणेश आयुधे</h1>
+    <p class="lead">खाली स्क्रोल करा — एक-एक आयुध बाप्पासमोर उलगडत जाईल.</p>
+  </header>
+
+  <div class="layout">
+    <div class="sticky-pane">
+      <div class="medallion" id="medallion">ॐ</div>
+      <div class="counter"><span id="count">०</span> / २०</div>
+      <div class="now-title" id="nowTitle">खाली स्क्रोल करा…</div>
+    </div>
+    <div class="story-list" id="list"></div>
+  </div>
+
+  <script>
+    const items = [
+      ["001","एकदंत","../media/item-001/design-ref.jpg"],
+      ["002","पाश","../media/item-002/design-ref.jpg"],
+      ["003","अंकुश","../media/item-003/ankush.jpg"],
+      ["004","परशू","../media/item-004/design-ref.jpg"],
+      ["005","सुदर्शन चक्र","../media/item-005/design-ref.jpg"],
+      ["006","गदा","../media/item-006/design-ref.jpg"],
+      ["007","खड्ग","../media/item-007/design-ref.jpg"],
+      ["008","त्रिशूळ","../media/item-008/design-ref.jpg"],
+      ["009","खट्वांग","../media/item-009/design-ref.jpg"],
+      ["010","मुद्गर","../media/item-010/design-ref.jpg"],
+      ["011","कुंत","../media/item-011/design-ref.jpg"],
+      ["012","धनुष्य","../media/item-012/design-ref.jpg"],
+      ["013","बाण","../media/item-013/design-ref.jpg"],
+      ["014","इक्षुकार्मुक","../media/item-014/design-ref.jpg"],
+      ["016","वज्रशूळ","../media/item-016/design-ref.jpg?v=2"],
+      ["017","वेताळ अस्त्र","../media/item-017/design-ref.jpg?v=2"],
+      ["018","खेटक","../media/item-018/design-ref.jpg?v=2"],
+      ["020","पाषाणधारण","../media/item-020/design-ref.jpg?v=2"],
+      ["021","नांगर","../media/item-021/design-ref.jpg?v=2"],
+      ["023","अग्नी","../media/item-023/design-ref.jpg?v=2"],
+    ];
+    const DEV = ['०','१','२','३','४','५','६','७','८','९'];
+    const toDev = (n) => String(n).replace(/[0-9]/g, d => DEV[+d]);
+
+    const list = document.getElementById('list');
+    items.forEach((it, i) => {
+      const row = document.createElement('a');
+      row.className = 'story-row';
+      row.href = `../?id=${it[0]}`;
+      row.dataset.title = it[1];
+      row.dataset.n = toDev(i + 1);
+      row.innerHTML = `<img src="${it[2]}" alt="" loading="lazy" /><span><span class="num">${toDev(i+1)}</span><br/><span class="title">${it[1]}</span></span>`;
+      list.appendChild(row);
+    });
+
+    const countEl = document.getElementById('count');
+    const nowTitle = document.getElementById('nowTitle');
+    const medallion = document.getElementById('medallion');
+    let seen = new Set();
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const row = entry.target;
+        if (entry.isIntersecting) {
+          row.classList.add('in-view');
+          seen.add(row.dataset.n);
+          nowTitle.textContent = row.dataset.title;
+          medallion.style.transform = 'scale(1.08)';
+          setTimeout(() => (medallion.style.transform = 'scale(1)'), 220);
+          countEl.textContent = toDev(seen.size);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    document.querySelectorAll('.story-row').forEach((row) => io.observe(row));
+  </script>
+</body>
+</html>

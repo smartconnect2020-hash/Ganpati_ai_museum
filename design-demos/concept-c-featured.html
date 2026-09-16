@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept C — आजची ठळक कथा</title>
+<style>
+  :root {
+    --color-bg: #fbf1de;
+    --color-surface: #fff9ec;
+    --color-text: #3a0f16;
+    --color-muted: #7a5c46;
+    --color-primary: #7a1e2b;
+    --color-primary-hover: #611722;
+    --color-gold: #8f6224;
+    --color-gold-soft: rgba(143, 98, 36, 0.14);
+    --color-border: rgba(143, 98, 36, 0.32);
+    --shadow-sm: 0 2px 8px rgba(58, 15, 22, 0.1);
+    --shadow-md: 0 10px 26px rgba(58, 15, 22, 0.14);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--color-text);
+    background:
+      radial-gradient(900px 480px at 8% -8%, var(--color-gold-soft), transparent 55%),
+      var(--color-bg);
+  }
+  .demo-banner {
+    background: var(--color-primary); color: #f6e6c4; text-align: center;
+    font-size: 0.8rem; padding: 0.5rem;
+  }
+  header { text-align: center; padding: 1.75rem 1rem 0.5rem; }
+  .eyebrow { color: var(--color-gold); font-weight: 700; font-size: 0.85rem; }
+  h1 { color: var(--color-primary); font-size: 1.9rem; margin: 0.3rem 0 0.35rem; }
+  .lead { color: var(--color-muted); font-size: 0.9rem; margin: 0 0 1.25rem; }
+
+  .featured-wrap { width: min(94vw, 560px); margin: 0 auto; }
+  .featured-pill {
+    display: inline-block; background: var(--color-gold-soft); color: var(--color-gold);
+    font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.7rem; border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .featured-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .featured-media { position: relative; aspect-ratio: 4/3; background: #eee; }
+  .featured-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .featured-media .badge {
+    position: absolute; top: 0.7rem; left: 0.7rem;
+    background: var(--color-primary); color: #f6e6c4;
+    width: 2rem; height: 2rem; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem; box-shadow: var(--shadow-sm);
+  }
+  .featured-body { padding: 1.1rem 1.2rem 1.3rem; }
+  .featured-title { font-size: 1.4rem; font-weight: 700; color: var(--color-primary); margin: 0 0 0.2rem; }
+  .featured-sub { font-size: 0.85rem; color: var(--color-muted); margin: 0 0 1rem; }
+  .featured-actions { display: flex; align-items: center; gap: 0.8rem; }
+  .play-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 3rem; height: 3rem; border-radius: 50%;
+    background: var(--color-primary); color: #f6e6c4;
+    box-shadow: var(--shadow-sm); flex-shrink: 0; border: none; cursor: pointer;
+  }
+  .play-btn svg { width: 1.1rem; height: 1.1rem; }
+  .open-link {
+    color: var(--color-primary); font-weight: 700; font-size: 0.88rem;
+    text-decoration: none; border-bottom: 1.5px solid var(--color-gold);
+    padding-bottom: 0.1rem;
+  }
+
+  .rail-label {
+    width: min(94vw, 560px); margin: 1.75rem auto 0.5rem;
+    font-size: 0.78rem; font-weight: 700; color: var(--color-muted);
+    text-transform: none; letter-spacing: 0.01em;
+  }
+  .rail {
+    display: flex; gap: 0.7rem; overflow-x: auto;
+    width: min(94vw, 560px); margin: 0 auto 3rem; padding: 0.4rem 0.1rem 1rem;
+    scroll-snap-type: x proximity;
+  }
+  .rail button {
+    all: unset; cursor: pointer; flex-shrink: 0; scroll-snap-align: start;
+    display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+    width: 4.2rem;
+  }
+  .rail img {
+    width: 3.4rem; height: 3.4rem; border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--color-gold); transition: transform 140ms ease, border-color 140ms ease;
+  }
+  .rail button.active img { border-color: var(--color-primary); transform: scale(1.08); }
+  .rail .rail-title { font-size: 0.66rem; color: var(--color-muted); text-align: center; line-height: 1.15; }
+  .rail button.active .rail-title { color: var(--color-primary); font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="demo-banner">DEMO — Concept C: आजची ठळक कथा (Featured Story + Rail). Production site untouched.</div>
+  <header>
+    <div class="eyebrow">श्री गणेशाच्या प्रत्येक आयुधामागील रंजक कथा</div>
+    <h1>श्री गणेश आयुधे</h1>
+    <p class="lead">एका वेळी एक कहाणी — जशी प्रत्यक्ष मखरासमोर उभं राहून ऐकाल तशी.</p>
+  </header>
+
+  <div class="featured-wrap">
+    <span class="featured-pill">ठळक कथा</span>
+    <div class="featured-card" id="featured"></div>
+  </div>
+
+  <div class="rail-label">किंवा दुसरं आयुध निवडा —</div>
+  <div class="rail" id="rail"></div>
+
+  <script>
+    const items = [
+      ["001","एकदंत","१. एकदंत / भग्नदंत (The Broken Tusk / Ekadanta)","../media/item-001/design-ref.jpg"],
+      ["002","पाश","२. पाश / दोरी (The Sacred Noose / Pasha)","../media/item-002/design-ref.jpg"],
+      ["003","अंकुश","३. अंकुश (The Elephant Goad / Ankusha)","../media/item-003/ankush.jpg"],
+      ["004","परशू","४. परशू / कुऱ्हाड (The Battle-Axe / Parashu)","../media/item-004/design-ref.jpg"],
+      ["005","सुदर्शन चक्र","५. सुदर्शन चक्र (The Divine Discus / Chakra)","../media/item-005/design-ref.jpg"],
+      ["006","गदा","६. गदा (The Sacred Mace / Gada)","../media/item-006/design-ref.jpg"],
+      ["007","खड्ग","७. खड्ग / तलवार (The Sword of Wisdom / Khadga)","../media/item-007/design-ref.jpg"],
+      ["008","त्रिशूळ","८. त्रिशूळ (The Trident / Trishula / Shula)","../media/item-008/design-ref.jpg"],
+      ["009","खट्वांग","९. खट्वांग (The Skull-Staff / Khatvanga)","../media/item-009/design-ref.jpg"],
+      ["010","मुद्गर","१०. मुद्गर / हातोडा (The War Hammer / Mudgara)","../media/item-010/design-ref.jpg"],
+      ["011","कुंत","११. कुंत / भाला (The Spear / Kunta)","../media/item-011/design-ref.jpg"],
+      ["012","धनुष्य","१२. धनुष्य (The Bow / Dhanush / Karmuka)","../media/item-012/design-ref.jpg"],
+      ["013","बाण","१३. बाण / शर (The Arrow / Shara / Bana)","../media/item-013/design-ref.jpg"],
+      ["014","इक्षुकार्मुक","१४. इक्षुकार्मुक (The Sugarcane Bow / Ikshukarmuka)","../media/item-014/design-ref.jpg"],
+      ["016","वज्रशूळ","१६. वज्रशूळ (The Lightning Bolt / Vajra Shool)","../media/item-016/design-ref.jpg?v=2"],
+      ["017","वेताळ अस्त्र","१७. वेताळ अस्त्र (The Ghoul-Force Scepter / Vetala)","../media/item-017/design-ref.jpg?v=2"],
+      ["018","खेटक","१८. खेटक / ढाल (The Shield of Protection / Khetaka)","../media/item-018/design-ref.jpg?v=2"],
+      ["020","पाषाणधारण","२०. पाषाणधारण / टिकाव (The Pickaxe / Pasanadharana)","../media/item-020/design-ref.jpg?v=2"],
+      ["021","नांगर","२१. नांगर / हळ (The Plough / Hala)","../media/item-021/design-ref.jpg?v=2"],
+      ["023","अग्नी","२३. अग्नी (The Sacred Fire / Agni)","../media/item-023/design-ref.jpg?v=2"],
+    ];
+    const DEV = ['०','१','२','३','४','५','६','७','८','९'];
+    const toDev = (n) => String(n).replace(/[0-9]/g, d => DEV[+d]);
+    const PLAY_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+
+    const featured = document.getElementById('featured');
+    const rail = document.getElementById('rail');
+    let activeIdx = 0;
+
+    function renderFeatured(i) {
+      const it = items[i];
+      featured.innerHTML = `
+        <div class="featured-media">
+          <span class="badge">${toDev(i+1)}</span>
+          <img src="${it[3]}" alt="" />
+        </div>
+        <div class="featured-body">
+          <p class="featured-title">${it[1]}</p>
+          <p class="featured-sub">${it[2]}</p>
+          <div class="featured-actions">
+            <button class="play-btn" aria-label="ऐका">${PLAY_SVG}</button>
+            <a class="open-link" href="../?id=${it[0]}">पूर्ण कहाणी उघडा →</a>
+          </div>
+        </div>`;
+    }
+
+    items.forEach((it, i) => {
+      const btn = document.createElement('button');
+      if (i === 0) btn.className = 'active';
+      btn.innerHTML = `<img src="${it[3]}" alt="" loading="lazy" /><span class="rail-title">${it[1]}</span>`;
+      btn.addEventListener('click', () => {
+        rail.querySelector('button.active')?.classList.remove('active');
+        btn.classList.add('active');
+        activeIdx = i;
+        renderFeatured(i);
+      });
+      rail.appendChild(btn);
+    });
+
+    renderFeatured(0);
+  </script>
+</body>
+</html>

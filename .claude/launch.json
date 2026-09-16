@@ -3,9 +3,10 @@
   "configurations": [
     {
       "name": "ganpati-static-site",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8080"],
-      "port": 8080
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/dev-server.js"],
+      "port": 8080,
+      "autoPort": true
     }
   ]
 }

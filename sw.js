@@ -10,22 +10,22 @@
  * dropped in 'activate' and everything re-fetches fresh.
  */
 
-const CACHE_NAME = 'ghar-museum-v41';
+const CACHE_NAME = 'ghar-museum-v46';
 const SHELL = [
   './',
   './index.html',
-  './styles.css?v=25',
-  './app.js?v=29',
+  './styles.css?v=28',
+  './app.js?v=34',
   './data.json',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
-  './favicon.ico?v=2',
-  './favicon-16x16.png?v=2',
-  './favicon-32x32.png?v=2',
-  './apple-touch-icon.png?v=2',
-  './icons/logo-mark-simple.png?v=1',
-  './icons/logo-mark-simple-light.png?v=1',
+  './favicon.ico?v=3',
+  './favicon-16x16.png?v=3',
+  './favicon-32x32.png?v=3',
+  './apple-touch-icon.png?v=3',
+  './icons/logo-mark-simple.png?v=2',
+  './icons/logo-mark-simple-light.png?v=2',
 ];
 
 self.addEventListener('install', (event) => {

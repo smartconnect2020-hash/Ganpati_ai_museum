@@ -452,7 +452,7 @@
         </div>
         <span class="wheel-center-ring">
           <button type="button" class="wheel-center" id="wheel-center-btn" aria-label="${escapeHtml(u.wheelCenterLabel)}">
-            <img class="wheel-center-img" src="icons/logo-mark-simple-light.png?v=2" alt="" />
+            <img class="wheel-center-img" src="icons/logo-mark-simple-light.png?v=3" alt="" />
           </button>
         </span>
       </div>

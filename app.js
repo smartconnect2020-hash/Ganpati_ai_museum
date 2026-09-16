@@ -28,6 +28,13 @@
       year: 'वर्ष',
       footer: (name) => `${name} · श्री गणेश आयुधे`,
       itemNo: (n) => `वस्तू क्र. ${n}`,
+      wheelVisited: (n, total) => `${displayNum(n)} / ${displayNum(total)} पाहिले`,
+      wheelNote: 'टीप: आतली व बाहेरची रिंग फक्त जागेसाठी आहे — क्रमांकच खरा क्रम दाखवतो, कुठलंही महत्त्व नाही.',
+      wheelStop: '⏸ फिरणं थांबवा',
+      wheelResume: '▶ फिरणं सुरू करा',
+      wheelCenterLabel: 'यादृच्छिक आयुध सुचवा',
+      wheelToday: 'आजचं आयुध —',
+      wheelListen: 'ऐका →',
     },
     en: {
       loading: 'Loading…',
@@ -46,6 +53,13 @@
       year: 'Year',
       footer: (name) => `${name} · Shri Ganesh's Weapons`,
       itemNo: (n) => `ITEM NO. ${n}`,
+      wheelVisited: (n, total) => `${displayNum(n)} / ${displayNum(total)} visited`,
+      wheelNote: 'Note: the inner and outer rings are only for spacing — the number is the real order, not importance.',
+      wheelStop: '⏸ Stop rotating',
+      wheelResume: '▶ Start rotating',
+      wheelCenterLabel: 'Suggest a random item',
+      wheelToday: "Today's item —",
+      wheelListen: 'Listen →',
     },
   };
 
@@ -322,60 +336,64 @@
     video.setAttribute('draggable', 'false');
   }
 
-  /* आयुध-चक्र — items arranged as a wheel radiating from a center medallion
-     instead of a grid. Positions are computed here (not via a bind-time DOM
-     pass) since they depend only on each item's index and the current
-     total, both already known while building this HTML string. R/cx/cy are
-     percentages of .wheel-wrap, so the layout stays correct at any size —
-     see the matching CSS which does the actual visual sizing/breakpoints. */
+  /* आयुध-चक्र — दोन एककेंद्री रिंगमध्ये (बाहेरची अर्धी + आतली अर्धी आयुधे)
+     विभागलेलं, दोन्ही रिंग एकाच --wheel-rotation वर एकत्र फिरतात (bindWheel
+     मधला एकच ड्रॅग-इंजिन). दोन रिंगमुळे प्रत्येक आयुधाभोवती आधीच्या एका-रिंग
+     आवृत्तीपेक्षा (20 नोड्स) जास्त जागा मिळते — म्हणून नाव आता hover शिवायही
+     कायम दिसू शकतं. Positions इथेच काढल्या (bind-time DOM पासऐवजी) कारण त्या
+     फक्त इंडेक्स/एकूण संख्येवर अवलंबून असतात — प्रत्यक्ष आकार/breakpoints
+     styles.css मध्ये आहेत. */
   function renderHome() {
     const u = t();
     const meta = data.meta;
     const eyebrow = u.eyebrow;
     const total = data.items.length;
-    const R = 42;
+    const splitAt = Math.ceil(total / 2);
+    const outerItems = data.items.slice(0, splitAt);
+    const innerItems = data.items.slice(splitAt);
     const cx = 50;
     const cy = 50;
 
-    function nodePos(i) {
-      const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+    function nodePos(i, ringTotal, R) {
+      const angle = (i / ringTotal) * 2 * Math.PI - Math.PI / 2;
       return { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle) };
     }
 
-    const spokes = data.items
-      .map((item, i) => {
-        const { x, y } = nodePos(i);
-        return `<line x1="${cx}%" y1="${cy}%" x2="${x}%" y2="${y}%" />`;
-      })
-      .join('');
-
-    const nodes = data.items
-      .map((item, i) => {
-        const { x, y } = nodePos(i);
+    function buildRing(list, R, startIndex, isInner) {
+      let spokes = '';
+      let nodes = '';
+      list.forEach((item, i) => {
+        const { x, y } = nodePos(i, list.length, R);
+        spokes += `<line x1="${cx}%" y1="${cy}%" x2="${x}%" y2="${y}%" />`;
+        const globalIndex = startIndex + i;
         const thumb = item.images[0] || '';
         const visited = isVisited(item.id)
           ? `<span class="wheel-node-visited" role="img" aria-label="${escapeHtml(u.visited)}">${ICON.check}</span>`
           : '';
-        return `
-          <a class="wheel-node" href="?id=${item.id}" style="left:${x}%; top:${y}%; --i:${i}">
+        nodes += `
+          <a class="wheel-node${isInner ? ' is-inner' : ''}" href="?id=${item.id}" style="left:${x}%; top:${y}%; --i:${globalIndex}">
             <span class="wheel-node-inner">
               <span class="wheel-node-media">
                 <img class="wheel-node-img${isDesignRef(thumb) ? ' is-ref' : ''}" src="${thumb}" alt="" loading="lazy" width="120" height="120" />
-                <span class="wheel-node-badge">${displayNum(i + 1)}</span>
+                <span class="wheel-node-badge">${displayNum(globalIndex + 1)}</span>
                 ${visited}
               </span>
               <span class="wheel-node-label">${item.title[lang]}</span>
             </span>
           </a>
         `;
-      })
-      .join('');
+      });
+      return { spokes, nodes };
+    }
 
-    /* The wheel above is a visual/number index only (see the comment on
-       .wheel-node-label in styles.css for why it can't also carry
-       always-readable text) — this legend is the actual readable list,
-       and the only way keyboard/screen-reader users reach every item in
-       a normal, linear order (the wheel's DOM order matches this list's
+    const outerRing = buildRing(outerItems, 42, 0, false);
+    const innerRing = buildRing(innerItems, 23, splitAt, true);
+    const visitedCount = data.items.filter((item) => isVisited(item.id)).length;
+
+    /* The wheel above is a visual index (numbered + now-labelled) — this
+       legend is still the guaranteed-untruncated, always-readable list, and
+       the only way keyboard/screen-reader users reach every item in a
+       normal, linear order (the wheel's DOM order matches this list's
        order, so tab order is identical either way). */
     const legend = data.items
       .map((item, i) => {
@@ -405,28 +423,46 @@
         <h1>${meta.site_title[lang]}</h1>
         <p>${u.homeLead}</p>
       </section>
+      <p class="wheel-status" id="wheel-status">${u.wheelVisited(visitedCount, total)}</p>
       <div class="wheel-wrap">
         <div class="wheel-ring">
-          <svg class="wheel-spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${spokes}</svg>
-          ${nodes}
+          <svg class="wheel-spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${outerRing.spokes}</svg>
+          ${outerRing.nodes}
         </div>
-        <span class="wheel-center" aria-hidden="true"><img class="wheel-center-img" src="icons/logo-mark-simple-light.png?v=1" alt="" /></span>
+        <div class="wheel-ring">
+          <svg class="wheel-spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${innerRing.spokes}</svg>
+          ${innerRing.nodes}
+        </div>
+        <span class="wheel-center-ring">
+          <button type="button" class="wheel-center" id="wheel-center-btn" aria-label="${escapeHtml(u.wheelCenterLabel)}">
+            <img class="wheel-center-img" src="icons/logo-mark-simple-light.png?v=1" alt="" />
+          </button>
+        </span>
+      </div>
+      <div class="wheel-reveal" id="wheel-reveal"></div>
+      <p class="wheel-note">${u.wheelNote}</p>
+      <div class="wheel-toggle-row">
+        <button type="button" class="wheel-toggle" id="wheel-toggle-btn"></button>
       </div>
       <ul class="wheel-legend">${legend}</ul>
     `;
     bindDecorationVideo();
-    bindWheelRotation();
+    bindWheel();
   }
 
-  /* चक्र rotation — a slow ambient auto-spin (paused on hover/drag/hidden
-     tab, off entirely under prefers-reduced-motion) plus manual drag-to-turn.
-     One --wheel-rotation custom property on .wheel-wrap drives both the
-     ring's rotation and every node's equal-and-opposite counter-rotation
-     (see .wheel-ring / .wheel-node-inner in styles.css) — nodes orbit the
-     fixed ॐ center while their own image/label stay upright and readable at
-     any angle. No JS/no motion still renders correctly: both CSS rules fall
-     back to 0deg via var(--wheel-rotation, 0deg), i.e. today's static wheel. */
-  function bindWheelRotation() {
+  /* चक्र rotation — a slow ambient auto-spin, ON by default (paused only
+     under prefers-reduced-motion, on hover/drag, or an explicit stop) plus
+     manual drag-to-turn. One --wheel-rotation custom property on .wheel-wrap
+     drives BOTH .wheel-ring layers' rotation and every node's equal-and-
+     opposite counter-rotation (see .wheel-ring / .wheel-node-inner in
+     styles.css) — a single shared value means one consistent drag anywhere
+     on the wheel, not two rings behaving differently depending on where you
+     grab (that was tried and confirmed confusing in testing, see
+     design-demos/concept-h-mandala.html). No JS/no motion still renders
+     correctly: the CSS rule falls back to 0deg via var(--wheel-rotation,0deg).
+     Also binds the active center button and the explicit stop/resume toggle
+     — grouped here since all three act on the same .wheel-wrap instance. */
+  function bindWheel() {
     const wrap = document.querySelector('.wheel-wrap');
     if (!wrap) return;
     // Hidden below phone width (see the .wheel-wrap { display:none } media
@@ -435,6 +471,7 @@
     // an invisible element.
     if (getComputedStyle(wrap).display === 'none') return;
 
+    const u = t();
     const AUTO_PERIOD_MS = 150000; // one full turn every 150s — ambient, not distracting
     const RESUME_DELAY_MS = 2500;
     // A real mouse click almost always carries a few px of natural jitter
@@ -448,7 +485,12 @@
     let rotation = 0;
     let autoBase = 0;
     let autoStart = null;
+    // Rotation is ON by default for everyone except a reduced-motion OS
+    // setting (never auto-started there) — but the toggle button below stays
+    // available either way, so a reduced-motion visitor can still choose to
+    // turn it on rather than the site deciding for them.
     let paused = reduceMotion;
+    let stoppedByUser = false;
     let resumeTimer = null;
     let dragging = false;
     let dragMoved = false;
@@ -457,6 +499,14 @@
     function setRotation(deg) {
       rotation = deg;
       wrap.style.setProperty('--wheel-rotation', deg + 'deg');
+    }
+
+    const toggleBtn = document.getElementById('wheel-toggle-btn');
+    function renderToggle() {
+      if (!toggleBtn) return;
+      const isRunning = !paused || dragging;
+      toggleBtn.textContent = isRunning ? u.wheelStop : u.wheelResume;
+      toggleBtn.setAttribute('aria-pressed', String(!isRunning));
     }
 
     function tick(ts) {
@@ -472,14 +522,19 @@
     function pause() {
       paused = true;
       if (resumeTimer) { clearTimeout(resumeTimer); resumeTimer = null; }
+      renderToggle();
     }
     function scheduleResume() {
-      if (reduceMotion || dragging) return;
+      // An explicit stop from the toggle button must stick — hovering away
+      // or ending a drag should never silently override what the user asked
+      // for. Only the toggle button itself clears stoppedByUser.
+      if (reduceMotion || dragging || stoppedByUser) return;
       if (resumeTimer) clearTimeout(resumeTimer);
       resumeTimer = setTimeout(() => {
         autoBase = rotation;
         autoStart = null;
         paused = false;
+        renderToggle();
       }, RESUME_DELAY_MS);
     }
 
@@ -497,6 +552,7 @@
     let activePointerId = null;
 
     wrap.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.wheel-center')) return; // center tap, not a drag
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       dragging = true;
       dragMoved = false;
@@ -539,6 +595,40 @@
     wrap.addEventListener('click', (e) => {
       if (dragMoved) { e.preventDefault(); e.stopPropagation(); dragMoved = false; }
     }, true);
+
+    /* ---- explicit stop/resume toggle ---- */
+    renderToggle();
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        const isRunning = !paused || dragging;
+        if (isRunning) {
+          stoppedByUser = true;
+          pause();
+        } else {
+          stoppedByUser = false;
+          autoBase = rotation;
+          autoStart = null;
+          paused = false;
+          renderToggle();
+        }
+      });
+    }
+    // endDrag() already calls scheduleResume(), which re-renders the toggle
+    // on its own timer/no-op paths above — this covers the one remaining
+    // gap, a drag that ends WITHOUT triggering a resume (reduced-motion or
+    // an explicit stop already in effect).
+    wrap.addEventListener('pointerup', renderToggle);
+
+    /* ---- active center: यादृच्छिक आयुध सुचव ---- */
+    const centerBtn = document.getElementById('wheel-center-btn');
+    const revealEl = document.getElementById('wheel-reveal');
+    if (centerBtn && revealEl) {
+      centerBtn.addEventListener('click', () => {
+        const pick = data.items[Math.floor(Math.random() * data.items.length)];
+        revealEl.innerHTML = `${u.wheelToday} <b>${escapeHtml(pick.title[lang])}</b> <a href="?id=${pick.id}">${u.wheelListen}</a>`;
+        revealEl.classList.add('show');
+      });
+    }
   }
 
   function bindPlayer(item) {

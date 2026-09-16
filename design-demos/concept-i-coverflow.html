@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept I — Arc Coverflow (मोबाईल स्वाईप-पट्टी)</title>
+<style>
+  :root {
+    --color-bg: #fbf1de;
+    --color-surface: #fff9ec;
+    --color-text: #3a0f16;
+    --color-muted: #7a5c46;
+    --color-primary: #7a1e2b;
+    --color-gold: #8f6224;
+    --color-gold-soft: rgba(143, 98, 36, 0.14);
+    --color-border: rgba(143, 98, 36, 0.32);
+    --color-play-text: #f6e6c4;
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--color-text);
+    background: var(--color-bg);
+    min-height: 100vh;
+    padding-bottom: 3rem;
+  }
+  .demo-banner {
+    background: var(--color-primary);
+    color: #f6e6c4;
+    text-align: center;
+    font-size: 0.78rem;
+    padding: 0.5rem 1rem;
+    letter-spacing: 0.02em;
+  }
+  .demo-banner a { color: #fff; }
+  header { text-align: center; padding: 1.6rem 1rem 0.4rem; max-width: 520px; margin: 0 auto; }
+  .eyebrow { color: var(--color-gold); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.02em; }
+  h1 { color: var(--color-primary); font-size: 1.5rem; margin: 0.3rem 0 0.4rem; }
+  .lead { color: var(--color-muted); font-size: 0.88rem; margin: 0 auto; }
+
+  .notes {
+    max-width: 560px;
+    margin: 1rem auto 1.6rem;
+    padding: 0.85rem 1.05rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    font-size: 0.84rem;
+    line-height: 1.6;
+  }
+  .notes b { color: var(--color-primary); }
+
+  .cf-outer {
+    position: relative;
+    padding: 2.2rem 0 1.6rem;
+  }
+  .cf-track {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 calc(50vw - 50px);
+  }
+  .cf-track::-webkit-scrollbar { display: none; }
+
+  .cf-card {
+    flex: 0 0 100px;
+    scroll-snap-align: center;
+    width: 100px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--color-gold);
+    background: var(--color-gold-soft);
+    box-shadow: 0 6px 18px rgba(58,15,22,0.18);
+    text-decoration: none;
+    will-change: transform, opacity;
+    position: relative;
+  }
+  .cf-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cf-card .badge {
+    position: absolute; top: 4px; left: 4px;
+    background: var(--color-primary); color: var(--color-play-text);
+    font-size: 0.6rem; font-weight: 700;
+    width: 1.15em; height: 1.15em; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 1.2px solid var(--color-gold);
+  }
+
+  .cf-label {
+    position: absolute;
+    bottom: -1.7rem; left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 180ms ease;
+    pointer-events: none;
+  }
+  .cf-card.is-center .cf-label { opacity: 1; }
+
+  .cf-fade-l, .cf-fade-r {
+    position: absolute; top: 0; bottom: 0; width: 14%;
+    pointer-events: none; z-index: 2;
+  }
+  .cf-fade-l { left: 0; background: linear-gradient(90deg, var(--color-bg), transparent); }
+  .cf-fade-r { right: 0; background: linear-gradient(-90deg, var(--color-bg), transparent); }
+
+  .toolbar { display: flex; justify-content: center; margin: 0.6rem 0 0.2rem; }
+  .toolbar button {
+    font: inherit; font-size: 0.8rem; font-weight: 600;
+    padding: 0.45rem 0.9rem; border-radius: 999px;
+    border: 1.5px solid var(--color-gold);
+    background: var(--color-surface); color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  footer { text-align: center; color: var(--color-muted); font-size: 0.78rem; padding: 1.6rem 1rem 1rem; }
+
+  @media (min-width: 700px) {
+    .cf-card { flex-basis: 118px; width: 118px; }
+  }
+</style>
+</head>
+<body>
+  <div class="demo-banner">DEMO — Concept I: Arc Coverflow स्वाईप-पट्टी. Production site untouched. <a href="index.html">← सर्व concepts</a></div>
+  <header>
+    <div class="eyebrow">इनोव्हेटिव्ह सर्कल पर्याय — D</div>
+    <h1>आयुध Coverflow</h1>
+    <p class="lead">सध्याच्या सरळ-रेषेतल्या स्वाईप-पट्टीऐवजी — मधलं वर्तुळ मोठं व सरळ, बाजूची लहान/तिरकी होत जातात. फक्त बोटाने डावी-उजवीकडे सरकवा.</p>
+  </header>
+
+  <div class="notes">
+    <b>यात काय वेगळं:</b> प्रत्येक वर्तुळाचा scale/rotateY/opacity स्क्रोल-पोझिशनवरून थेट रिअल-टाईम मोजला जातो (मूळ स्वाईप-पट्टीचा सिद्ध झालेला scroll-snap गाभा तोच ठेवला आहे — फक्त वरचा depth-इफेक्ट नवीन). खाली मधलं नाव वाचता येईल इतकं मोठं दिसतं.
+  </div>
+
+  <div class="cf-outer">
+    <div class="cf-fade-l" aria-hidden="true"></div>
+    <div class="cf-fade-r" aria-hidden="true"></div>
+    <div class="cf-track" id="cfTrack"></div>
+  </div>
+
+  <div class="toolbar">
+    <button type="button" id="centerBtn">मध्यभागी आणा (पाश)</button>
+  </div>
+
+  <footer>Concept I — फोन-रुंदीच्या (≤480px) व्ह्यूपोर्टवर सर्वोत्तम दिसतं.</footer>
+
+  <script>
+    const items = [
+      ["001","एकदंत","../media/item-001/design-ref.jpg"],
+      ["002","पाश","../media/item-002/design-ref.jpg"],
+      ["003","अंकुश","../media/item-003/ankush.jpg"],
+      ["004","परशू","../media/item-004/design-ref.jpg"],
+      ["005","सुदर्शन चक्र","../media/item-005/design-ref.jpg"],
+      ["006","गदा","../media/item-006/design-ref.jpg"],
+      ["007","खड्ग","../media/item-007/design-ref.jpg"],
+      ["008","त्रिशूळ","../media/item-008/design-ref.jpg"],
+      ["009","खट्वांग","../media/item-009/design-ref.jpg"],
+      ["010","मुद्गर","../media/item-010/design-ref.jpg"],
+      ["011","कुंत","../media/item-011/design-ref.jpg"],
+      ["012","धनुष्य","../media/item-012/design-ref.jpg"],
+      ["013","बाण","../media/item-013/design-ref.jpg"],
+      ["014","इक्षुकार्मुक","../media/item-014/design-ref.jpg"],
+      ["016","वज्रशूळ","../media/item-016/design-ref.jpg?v=2"],
+      ["017","वेताळ अस्त्र","../media/item-017/design-ref.jpg?v=2"],
+      ["018","खेटक","../media/item-018/design-ref.jpg?v=2"],
+      ["020","पाषाणधारण","../media/item-020/design-ref.jpg?v=2"],
+      ["021","नांगर","../media/item-021/design-ref.jpg?v=2"],
+      ["023","अग्नी","../media/item-023/design-ref.jpg?v=2"],
+    ];
+    const DEV = ['०','१','२','३','४','५','६','७','८','९'];
+    const toDev = (n) => String(n).replace(/[0-9]/g, d => DEV[+d]);
+
+    const track = document.getElementById('cfTrack');
+    items.forEach((it, i) => {
+      const a = document.createElement('a');
+      a.className = 'cf-card';
+      a.href = `../?id=${it[0]}`;
+      a.dataset.idx = i;
+      a.innerHTML = `<img src="${it[2]}" alt="" loading="lazy" /><span class="badge">${toDev(i + 1)}</span><span class="cf-label">${it[1]}</span>`;
+      track.appendChild(a);
+    });
+
+    const cards = Array.from(track.querySelectorAll('.cf-card'));
+    let ticking = false;
+
+    function applyDepth() {
+      const trackRect = track.getBoundingClientRect();
+      const centerX = trackRect.left + trackRect.width / 2;
+      cards.forEach((card) => {
+        const r = card.getBoundingClientRect();
+        const cardCenter = r.left + r.width / 2;
+        const d = (cardCenter - centerX) / r.width; // signed distance in "card widths"
+        const ad = Math.min(Math.abs(d), 3);
+        const scale = Math.max(0.62, 1 - 0.16 * ad);
+        const rotateY = Math.max(-38, Math.min(38, d * -30));
+        const opacity = Math.max(0.35, 1 - 0.3 * ad);
+        const translateY = Math.min(18, ad * 9);
+        card.style.transform = `perspective(700px) translateY(${translateY}px) rotateY(${rotateY}deg) scale(${scale})`;
+        card.style.opacity = String(opacity);
+        card.style.zIndex = String(100 - Math.round(ad * 10));
+        card.classList.toggle('is-center', ad < 0.25);
+      });
+      ticking = false;
+    }
+
+    track.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(applyDepth);
+    });
+    window.addEventListener('resize', applyDepth);
+    requestAnimationFrame(applyDepth);
+
+    document.getElementById('centerBtn').addEventListener('click', () => {
+      const target = cards[1]; // "पाश"
+      target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    });
+  </script>
+</body>
+</html>

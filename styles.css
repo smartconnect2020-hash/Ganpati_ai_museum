@@ -327,10 +327,13 @@ button { touch-action: manipulation; }
   background: var(--color-gold-soft);
 }
 
-/* आयुध-चक्र — items radiate from a center medallion instead of a grid.
-   Each .wheel-node's left/top (%) is computed once in app.js from its
-   index, so the circular layout holds at any .wheel-wrap size — the
-   breakpoint below only changes how big that size is. */
+/* आयुध-चक्र — दोन एककेंद्री रिंगमध्ये (बाहेरची+आतली, प्रत्येकी अर्धी आयुधे)
+   विभागलेली, दोन्ही एकाच सामायिक --wheel-rotation वर फिरणारी — एकच सोपा,
+   सुसंगत ड्रॅग-जेश्चर (झोन-आधारित वेगळं वागणं नाही, ते गोंधळात टाकणारं ठरलं
+   होतं — design-demos/concept-h-mandala.html च्या टेस्टिंगमध्ये). दोन रिंगमुळे
+   प्रत्येक आयुधाभोवती आधीपेक्षा जास्त जागा मिळते — chord-distance पडताळून
+   (520px रुंदीवर आतली रिंग ~74px अंतर, नोड ~62px — पुरेसा गॅप), त्यामुळे नाव
+   आता hover शिवायही कायम दिसू शकतं (खाली .wheel-node-label पहा). */
 .wheel-wrap {
   position: relative;
   width: min(100%, 520px);
@@ -341,32 +344,47 @@ button { touch-action: manipulation; }
 }
 .wheel-wrap:active { cursor: grabbing; }
 
-/* Everything that orbits the center lives in here, so .wheel-center itself
-   (a sibling, not a child) never rotates — a fixed axis with items turning
-   around it. --wheel-rotation is written by bindWheelRotation() in app.js
-   on .wheel-wrap; it inherits down to both this and every .wheel-node-inner
-   below, which applies the exact opposite angle to stay upright. */
+/* Both rings are full-size (inset:0) so each can carry the same rotation
+   transform — but that means the later ring in the DOM would otherwise sit
+   as an invisible full-area layer on top of the earlier ring's nodes and
+   silently swallow clicks meant for it (confirmed via real pointer-event
+   testing on the two-ring demo before this landed here). pointer-events:none
+   on the ring itself, re-enabled only on .wheel-node, keeps each ring a
+   transparent rotation frame that never intercepts a click. */
 .wheel-ring {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
   transform: rotate(var(--wheel-rotation, 0deg));
 }
 
 .wheel-spokes { position: absolute; inset: 0; width: 100%; height: 100%; }
 .wheel-spokes line { stroke: var(--color-border); stroke-width: 1; vector-effect: non-scaling-stroke; }
 
-.wheel-center {
+/* Center is now an active button (not just decoration): tap/Enter suggests a
+   random item. The pulsing gold ring is the only "you can tap this" cue —
+   no text needed, and it respects reduced-motion via the shared pulse-ring
+   keyframe already used on .play-btn.is-playing below. */
+.wheel-center-ring {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 22%;
+  width: 24%;
   aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: conic-gradient(var(--color-gold) calc(var(--wheel-progress, 0) * 1%), var(--color-border) 0);
+  padding: 3px;
+}
+.wheel-center {
+  position: relative;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   background: var(--color-primary);
-  border: 3px solid var(--color-gold);
+  border: 3px solid var(--color-surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -374,6 +392,21 @@ button { touch-action: manipulation; }
   box-shadow: var(--shadow-md);
   font-size: clamp(1.3rem, 6vw, 1.9rem);
   line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+.wheel-center:focus-visible { outline: 3px solid var(--color-gold); outline-offset: 3px; }
+.wheel-center::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-gold);
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .wheel-center::after { animation: pulse-ring 2.6s var(--ease) infinite; }
 }
 
 .wheel-center-img {
@@ -382,14 +415,20 @@ button { touch-action: manipulation; }
   object-fit: contain;
 }
 
+/* Same size on both rings on purpose — a bigger outer / smaller inner circle
+   would visually read as "more important / less important", but the split
+   is only to save space, not a real category (see .wheel-note below). A
+   clamp() floor keeps every node at or above the 44px tap-target minimum
+   regardless of container size. */
 .wheel-node {
   position: absolute;
-  width: clamp(44px, 15%, 64px);
+  width: clamp(44px, 12%, 78px);
   aspect-ratio: 1 / 1;
   transform: translate(-50%, -50%);
   text-decoration: none;
   color: inherit;
   opacity: 0;
+  pointer-events: auto;
 }
 
 /* Counter-rotates by the exact opposite of .wheel-ring's angle (same
@@ -417,7 +456,7 @@ button { touch-action: manipulation; }
 @media (prefers-reduced-motion: no-preference) {
   .wheel-node {
     animation: wheel-node-in var(--dur) var(--ease) both;
-    animation-delay: calc(var(--i, 0) * 45ms);
+    animation-delay: calc(var(--i, 0) * 35ms);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -505,39 +544,88 @@ button { touch-action: manipulation; }
 }
 .wheel-node-visited svg { width: 0.6rem; height: 0.6rem; }
 
-/* Always-visible labels were tried first and measured against the actual
-   layout: at 20 nodes on one ring, neighboring node centers land ~57px
-   apart on a typical phone width, but a legible label needs ~69px+ — so
-   any label wide enough to read WILL overlap its neighbor, for every
-   item, regardless of font-size tuning. That's a geometry problem, not a
-   CSS-tuning one. Fix: the wheel stays a pure visual/number index, and
-   the full, always-legible name list lives in .wheel-legend below (the
-   same split a physical museum floor-map + numbered legend uses) — this
-   chip is now a hover/keyboard-focus-only quick-check, not the only way
-   to read a title. */
+/* Always-visible now — this was hover/focus-only before because 20 nodes on
+   ONE ring left neighbors only ~57px apart (needs ~69px+ for a legible
+   label). Splitting into two 10-node rings roughly doubles that spacing
+   (chord-distance re-verified above), so a small always-on label now fits;
+   max-width + ellipsis is the safety net for the few genuinely long names
+   (इक्षुकार्मुक, वेताळ अस्त्र) instead of assuming every one fits perfectly.
+   .wheel-legend below stays as the full, guaranteed-untruncated list. */
 .wheel-node-label {
   position: absolute;
-  top: 108%;
+  top: 106%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.72rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: var(--color-primary);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 72px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  padding: 0.15rem 0.5rem;
+  padding: 0.1rem 0.4rem;
   box-shadow: var(--shadow-sm);
-  opacity: 0;
   pointer-events: none;
-  transition: opacity var(--dur-fast) var(--ease);
   z-index: 3;
 }
+/* Inner-ring nodes sit at a smaller radius, so their neighbors are closer
+   together — a tighter label budget than the outer ring's. */
+.wheel-node.is-inner .wheel-node-label { max-width: 52px; font-size: 0.58rem; }
 .wheel-node:hover .wheel-node-label,
 .wheel-node:focus-visible .wheel-node-label {
-  opacity: 1;
+  overflow: visible;
+  max-width: none;
+  z-index: 6;
 }
+
+.wheel-status {
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  margin: 0 0 0.3rem;
+}
+
+.wheel-note {
+  text-align: center;
+  max-width: 42ch;
+  margin: 0.7rem auto 0;
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+.wheel-toggle-row { display: flex; justify-content: center; margin: 0.8rem 0 0; }
+.wheel-toggle {
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.5rem 1.05rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-gold);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.wheel-toggle:active { transform: scale(0.96); }
+
+.wheel-reveal {
+  max-width: 340px;
+  margin: 0.7rem auto 0;
+  padding: 0.75rem 0.9rem;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-gold);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-size: 0.88rem;
+  box-shadow: var(--shadow-sm);
+  display: none;
+}
+.wheel-reveal.show { display: block; animation: fade-down var(--dur) var(--ease); }
+.wheel-reveal a { color: var(--color-gold); font-weight: 700; text-decoration: none; }
 
 .wheel-legend {
   list-style: none;
@@ -1069,6 +1157,11 @@ article { text-align: center; }
    wheel plus a redundant list under it. */
 @media (max-width: 600px) {
   .wheel-wrap { display: none; }
+  /* These are wheel-specific controls (rotation note + stop/resume toggle)
+     — meaningless, and the toggle literally empty, once the wheel itself is
+     replaced by the swipeable circle row below. .wheel-status (the visited
+     count) stays visible since it's still true and useful here. */
+  .wheel-note, .wheel-toggle-row { display: none; }
 
   .wheel-legend {
     display: flex;

@@ -30,11 +30,12 @@
       itemNo: (n) => `वस्तू क्र. ${n}`,
       wheelVisited: (n, total) => `${displayNum(n)} / ${displayNum(total)} पाहिले`,
       wheelNote: 'टीप: आतली व बाहेरची रिंग फक्त जागेसाठी आहे — क्रमांकच खरा क्रम दाखवतो, कुठलंही महत्त्व नाही.',
-      wheelStop: '⏸ फिरणं थांबवा',
-      wheelResume: '▶ फिरणं सुरू करा',
+      wheelStop: '⏸ परिक्रमा थांबवा',
+      wheelResume: '▶ परिक्रमा सुरू करा',
       wheelCenterLabel: 'यादृच्छिक आयुध सुचवा',
       wheelToday: 'आजचं आयुध —',
       wheelListen: 'ऐका →',
+      galleryRefNote: 'टीप: ही चित्रे कल्पनाचित्रण/संदर्भासाठी आहेत — तंतोतंत प्रतिकृती नाहीत.',
     },
     en: {
       loading: 'Loading…',
@@ -55,21 +56,31 @@
       itemNo: (n) => `ITEM NO. ${n}`,
       wheelVisited: (n, total) => `${displayNum(n)} / ${displayNum(total)} visited`,
       wheelNote: 'Note: the inner and outer rings are only for spacing — the number is the real order, not importance.',
-      wheelStop: '⏸ Stop rotating',
-      wheelResume: '▶ Start rotating',
+      wheelStop: '⏸ Pause the parikrama',
+      wheelResume: '▶ Begin the parikrama',
       wheelCenterLabel: 'Suggest a random item',
       wheelToday: "Today's item —",
       wheelListen: 'Listen →',
+      galleryRefNote: 'Note: these images are illustrative/reference — not an exact replica.',
     },
   };
 
   const DEVANAGARI_DIGITS = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
 
-  /* design-ref.jpg files are AI-generated multi-view spec sheets (front/side/
-     detail panels + printed English labels/rulers baked into the pixels) —
-     not plain photos. Cropping them with object-fit:cover would randomly cut
-     into that text, so they get a dedicated "show the whole sheet" treatment
-     (see .is-ref in styles.css) instead of the normal cover-crop. */
+  /* design-ref*.jpg/jpeg files are AI-generated multi-view spec sheets
+     (front/side/detail panels + printed English labels/rulers baked into
+     the pixels) — not plain photos. Cropping them with object-fit:cover
+     would randomly cut into that text, so they get a dedicated "show the
+     whole sheet" treatment (see .is-ref in styles.css) instead of the
+     normal cover-crop.
+     Deliberately name-based, not content-inspected: two newer images this
+     session (a labelled multi-panel shield-turnaround vs. a clean single
+     shield render) both had "turnaround" in their original filenames but
+     needed OPPOSITE treatment — so matching on "turnaro" caught the wrong
+     one too. Fixed by renaming only the genuinely multi-panel file to
+     start with "design-ref" (see media/item-011/) instead of guessing from
+     an arbitrary substring; a plain single-subject photo just keeps its
+     own descriptive filename and gets normal cover-crop. */
   function isDesignRef(src) {
     return typeof src === 'string' && src.includes('design-ref');
   }
@@ -407,17 +418,23 @@
               <span class="wheel-legend-thumb">
                 <img class="wheel-legend-img${isDesignRef(thumb) ? ' is-ref' : ''}" src="${thumb}" alt="" loading="lazy" width="72" height="72" />
                 <span class="wheel-legend-num">${displayNum(i + 1)}</span>
-                ${visited}
               </span>
               <span class="wheel-legend-title">${item.title[lang]}</span>
+              ${visited}
             </a>
           </li>
         `;
       })
       .join('');
 
+    /* Hero order: the wheel is this page's signature, most-characteristic
+       visual — it used to render BELOW the decoration video, so a visitor's
+       first impression was a secondary overview clip, not the interactive
+       चक्र itself (flagged in an earlier design audit, never acted on until
+       now). Decoration video moves to the very end instead — a nice-to-have
+       "see the whole shrine" bonus after the primary hero + full item list,
+       not competing with them for first-scroll attention. */
     app.innerHTML = `
-      ${renderDecorationVideo()}
       <section class="home-hero">
         <span class="home-eyebrow">${eyebrow}</span>
         <h1>${meta.site_title[lang]}</h1>
@@ -435,7 +452,7 @@
         </div>
         <span class="wheel-center-ring">
           <button type="button" class="wheel-center" id="wheel-center-btn" aria-label="${escapeHtml(u.wheelCenterLabel)}">
-            <img class="wheel-center-img" src="icons/logo-mark-simple-light.png?v=1" alt="" />
+            <img class="wheel-center-img" src="icons/logo-mark-simple-light.png?v=2" alt="" />
           </button>
         </span>
       </div>
@@ -445,6 +462,7 @@
         <button type="button" class="wheel-toggle" id="wheel-toggle-btn"></button>
       </div>
       <ul class="wheel-legend">${legend}</ul>
+      ${renderDecorationVideo()}
     `;
     bindDecorationVideo();
     bindWheel();
@@ -832,6 +850,11 @@
             .map((_, i) => `<span class="${i === 0 ? 'active' : ''}"></span>`)
             .join('')}</div>`
         : '';
+    // At least one image in this item's gallery is an AI-generated reference
+    // sheet, not a photo of the actual physical piece — say so once, under
+    // the gallery, rather than leaving a visitor to assume it's a real photo.
+    const hasRefImage = images.some(isDesignRef);
+    const galleryNote = hasRefImage ? `<p class="gallery-note">${u.galleryRefNote}</p>` : '';
 
     const guide = item.guide && item.guide[lang];
 
@@ -870,6 +893,7 @@
         <div class="gallery-wrap">
           <div class="gallery" aria-label="Gallery" id="gallery">${galleryImgs}</div>
           ${dots}
+          ${galleryNote}
         </div>
 
         ${

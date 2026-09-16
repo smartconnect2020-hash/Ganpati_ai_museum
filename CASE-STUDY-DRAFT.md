@@ -49,7 +49,11 @@
 - [ ] शस्त्र संहिता AI — तांत्रिक+शास्त्रीय जोड, LinkedIn headline साठी keyword-rich
 
 **केस-स्टडी headline (portfolio scan-title — नाव वेगळं, हे वेगळं; recruiter साठी outcome-descriptive हवं, संशोधनाने सिद्ध — वर बघा):**
-> *"Giving Voice to 20 Sacred Symbols — a solo AI + UX case study"* (offline PWA · QR/NFC · AI-narrated Marathi audio guide)
+
+- [x] ⭐ **अंतिम निवड — Title + Subtitle:**
+  > ## No One Could Explain the Idol's Symbolism Anymore
+  > *How I Gave Our Family's Real Ganpati Decoration an AI-Narrated Voice and a Modern Digital Layer — Solo, Offline-First*
+- [ ] *(पहिला मसुदा, आता superseded):* "Giving Voice to 20 Sacred Symbols — a solo AI + UX case study" (offline PWA · QR/NFC · AI-narrated Marathi audio guide)
 
 ---
 
@@ -123,7 +127,9 @@ Impact       →  Maharashtra मधल्या घरांसाठी / ग�
 
 ### Section 0 — Hook (EN)
 
-# I gave my family's Ganpati idol an audio guide. Every weapon in his hands has its own story.
+# No One Could Explain the Idol's Symbolism Anymore
+
+### How I Gave Our Family's Real Ganpati Decoration an AI-Narrated Voice and a Modern Digital Layer — Solo, Offline-First
 
 *Scan a QR or tap NFC — Marathi audio stories for the 20 ritual weapons/attributes (आयुधे) in Ganpati's hands (Ekadanta, Parashu, Ankusha, Sudarshan Chakra, Khatvanga…), sourced verbatim from the original scripture guide. ₹0 hosting, no framework, works offline.
 

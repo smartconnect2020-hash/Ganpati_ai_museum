@@ -322,6 +322,53 @@ button { touch-action: manipulation; }
   opacity: 0.75;
 }
 
+.decoration-youtube-embed {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  aspect-ratio: 9 / 16;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1.5px solid var(--color-gold);
+  background: #000;
+}
+
+.decoration-youtube-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.decoration-youtube-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.7rem 0 0.3rem;
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--color-gold);
+  border-radius: 999px;
+  background: var(--color-gold-soft);
+  color: var(--color-gold-text);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.decoration-youtube-link:hover,
+.decoration-youtube-link:focus-visible {
+  background: var(--color-gold);
+  color: var(--color-surface);
+}
+
+.decoration-youtube-link svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  flex-shrink: 0;
+}
+
 /* Chromium's native "download" glyph in the controls bar respects
    controlsList="nodownload" already; this just keeps the video from being
    picked up by drag-to-desktop gestures on desktop browsers. */

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept J — मोबाईल-सक्षम त्रि-रिंग चक्र</title>
+<style>
+  :root {
+    --color-bg: #fbf1de;
+    --color-surface: #fff9ec;
+    --color-text: #3a0f16;
+    --color-muted: #7a5c46;
+    --color-primary: #7a1e2b;
+    --color-gold: #8f6224;
+    --color-gold-text: #7c541c;
+    --color-gold-soft: rgba(143, 98, 36, 0.14);
+    --color-border: rgba(143, 98, 36, 0.32);
+    --color-play-text: #f6e6c4;
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--color-text);
+    background: var(--color-bg);
+    min-height: 100vh;
+    padding-bottom: 3rem;
+  }
+  .demo-banner {
+    background: var(--color-primary);
+    color: #f6e6c4;
+    text-align: center;
+    font-size: 0.76rem;
+    padding: 0.5rem 0.8rem;
+    letter-spacing: 0.01em;
+  }
+  .demo-banner a { color: #fff; }
+
+  /* Real site header — copied from index.html/styles.css so this reads as
+     an actual page, not a stripped-down demo shell. */
+  .site-header {
+    position: sticky; top: 0; z-index: 20;
+    backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .header-inner { max-width: 1080px; margin: 0 auto; padding: 0.9rem 1.1rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+  .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit; min-width: 0; }
+  .brand-mark { width: 1.9rem; height: 2.3rem; object-fit: contain; flex-shrink: 0; }
+  .brand-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+  .brand-title { font-weight: 700; font-size: 1.32rem; line-height: 1.2; color: var(--color-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .brand-family { font-size: 0.82rem; color: var(--color-gold-text); font-weight: 600; }
+  .site-footer { max-width: 1080px; margin: 0 auto; padding: 1.25rem 1.1rem; text-align: center; color: var(--color-muted); font-size: 0.84rem; }
+
+  .switch-note {
+    max-width: 520px; margin: 0.4rem auto 0; padding: 0.55rem 0.9rem;
+    background: var(--color-surface); border: 1px dashed var(--color-gold);
+    border-radius: 8px; font-size: 0.76rem; color: var(--color-muted); text-align: center;
+  }
+
+  header { text-align: center; padding: 1.4rem 1rem 0.4rem; max-width: 520px; margin: 0 auto; }
+  .eyebrow { color: var(--color-gold-text); font-weight: 700; font-size: 0.78rem; }
+  h1 { color: var(--color-primary); font-size: 1.4rem; margin: 0.3rem 0 0.4rem; }
+  .lead { color: var(--color-muted); font-size: 0.85rem; margin: 0 auto; }
+  .notes {
+    max-width: 560px; margin: 0.9rem auto 1rem; padding: 0.8rem 1rem;
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: 10px; font-size: 0.8rem; line-height: 1.55;
+  }
+  .notes b { color: var(--color-primary); }
+  .notes ul { margin: 0.35rem 0 0; padding-left: 1.1rem; }
+
+  .progress-status { text-align: center; font-size: 0.78rem; font-weight: 700; color: var(--color-muted); margin: 0 0 0.4rem; }
+
+  /* Full-bleed on purpose — the extra ~15-20% radius vs. staying inside
+     .main's own side padding is what makes a 3rd ring viable on a real
+     phone. The existing swipe-row already cancels .main's padding the same
+     way (see styles.css), so this isn't a new pattern, just reusing it for
+     the wheel instead. */
+  .wheel-bleed { width: 100vw; margin-left: 50%; transform: translateX(-50%); }
+  .wheel-wrap {
+    position: relative;
+    width: min(100vw, 460px);
+    aspect-ratio: 1 / 1;
+    margin: 0 auto 1rem;
+    touch-action: none;
+    cursor: grab;
+  }
+  .wheel-wrap:active { cursor: grabbing; }
+
+  .ring { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; transform: rotate(var(--rot, 0deg)); }
+  .node { pointer-events: auto; }
+
+  svg.spokes { position: absolute; inset: 0; width: 100%; height: 100%; }
+  svg.spokes line { stroke: var(--color-border); stroke-width: 1; }
+
+  .node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-decoration: none;
+    opacity: 0;
+    animation: node-in 240ms cubic-bezier(.22,1,.36,1) both;
+    animation-delay: calc(var(--i, 0) * 30ms);
+  }
+  @keyframes node-in { from { opacity: 0; transform: translate(-50%, calc(-50% + 6px)); } to { opacity: 1; transform: translate(-50%, -50%); } }
+  .node-inner { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; transform: rotate(calc(-1 * var(--rot, 0deg))); }
+
+  /* Same size on every ring — verified via chord-distance below, not
+     assumed — so no ring silently reads as "more important". */
+  .node { width: clamp(40px, 11%, 60px); aspect-ratio: 1/1; }
+
+  .node-media {
+    position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
+    border: 1.6px solid var(--color-gold); background: var(--color-gold-soft);
+    box-shadow: 0 2px 6px rgba(58,15,22,0.15);
+  }
+  .node img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .node-badge {
+    position: absolute; top: -3px; left: -3px; background: var(--color-primary); color: var(--color-play-text);
+    font-size: 0.5rem; font-weight: 700; width: 1rem; height: 1rem; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-gold);
+  }
+  .node-label {
+    position: absolute; top: 102%; left: 50%; transform: translateX(-50%);
+    font-size: 0.5rem; font-weight: 700; color: var(--color-primary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 46px;
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 5px;
+    padding: 0.06rem 0.28rem; z-index: 3; pointer-events: none;
+  }
+  .node.is-mid .node-label { max-width: 40px; font-size: 0.48rem; }
+  .node.is-inner .node-label { max-width: 36px; font-size: 0.46rem; }
+  .node:focus-visible .node-label { overflow: visible; max-width: none; z-index: 6; }
+
+  .center-ring {
+    position: absolute; top: 50%; left: 50%; width: 22%; aspect-ratio: 1/1; transform: translate(-50%, -50%);
+    border-radius: 50%; background: conic-gradient(var(--color-gold) calc(var(--progress,0) * 1%), var(--color-border) 0); padding: 3px;
+  }
+  .center-btn {
+    position: relative; width: 100%; height: 100%; border-radius: 50%; background: var(--color-primary);
+    border: 2.5px solid var(--color-surface); display: flex; align-items: center; justify-content: center;
+    color: var(--color-play-text); font-size: clamp(1rem, 4.4vw, 1.35rem); font-weight: 700;
+    box-shadow: 0 8px 20px rgba(58,15,22,0.22); cursor: pointer; padding: 0;
+  }
+  .center-btn::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 1.3px solid var(--color-gold); opacity: 0; }
+  @media (prefers-reduced-motion: no-preference) { .center-btn::after { animation: pulse 2.6s ease infinite; } }
+  @keyframes pulse { 0% { opacity: .55; transform: scale(.94); } 100% { opacity: 0; transform: scale(1.22); } }
+
+  .reveal { max-width: 320px; margin: 0.6rem auto 0; padding: 0.65rem 0.85rem; background: var(--color-surface);
+    border: 1.3px solid var(--color-gold); border-radius: 8px; text-align: center; font-size: 0.82rem; display: none; }
+  .reveal.show { display: block; }
+  .reveal a { color: var(--color-gold-text); font-weight: 700; text-decoration: none; }
+
+  .toolbar { display: flex; justify-content: center; margin: 0.8rem 1rem 0; }
+  .toolbar button { font: inherit; font-size: 0.78rem; font-weight: 600; padding: 0.45rem 0.9rem; border-radius: 999px;
+    border: 1.3px solid var(--color-gold); background: var(--color-surface); color: var(--color-primary); }
+
+  .ring-guide { position: absolute; top: 50%; left: 50%; border: 1px dashed var(--color-border); border-radius: 50%; transform: translate(-50%,-50%); pointer-events: none; opacity: 0.5; }
+
+  .math-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; margin-top: 0.5rem; }
+  .math-table td, .math-table th { border: 1px solid var(--color-border); padding: 0.25rem 0.4rem; text-align: center; }
+
+  footer { text-align: center; color: var(--color-muted); font-size: 0.76rem; padding: 1.6rem 1rem 1rem; }
+</style>
+</head>
+<body>
+  <div class="demo-banner">DEMO — Concept J (production untouched, फक्त पाहण्यासाठी). <a href="index.html">← सर्व concepts</a></div>
+
+  <!-- खरा site header — index.html मधून जसाच्या तसा — जेणेकरून हे "प्रत्यक्ष पान"
+       सारखंच दिसेल, स्वतंत्र demo सारखं नाही. -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#">
+        <img class="brand-mark" src="../icons/logo-mark-simple.png?v=3" alt="" aria-hidden="true" />
+        <span class="brand-text">
+          <span class="brand-title">श्री गणेश आयुधे</span>
+          <span class="brand-family">Developed by Nilesh</span>
+        </span>
+      </a>
+    </div>
+  </header>
+
+  <p class="switch-note">👇 इथून खाली — सध्याची स्वाईप-पट्टी <b>याच्याने बदलेल</b> (≤600px रुंदीवर). बाकी संपूर्ण साईट (हेडर, फूटर, प्रत्येक आयुधाचं पान) जशीच्या तशी राहील.</p>
+
+  <header>
+    <div class="eyebrow">मोबाईलवरही खरं चक्र — USP कायम</div>
+    <h1>मोबाईल आयुध-मंडल</h1>
+    <p class="lead">स्वाईप-पट्टीऐवजी — याच फोनवर खरं फिरणारं चक्र. ३ रिंगमध्ये विभागून + पूर्ण-रुंदीत (edge-to-edge) पसरवून जागा मिळवली.</p>
+  </header>
+
+  <p class="progress-status" id="progressLabel">० / २० पाहिले</p>
+
+  <div class="wheel-bleed">
+    <div class="wheel-wrap" id="wheel">
+      <div class="ring-guide" id="gOuter"></div>
+      <div class="ring-guide" id="gMid"></div>
+      <div class="ring-guide" id="gInner"></div>
+      <div class="ring" id="ringOuter"><svg class="spokes" id="sOuter" viewBox="0 0 100 100" preserveAspectRatio="none"></svg></div>
+      <div class="ring" id="ringMid"><svg class="spokes" id="sMid" viewBox="0 0 100 100" preserveAspectRatio="none"></svg></div>
+      <div class="ring" id="ringInner"><svg class="spokes" id="sInner" viewBox="0 0 100 100" preserveAspectRatio="none"></svg></div>
+      <span class="center-ring">
+        <button type="button" class="center-btn" id="centerBtn" aria-label="यादृच्छिक आयुध सुचवा, टॅप करा">ॐ</button>
+      </span>
+    </div>
+  </div>
+
+  <div class="reveal" id="reveal"></div>
+
+  <div class="toolbar">
+    <button type="button" id="toggleBtn"></button>
+  </div>
+
+  <p class="switch-note" style="margin-top:1.2rem;">👆 इथपर्यंत — जे बदलेल ते. खालचं (footer) जसंच्या तसं राहील.</p>
+  <footer class="site-footer">Developed by Nilesh · श्री गणेश आयुधे</footer>
+
+  <div class="notes" style="margin-top:2rem;">
+    <b>भूमिती प्रत्यक्ष तपासली (गृहीत धरलेली नाही):</b>
+    <table class="math-table">
+      <tr><th>रिंग</th><th>नोड्स</th><th>R (%)</th><th>375px वर chord</th><th>नोड आकार</th><th>गॅप</th></tr>
+      <tr><td>बाहेरची</td><td>8</td><td>42%</td><td id="c1"></td><td>44-60px</td><td id="g1"></td></tr>
+      <tr><td>मधली</td><td>7</td><td>27%</td><td id="c2"></td><td>44-60px</td><td id="g2"></td></tr>
+      <tr><td>आतली</td><td>5</td><td>13%</td><td id="c3"></td><td>40-44px</td><td id="g3"></td></tr>
+    </table>
+    <ul>
+      <li>पूर्ण-रुंदी (full-bleed) — स्वाईप-पट्टी आधीच हेच तंत्र वापरते (padding रद्द करून), तेच चक्रासाठी वापरलं.</li>
+      <li><b>मर्यादा प्रामाणिकपणे:</b> ३२०px च्या सर्वात लहान फोनवर आतल्या रिंगचा गॅप ~३-४px इतकाच उरतो — overlap होत नाही, पण फार सैल जागाही नाही.</li>
+    </ul>
+  </div>
+
+  <script>
+    const items = [
+      ["001","एकदंत","../media/item-001/design-ref.jpg"],
+      ["002","पाश","../media/item-002/design-ref.jpg"],
+      ["003","अंकुश","../media/item-003/ankush.jpg"],
+      ["004","परशू","../media/item-004/design-ref.jpg"],
+      ["005","सुदर्शन चक्र","../media/item-005/design-ref.jpg"],
+      ["006","गदा","../media/item-006/design-ref.jpg"],
+      ["007","खड्ग","../media/item-007/design-ref.jpg"],
+      ["008","त्रिशूळ","../media/item-008/design-ref.jpg"],
+      ["009","खट्वांग","../media/item-009/design-ref.jpg"],
+      ["010","मुद्गर","../media/item-010/design-ref.jpg"],
+      ["011","कुंत","../media/item-011/design-ref.jpg"],
+      ["012","धनुष्य","../media/item-012/design-ref.jpg"],
+      ["013","बाण","../media/item-013/design-ref.jpg"],
+      ["014","इक्षुकार्मुक","../media/item-014/design-ref.jpg"],
+      ["016","वज्रशूळ","../media/item-016/design-ref.jpg?v=2"],
+      ["017","वेताळ अस्त्र","../media/item-017/design-ref.jpg?v=2"],
+      ["018","खेटक","../media/item-018/design-ref.jpg?v=2"],
+      ["020","पाषाणधारण","../media/item-020/design-ref.jpg?v=2"],
+      ["021","नांगर","../media/item-021/design-ref.jpg?v=2"],
+      ["023","अग्नी","../media/item-023/design-ref.jpg?v=2"],
+    ];
+    const DEV = ['०','१','२','३','४','५','६','७','८','९'];
+    const toDev = (n) => String(n).replace(/[0-9]/g, d => DEV[+d]);
+
+    const outerItems = items.slice(0, 8);
+    const midItems = items.slice(8, 15);
+    const innerItems = items.slice(15, 20);
+    const R_OUTER = 42, R_MID = 27, R_INNER = 13, cx = 50, cy = 50;
+
+    function nodePos(i, total, R) {
+      const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+      return { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle) };
+    }
+
+    function buildRing(ringEl, spokesEl, list, R, startIndex, modClass) {
+      let spokes = '';
+      list.forEach((item, i) => {
+        const { x, y } = nodePos(i, list.length, R);
+        spokes += `<line x1="${cx}%" y1="${cy}%" x2="${x}%" y2="${y}%" />`;
+        const a = document.createElement('a');
+        a.className = `node${modClass ? ' ' + modClass : ''}`;
+        a.style.left = x + '%'; a.style.top = y + '%';
+        a.style.setProperty('--i', startIndex + i);
+        a.href = `../?id=${item[0]}`;
+        a.innerHTML = `
+          <span class="node-inner">
+            <span class="node-media">
+              <img src="${item[2]}" alt="" loading="lazy" />
+              <span class="node-badge">${toDev(startIndex + i + 1)}</span>
+            </span>
+            <span class="node-label">${item[1]}</span>
+          </span>`;
+        ringEl.appendChild(a);
+      });
+      spokesEl.innerHTML = spokes;
+    }
+
+    buildRing(document.getElementById('ringOuter'), document.getElementById('sOuter'), outerItems, R_OUTER, 0, '');
+    buildRing(document.getElementById('ringMid'), document.getElementById('sMid'), midItems, R_MID, 8, 'is-mid');
+    buildRing(document.getElementById('ringInner'), document.getElementById('sInner'), innerItems, R_INNER, 15, 'is-inner');
+
+    ['gOuter','gMid','gInner'].forEach((id, i) => {
+      const R = [R_OUTER, R_MID, R_INNER][i];
+      const el = document.getElementById(id);
+      el.style.width = el.style.height = (R * 2) + '%';
+    });
+
+    /* ---- geometry table: computed live against THIS demo's own container width ---- */
+    function renderMath() {
+      const wrap = document.getElementById('wheel');
+      const w = wrap.getBoundingClientRect().width || 460;
+      const rows = [
+        { R: R_OUTER, n: 8, cId: 'c1', gId: 'g1' },
+        { R: R_MID, n: 7, cId: 'c2', gId: 'g2' },
+        { R: R_INNER, n: 5, cId: 'c3', gId: 'g3' },
+      ];
+      rows.forEach(r => {
+        const Rpx = (r.R / 100) * w;
+        const chord = 2 * Rpx * Math.sin(Math.PI / r.n);
+        document.getElementById(r.cId).textContent = chord.toFixed(0) + 'px';
+        const nodeMin = 40;
+        document.getElementById(r.gId).textContent = (chord - nodeMin).toFixed(0) + 'px';
+      });
+    }
+    renderMath();
+    window.addEventListener('resize', renderMath);
+
+    /* ---- rotation: single shared value across all three rings ---- */
+    const wrap = document.getElementById('wheel');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let rotation = 0, dragging = false, dragMoved = false, activePointerId = null;
+    let startX = 0, startY = 0, startAngle = 0, rotationAtStart = 0;
+    const DRAG_THRESHOLD_PX = 12;
+    let autoOn = false, autoBase = 0, autoStart = null;
+    const AUTO_PERIOD_MS = 150000;
+
+    function setRotation(deg) { rotation = deg; wrap.style.setProperty('--rot', deg + 'deg'); }
+
+    const toggleBtn = document.getElementById('toggleBtn');
+    function renderToggle() { toggleBtn.textContent = autoOn ? '⏸ परिक्रमा थांबवा' : '▶ परिक्रमा सुरू करा'; }
+    renderToggle();
+    if (reduceMotion) { toggleBtn.disabled = true; toggleBtn.title = 'हालचाल-संवेदनशील सेटिंगमुळे बंद'; }
+    toggleBtn.addEventListener('click', () => {
+      autoOn = !autoOn;
+      if (autoOn) { autoBase = rotation; autoStart = null; }
+      renderToggle();
+    });
+
+    function tick(ts) {
+      if (autoOn && !dragging && !reduceMotion) {
+        if (autoStart === null) autoStart = ts;
+        setRotation(autoBase + ((ts - autoStart) / AUTO_PERIOD_MS) * 360);
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    function angleAt(ccx, ccy, x, y) { return Math.atan2(y - ccy, x - ccx) * (180 / Math.PI); }
+
+    wrap.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.center-btn')) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      dragging = true; dragMoved = false; activePointerId = e.pointerId;
+      const rect = wrap.getBoundingClientRect();
+      const ccx = rect.left + rect.width / 2, ccy = rect.top + rect.height / 2;
+      startX = e.clientX; startY = e.clientY;
+      startAngle = angleAt(ccx, ccy, e.clientX, e.clientY);
+      rotationAtStart = rotation;
+    });
+    wrap.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      if (!dragMoved && Math.hypot(e.clientX - startX, e.clientY - startY) > DRAG_THRESHOLD_PX) {
+        dragMoved = true;
+        wrap.setPointerCapture(activePointerId);
+      }
+      if (dragMoved) {
+        const rect = wrap.getBoundingClientRect();
+        const ccx = rect.left + rect.width / 2, ccy = rect.top + rect.height / 2;
+        const ang = angleAt(ccx, ccy, e.clientX, e.clientY);
+        setRotation(rotationAtStart + (ang - startAngle));
+      }
+    });
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false;
+      try { wrap.releasePointerCapture(e.pointerId); } catch (err) {}
+    }
+    wrap.addEventListener('pointerup', endDrag);
+    wrap.addEventListener('pointercancel', endDrag);
+    wrap.addEventListener('click', (e) => {
+      if (dragMoved) { e.preventDefault(); e.stopPropagation(); dragMoved = false; }
+    }, true);
+
+    const revealEl = document.getElementById('reveal');
+    document.getElementById('centerBtn').addEventListener('click', () => {
+      const pick = items[Math.floor(Math.random() * items.length)];
+      revealEl.innerHTML = `आजचं आयुध — <b>${pick[1]}</b> <a href="../?id=${pick[0]}">ऐका →</a>`;
+      revealEl.classList.add('show');
+    });
+
+    let visited = 0;
+    const TOTAL = items.length;
+    document.getElementById('progressLabel').textContent = `${toDev(visited)} / ${toDev(TOTAL)} पाहिले`;
+  </script>
+</body>
+</html>

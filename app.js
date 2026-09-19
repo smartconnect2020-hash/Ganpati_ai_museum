@@ -288,6 +288,9 @@
         : `Developed by ${data.meta.family_name || ''} — for personal viewing only. Do not download or republish.`;
     const srcHd = (dv.sources && dv.sources.hd) || dv.src || '';
     const srcSd = (dv.sources && dv.sources.sd) || '';
+    const yt = dv.youtube_teaser;
+    const ytUrl = yt && yt.url ? yt.url : '';
+    const ytLabel = yt && yt.label ? yt.label[lang] || yt.label.mr : '';
     return `
       <section class="decoration-section" aria-label="${escapeHtml(title)}">
         <h2 class="decoration-title">${escapeHtml(title)}</h2>
@@ -301,6 +304,8 @@
           playsinline
           data-src-hd="${srcHd}"
           data-src-sd="${srcSd}"
+          data-yt-url="${escapeHtml(ytUrl)}"
+          data-yt-label="${escapeHtml(ytLabel)}"
           ${dv.poster ? `poster="${dv.poster}"` : ''}
         ></video>
         ${caption ? `<p class="decoration-caption">${escapeHtml(caption)}</p>` : ''}
@@ -326,7 +331,48 @@
 
     video.addEventListener('error', () => {
       const section = video.closest('.decoration-section');
-      if (!section || section.querySelector('.decoration-error')) return;
+      if (!section || section.querySelector('.decoration-error, .decoration-youtube-embed')) return;
+
+      /* No local file yet (aaras.mp4 missing) — if a YouTube teaser is
+         configured, embed it inline instead of the old bare "coming soon"
+         text, so visitors get something actually playable. Once the real
+         local file is added, this whole branch stops firing (the <video>
+         loads fine) and the plain text fallback below is what's left for
+         the case where neither a local file nor a teaser exists. */
+      const ytUrl = video.dataset.ytUrl;
+      const ytLabel = video.dataset.ytLabel;
+      if (ytUrl) {
+        const videoId = (
+          ytUrl.match(/shorts\/([\w-]+)/) ||
+          ytUrl.match(/embed\/([\w-]+)/) ||
+          ytUrl.match(/[?&]v=([\w-]+)/) ||
+          []
+        )[1];
+        const wrap = document.createElement('div');
+        wrap.className = 'decoration-youtube-embed';
+        if (videoId) {
+          const iframe = document.createElement('iframe');
+          iframe.src = `https://www.youtube.com/embed/${videoId}`;
+          iframe.title = section.getAttribute('aria-label') || 'YouTube video';
+          iframe.loading = 'lazy';
+          iframe.allow =
+            'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+          iframe.allowFullscreen = true;
+          wrap.appendChild(iframe);
+        }
+        video.replaceWith(wrap);
+        if (ytLabel) {
+          const link = document.createElement('a');
+          link.className = 'decoration-youtube-link';
+          link.href = ytUrl;
+          link.target = '_blank';
+          link.rel = 'noopener';
+          link.innerHTML = `${ICON.play}<span>${escapeHtml(ytLabel)}</span>`;
+          wrap.insertAdjacentElement('afterend', link);
+        }
+        return;
+      }
+
       const note = document.createElement('p');
       note.className = 'decoration-error';
       note.textContent =

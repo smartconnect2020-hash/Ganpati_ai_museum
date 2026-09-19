@@ -24,6 +24,13 @@
       "copyright": {
         "mr": "",
         "en": ""
+      },
+      "youtube_teaser": {
+        "url": "https://www.youtube.com/shorts/T82-4g4zzik",
+        "label": {
+          "mr": "YouTube वर उघडा (Like/Subscribe करा)",
+          "en": "Open on YouTube (Like & Subscribe)"
+        }
       }
     }
   },

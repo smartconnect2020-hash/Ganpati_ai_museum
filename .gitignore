@@ -23,6 +23,13 @@ icons/_ai-kalash-cutout.png
 icons/_grid1.jpeg
 icons/_grid2.png
 
+# Raw home-decoration photos for the case study — this repo is PUBLIC, and
+# these show interior/personal spaces. Keep local-only until the user
+# explicitly picks specific images to publish (see CASE-STUDY-DRAFT.md's
+# photo-placeholder table).
+case study photo/
+case-study-assets/
+
 # Editor
 .vscode/
 .idea/

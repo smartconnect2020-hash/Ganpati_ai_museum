@@ -16,21 +16,29 @@
 
 ---
 
-## फोटो / व्हिज्युअल्स — काय हवं
+## फोटो / व्हिज्युअल्स — काय हवं आणि कुठल्या नावाने ठेवायचं
 
-तयारीचे rough फोटो अजून जोडायचे आहेत — प्रकाशित करण्याआधी प्रत्येक `[PHOTO: ...]` जागी खरा फोटो टाका, रिकामी जागा किंवा stock फोटो नको (Section 8 च्या प्रामाणिकपणाच्या भावनेशी विसंगत होईल).
+> संशोधनातलं तत्त्व: *"विझुअल्स सजावट नाहीत, पुरावा आहेत — caption शिवाय अर्धवट."* ([IxDF — Picture Perfect](https://www.interaction-design.org/literature/article/how-to-create-visuals-for-your-ux-case-study)) म्हणून प्रत्येक स्लॉटला **निश्चित फाइलनाव + caption** दिलंय — फोटो त्याच नावाने `case-study-assets/final/` मध्ये ठेवा (rename करून), की तो थेट योग्य जागी बसेल. रिकामी जागा किंवा stock फोटो नको (Section 8 च्या प्रामाणिकपणाशी विसंगत).
 
-- **Hook कव्हर** — पूर्ण सजलेला मखर + मूर्ती ✅ मिळालं
-- **सुरुवात (Section 2)** — घरचा देव्हारा वाइड शॉट + `ankush.jpg` चा खरा कुटुंब-फोटो ✅ मिळालं
-- **Design decisions** — redesign च्या ३ संकल्पनांची तुलना, जुनं vs नवं QR, आयुध-चक्र GIF, जुना-नवा लोगो 🔲
-- **AI workflow** — Claude Code टर्मिनल स्क्रीनशॉट (ऐच्छिक) 🔲
-- **सजावट आरास** — मखर-उभारणीचे फोटो ✅ मिळालं, curate केलं
-- **Testing (Section 7)** — पाहुणे स्कॅन करतानाचा फोटो 🔲 guest testing नंतर
-- **प्रिंट** — छापलेली QR कार्ड्स + NFC क्लोज-अप 🟡 अंशतः
-- **भौतिक निर्मिती** — raw 3D-प्रिंट, रंगवलेली तयार वस्तू, product shots ✅ मिळालं
-- **Cover/hero** — 1200×630 social-share इमेज 🔲
+| स्लॉट | ठेवायचं फाइलनाव | Caption (draft) | स्थिती |
+|---|---|---|---|
+| Hook कव्हर | `hero-cover.jpg` | "आमच्या घरचा मखर — बाप्पा विराजमान, २० आयुधं QR-लेबलसह" | ✅ मिळालं (`10-HERO-mandap-complete-ganpati.jpg` वरून copy करा) |
+| Section 2 — देव्हारा | `section2-devhara-wide.jpg` | "देव्हारा — प्रत्येक आयुध वेगळं दिसतं असा वाइड शॉट" | ✅ मिळालं |
+| Section 2 — खरा फोटो | `section2-ankush-family.jpg` | "अंकुश — आमच्या घरचा खरा फोटो (उरलेले AI-संदर्भचित्र आहेत)" | ✅ existing (`ankush.jpg`) |
+| Decision 2 — पॅलेट | `decision-palette-3concepts.jpg` | "३ संकल्पना — संग्रहालय फलक, पूजा पत्रिका (निवडलेली), दिवा प्रकाश" | 🔲 तुम्ही ठेवा |
+| Decision 9 — QR | `decision-qr-before-after.jpg` | "जुनं (गोल modules, मध्यभागी आयकॉन) vi नवं (चौरस, सील बाहेर)" | 🔲 तुम्ही ठेवा |
+| Decision 12 — आयुध-चक्र | `decision-ayudh-chakra.gif` किंवा `.jpg` | "फिरतं मंडल — desktop वर लाइव्ह" | 🔲 मी screen-recording काढून देऊ शकतो, सांगा |
+| Decision 13 — लोगो | `decision-logo-before-after.jpg` | "जुना कलश-आयकॉन vs नवा अंकुश-Play मार्क" | 🔲 मी काढून देऊ शकतो |
+| Section 6 — workflow | `workflow-terminal.jpg` | "Claude Code टर्मिनल — काम करतानाचा क्षण (ऐच्छिक)" | 🔲 ऐच्छिक |
+| Decision 14 — raw 3D-प्रिंट | `fabrication-01-raw-print.jpg` | "3D-प्रिंट, अजून रंग नाही" | ✅ मिळालं (`01`/`02` वरून) |
+| Decision 14 — रंगकाम | `fabrication-02-painted.jpg` | "acrylic रंगकाम पूर्ण झालेली वस्तू" | ✅ मिळालं (`04` वरून) |
+| Decision 14 — product shots | `fabrication-03-product-*.jpg` | "प्रत्येक आयुध, स्वतःच्या QR-लेबलसह" | ✅ मिळालं (`11`, `12` वरून) |
+| सजावट-आरास प्रवास | `decoration-mandap-0N.jpg` (N=1…5) | "मखर उभारणी — कच्ची रचना ते पूर्ण, ३ दिवसांत" | ✅ मिळालं, curate केलं |
+| Section 7 — testing | `testing-guest-scan.jpg` | "पाहुणा प्रत्यक्ष QR स्कॅन करताना" | 🔲 guest testing नंतर |
+| प्रिंट close-up | `print-qr-cards-closeup.jpg` | "छापलेली QR कार्ड्स + NFC टॅग" | 🟡 अंशतः |
+| Cover/hero (social) | `cover-social-1200x630.jpg` | — (मजकूर नाही, फक्त share-preview) | 🔲 तुम्ही ठेवा |
 
-फोटो-tracking चा तपशीलवार टेबल (कुठला फोटो कुठल्या फाइलमध्ये, काय पडताळलं) [CASE-STUDY-NOTES.md](CASE-STUDY-NOTES.md) मध्ये.
+फोटो-tracking चा जुना तपशीलवार टेबल (verification-history सह) [CASE-STUDY-NOTES.md](CASE-STUDY-NOTES.md) मध्ये कायम आहे.
 
 ---
 
@@ -66,6 +74,22 @@ Results      →  ✅ २०/२० आयटम्सचा खरा आवा
                 stress-test, live site) पूर्ण
 Impact       →  Maharashtra मधल्या घरांसाठी / गणेशोत्सव मंडळांसाठी productizable template
 ```
+
+### 🧭 समस्या-चौकट — 5W1H
+
+> पत्रकारितेतून UX मध्ये आलेली चौकट — कुठलाही कोन सुटू नये म्हणून. *(संशोधन: [Orbix — 5 W's in UX Design](https://www.orbix.studio/blogs/5-ws-in-ux-design), [UXMock — 5W1H Framework](https://uxmock.medium.com/the-5w1h-framework-a-designers-secret-weapon-for-problem-solving-88e12b7c7759))*
+
+| | |
+|---|---|
+| **Who (कोण)** | Users: गणेशोत्सवात घरी येणारे पाहुणे (वयोगट ८-८०) + बाहेरगावचे नातेवाईक जे प्रत्यक्ष येऊ शकत नाहीत. Maker: मी, एकटा — non-technical कुटुंबीय हा दुसरा stakeholder (content-editor) |
+| **What (काय)** | गणपतीच्या मूर्तीतल्या २० आयुधांची शास्त्रीय/पौराणिक माहिती — मजकूर + मराठी ऑडिओ, QR/NFC ने उघडणारी |
+| **When (कधी)** | गणेशोत्सव २०२६ (सप्टेंबर) साठी बांधलं — आरास ठरवल्यापासून (ऑगस्ट) ते उत्सवाच्या आधी लाइव्ह होईपर्यंत, टप्प्याटप्प्याने |
+| **Where (कुठे)** | घरचा मखर (भौतिक जागा) + ऑफलाइन-first PWA (डिजिटल जागा) — घरात patchy WiFi असूनही चालायला हवं |
+| **Why (का)** | गाईड-ग्रंथ कपाटात बंद राहतो, उत्सवाच्या गडबडीत कुणी वाचत नाही; बाहेरगावच्या नातेवाईकांपर्यंत ही माहिती पोचतच नाही; काहींना (वयस्कर/लहान मुलं) वाचणं अवघड वाटतं |
+| **How (कसं)** | QR कोड (प्रत्येक आयुधासाठी स्वतंत्र) + AI-कथन (मजकूर verbatim, आवाज TTS) + मोफत वेबसाइट (GitHub Pages) + SEO/Analytics — सर्व एकट्याने, Claude च्या मदतीने |
+
+**औपचारिक Problem Statement (NN/g पॅटर्न — user + need + insight):**
+> गणेशोत्सवात घरी येणारे पाहुणे आणि बाहेरगावचे नातेवाईक यांना गणपतीच्या आयुधांमागचा अर्थ समजून घ्यायचा आहे, **कारण** सध्याचा गाईड-ग्रंथ वाचायला वेळ/इच्छा नाही, आणि जे प्रत्यक्ष येऊ शकत नाहीत त्यांच्यापर्यंत तो पोचतच नाही.
 
 ---
 

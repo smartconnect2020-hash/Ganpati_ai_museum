@@ -78,18 +78,15 @@ Impact       →  A productizable template for Maharashtra households /
                 Ganeshotsav community mandals
 ```
 
-### 🧭 Problem frame — 5W1H (only what TL;DR doesn't already cover)
+### 🧭 When, where, and what for — really
 
-> *(Research: [Orbix — 5 W's in UX Design](https://www.orbix.studio/blogs/5-ws-in-ux-design))*
+The timing was simple — Ganeshotsav 2026 was coming up, and this had to be live sometime between deciding on the decoration (August) and the festival starting. The "where" is a little more interesting, because this was built for two places at once: the actual mandap at home, and an offline-first PWA that has to keep working even on patchy home WiFi.
 
-| | |
-|---|---|
-| **When** | Ganeshotsav 2026 — from deciding on the decoration (August) to going live before the festival |
-| **Where** | The home mandap (physical) + an offline-first PWA (digital) — has to work even on patchy home WiFi |
-| **Why** | The guide-text stays shut in a cupboard; it never reaches relatives who live elsewhere; some guests find reading it hard |
+And "why" doesn't fit in one line, but here's an attempt: the guide-text stays shut in a cupboard, it never reaches relatives who live elsewhere, and even for the ones who do read it, some find it hard going. Put more formally —
 
-**Problem Statement (NN/g pattern — user + need + insight):**
 > Guests visiting for Ganeshotsav, and relatives who live too far away to visit, want to understand the meaning behind Ganpati's ritual weapons/attributes, **because** the current guide-text takes time and inclination to read that people don't have, and it simply never reaches the ones who can't be there in person.
+
+*(5W1H framework — [Orbix](https://www.orbix.studio/blogs/5-ws-in-ux-design); the line above follows NN/g's "user + need + insight" pattern.)*
 
 ---
 
@@ -107,17 +104,21 @@ But reading plain text turned out to be hard for some people — especially olde
 
 ---
 
-## Section 3 — Why this isn't a solved problem (constraints shaped the design)
+## Section 3 — Why this isn't a "solved problem"
 
-| Constraint | Why it matters | Design implication |
-|---|---|---|
-| **Budget: ₹0 hosting** | Has to be affordable for any household | GitHub Pages (free, auto-HTTPS); QR codes generated in-house with Python; NFC ~₹15/tag |
-| **Content editor: a non-technical family member** | Text has to be editable without me | A single `data.json` (plain text file) + Notepad + a jsonlint.com check + a 3-minute flow documented in the README |
-| **Guest ages 8 to 80** | The UI has to work for every generation | Marathi by default, system-ui font, large tap targets (the "mudra" Play button is 80px, ±10s skip is 48px — everything ≥44px) |
-| **Devices: iPhone 6 through 15, budget Android** | Can't assume modern NFC | QR is always primary, NFC secondary; a placard note for older iPhones |
-| **Patchy home WiFi** | Has to work without the internet | PWA + Service Worker, cache-first; photos/audio/fonts go offline after the first visit |
-| **Religious + scriptural text — accuracy is sensitive** | One changed word changes the meaning | Text is **verbatim** from the original guide-text; each aayudh's original scriptural reference (Mudgala Purana, etc.) is shown on its page |
-| **One scan = one object** | No confusing the guest | Removed "see other items"; QR and NFC both resolve to the same URL (ends the double-play conflict) |
+This was never just a technical showcase — every decision below traces back to a real limit, and that limit is what pushed the design in a particular direction.
+
+The first limit was money — spending on hosting for a home project wasn't something I could justify, and if any other household wanted to use this too, the same had to hold for them. So ₹0 hosting became a hard rule — GitHub Pages (free, auto-HTTPS), QR codes generated in-house with Python, and NFC tags costing only ~₹15 each.
+
+Second — I won't always be the one maintaining this; someone else in the family needs to be able to edit the text tomorrow, and that person isn't technical. So no heavyweight CMS or database — a single `data.json` file, editable straight in Notepad, a jsonlint.com check to catch mistakes, and a three-minute flow written into the README.
+
+Guests range from age 8 to 80 — meaning the UI couldn't be built for just one generation. Marathi stayed the default language, the font stayed on system-ui, and tap targets got sized up (the "mudra" Play button is 80px, the ±10s skip is 48px — everything at least 44px). And phones aren't uniform either — someone's on an iPhone 6, someone else on a budget Android — so modern NFC couldn't be assumed. QR stayed primary, NFC secondary, with a simple placard note for older iPhones.
+
+Home WiFi is unreliable some days — so this couldn't depend on the internet. Built it as a PWA with a Service Worker, cache-first — once you've visited once, the photos, audio, and fonts are all saved offline.
+
+The most sensitive limit was the text itself — this is religious and scriptural material, and one changed word changes the meaning. So the text stayed verbatim from the original guide-text, and each aayudh's original scriptural reference (Mudgala Purana, etc.) is shown right on its page — so if anyone ever questions it, the source is right there.
+
+And finally, one simple rule I set for myself: one scan means one object, nothing more confusing than that. So options like "see other items" got removed, and QR and NFC both resolve to the same URL — which also quietly ended the problem of two audios playing at once.
 
 ---
 
@@ -287,6 +288,28 @@ I built this whole thing solo — but "solo" doesn't mean without AI. If anythin
 
 3. **"Isn't using an AI voice instead of a human one contradictory — in a project meant to preserve tradition?"**
    The original plan was a human voice. But recording 20 aayudhe at a consistent quality, solo, wasn't practical. **The choice:** kept the text 100% verbatim from the original scripture (authenticity of the content), used AI for the voice but added an accuracy check — STT cross-check — for the voice's reliability. *"Tradition was preserved in the text; technology was used to deliver it."*
+
+### 🎤 Other questions this project comes up in — and answers that aren't generic
+
+> Not every interview question is about AI — some are just an interviewer being skeptical of a solo project. Each answer below is anchored to one real moment in the project, not stock advice.
+
+1. **"Why solo? Wouldn't a team have helped?"**
+   Maybe — but a team wouldn't have caught a QR failing to scan under stress-testing and re-run the test myself within the hour, or reverted a sequential-id "cleanup" the moment it started breaking scans. Working solo means no middleman between a decision and its consequence, so mistakes surface fast and get fixed fast. The real cost is obvious too — no second pair of eyes — which is exactly why I leaned on Claude's Browser tool to check the accessibility tree itself, and on running my own honest self-review, as a deliberate substitute.
+
+2. **"This is built for one household — how do you argue it 'scales' in front of a company?"**
+   I'd flip the question: I put this much care into a single non-technical user — a 3-minute content-editing flow, a hard rule about never changing an item id, a separate icon crop for every size that needed one — precisely because that same discipline is what won't break if it's applied to 100 households, or a whole Ganeshotsav community mandal. Scale is something you add later; getting it right for one real, demanding user first is the actual foundation.
+
+3. **"Guest testing hasn't even happened yet — so how can you claim this 'works'?"**
+   I don't. Section 7 deliberately leaves the user-metrics table marked ❗ and empty — not one number in there is a guess. What I *can* claim is narrower: the technical core (QR decode, stress-testing, SEO/structured data — independently verified by Google's own Rich Results Test) is solid. Not conflating "this is technically sound" with "people find this useful" is the honest position — and, per the research I did on this, honesty is exactly what impresses a recruiter more than polish does.
+
+4. **"What's the biggest mistake you made that you could have avoided?"**
+   Trying to make the item ids sequential "for tidiness" (Section 8 #9). Changed them to close the gaps, and six items' QR/NFC tags were already printed against the old ones — scans started landing on the wrong item. It was avoidable with one rule set up front: never change a number tied to a physical object. That rule exists now — it just took a mistake to learn it.
+
+5. **"If you started over, what would you do differently?"**
+   I'd test the aayudh-chakra on mobile earlier. The overlap problem at 375px surfaced late, close to shipping — caught in time, but only by luck. Testing each of the 9 design-demos concepts on mobile as I built them would have saved a whole extra pass.
+
+6. **"Why Marathi-first? Wouldn't starting in English reach a bigger audience?"**
+   Because the real user — the guest at home, the relative living elsewhere — thinks and reads and listens in Marathi. Starting in English would have made that exact person secondary in their own project. The English toggle already exists in the site (currently hidden, waiting on the content) — but the priority never got flipped, because sidelining the real user for "wider reach" felt like the wrong trade.
 
 ### 🎙️ Voice selection — how much was actually tried (verified from the `audio-drafts/` folder in the repo)
 

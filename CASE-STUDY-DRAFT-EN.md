@@ -236,15 +236,11 @@ I built this whole thing solo — but "solo" doesn't mean without AI. If anythin
 | **Python (qrcode / Pillow / pyzbar)** | QR pipeline | Custom QR cards generated locally + pyzbar decode-verification + stress-testing (tilted/blurred/at a distance) |
 | **Sarvam Bulbul v3 (TTS)** | **Voice for all 20/20 aayudhe** | Voice "ritu". **Speech-to-text run back over the audio to cross-check against the approved script** — an automated pronunciation-accuracy check, not just "sounded fine on listen." Ekadanta's (001) human recording was kept separate at first, but **later deliberately replaced with TTS too** — for consistency, with the original .wav kept safe on disk |
 
-**Honest self-assessment:**
-- **What AI did well:** repetitive scaffolding, syntax, edge-case enumeration, contrast math, QR stress-simulation
-- **What I overrode:** the verbatim accuracy of religious/scriptural text, emotional design, the call to remove dark mode, the call to remove the font, prioritization
-- **Lesson:** AI compresses execution time. Design judgment stays with the human.
-- **Limitation:** pixel-level screenshot QA wasn't possible in this session; real device testing is still pending
+Honestly, AI does save real time on the repetitive stuff — scaffolding, syntax, spotting edge cases, contrast math, QR stress-simulation — but the verbatim accuracy of religious/scriptural text, emotional design, the call to remove dark mode, the call to remove the font, deciding what to do first: all of that was mine to decide, nothing there was AI's to hand off. Put simply — AI compresses execution time, but design judgment stays with the human, always. One limitation I'll own: pixel-level screenshot QA wasn't possible in this session, so real device testing is still pending.
 
 ### 🧾 Evidence Sheet
 
-> No need to state this for every AI-assisted step — only where the decision genuinely affects how the work gets evaluated. Three places: brief → constraint → what AI gave → where the human overrode it → what shipped.
+The three examples below lay out exactly that — where AI suggested something and where I overrode it, made explicit. No need to state this for every AI-assisted step, only where the decision genuinely affects how the work gets evaluated.
 
 **1. Voice — the TTS decision**
 
@@ -319,7 +315,9 @@ I built this whole thing solo — but "solo" doesn't mean without AI. If anythin
 
 ---
 
-## Section 7 — Testing & metrics
+## Section 7 — How much actually got tested
+
+Two things stay carefully separate here — what I can verify myself (code, the technical side), and what only real guests can tell me (whether this is actually useful to them). The first is done. The second is still ahead, and I'm not letting the two blur into each other.
 
 ### Technical verification
 
@@ -356,7 +354,7 @@ The site's technical core has been independently checked: content (every item, n
 
 ## Section 8 — What didn't work
 
-> Most portfolios skip this section — that's exactly why it's here.
+Most portfolios skip this part entirely — only the wins get shown. Real work doesn't run that clean; I got it wrong thirteen separate times here, and learned something each time. Here it is, as it happened:
 
 1. **Gold accent failed contrast twice** — caught with manual WCAG math and fixed. Lesson: don't trust a palette tool blindly, do the math first.
 2. **The Yatra One web font** — added, drew font complaints, removed entirely. In the fight between offline safety and decorative typography, offline won.
@@ -376,6 +374,8 @@ The site's technical core has been independently checked: content (every item, n
 
 ## Section 9 — What's next
 
+This isn't finished, and it isn't meant to look like it is. Here's exactly what's done and what's still ahead:
+
 - [x] Real audio — done (20/20, all AI-TTS — even Ekadanta's human recording was later replaced with TTS)
 - [x] Homepage redesign — done (the "aayudh-chakra" rotating wheel + mobile swipe-row)
 - [x] Brand mark/logo — done
@@ -392,7 +392,9 @@ The site's technical core has been independently checked: content (every item, n
 
 ---
 
-## Section 10 — Toolkit
+## Section 10 — What actually got used
+
+Laid out here for a keyword scan — but every name below shows up in a real decision above, none of it is here just to pad a resume.
 
 **Design:** `ui-ux-pro-max` / `design:design-critique` skills, manual WCAG audit
 **Frontend:** HTML5, CSS3 (custom properties / tokens), Vanilla JS, PWA, Service Worker (offline + cache-versioning), Media Session API, Wake Lock API, `prefers-reduced-motion`
@@ -404,9 +406,9 @@ The site's technical core has been independently checked: content (every item, n
 
 ---
 
-## Section 11 — Contact / CTA
+## Section 11 — If you want to talk
 
-**Want something like this for your own home or community mandal?**
+I built all of this for one home, solo — but I don't think it should stay that way. If you want something like this for your own home or community mandal, reach out:
 - LinkedIn: 【to fill】
 - WhatsApp: 【to fill】
 - Email: 【to fill】

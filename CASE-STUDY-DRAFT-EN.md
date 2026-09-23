@@ -122,27 +122,15 @@ And finally, one simple rule I set for myself: one scan means one object, nothin
 
 ---
 
-## Section 4 — Research
+## Section 4 — Research — the part that hasn't happened yet
 
-> ❗ **This section gets filled in after real guest testing. Nothing here — no quote, no number — is fabricated.**
+This section is deliberately incomplete. The real research only happens once guests actually walk in the door during Ganeshotsav — until then, I won't put a single fabricated quote or number here (the ❗ marker means exactly that: hasn't happened yet).
 
-### Planned method
+That doesn't mean I've just been waiting around, though — I already know exactly what to look for, who to ask, and how. I want to sit down with 3 family members (potential editors) and 5-8 guests, ages 8 to 80. Beyond that, I want to simply watch guests scan a QR code during the festival — where they hesitate, where they stall tells you more than what they'd say out loud. And I want to compare notes against izi.TRAVEL, museum audio guides, and temple-visit apps — what they got right, what they didn't.
 
-- **User interviews:** 3 family members (potential editors) + 5–8 guests, ages 8–80
-- **Contextual observation:** watching guests actually scan a QR during the festival — noting friction points
-- **Comparative analysis:** izi.TRAVEL, museum audio guides, temple-visit apps — what works, what doesn't
+The questions I actually need answered: does "museum" or "aayudhe" (ritual weapons) feel less intimidating as a frame? Do people hesitate before scanning a QR code? How many seconds in do younger guests skip the audio? How many steps does NFC take on an older iPhone? And the one that matters most — can a non-technical family member add a new aayudh without any help from me? That's the real test.
 
-### Questions to answer
-
-- "Museum" vs "aayudhe" (ritual weapons) — which framing feels less intimidating?
-- Do people hesitate before scanning a QR code (virus fears)?
-- How many seconds in do younger guests skip the audio?
-- How many steps does NFC take on an older iPhone?
-- Can a non-technical editor add a new aayudh — without help?
-
-*(Real observations + direct quotes go here. No synthesized personas.)*
-
-The full observation log, consent script, and interview-question kit are ready and waiting in CASE-STUDY-NOTES.md — usable the moment guests show up during the festival.
+Whatever lands here will be real observation and direct quotes — no synthesized personas. The full kit for it — the observation log, the consent script, the interview questions — is already built and waiting, in CASE-STUDY-NOTES.md, ready to use the moment guests show up.
 
 ---
 

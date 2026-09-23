@@ -145,123 +145,85 @@ The full observation log, consent script, and interview-question kit are ready a
 
 ---
 
-## Section 5 — Design decisions with rationale
+## Section 5 — Design decisions — why, how, and where I got it wrong
 
-> **Recruiter signal:** not "I built screens" but **"I did X because Y, and accepted trade-off Z."**
+There's a reason behind every decision below — sometimes a technical snag, sometimes someone in the family just said "I don't like this," sometimes something I only found testing at midnight. Here it is, roughly how it actually happened.
 
-### 🎯 Decision 1 — One URL for both QR and NFC (no separate flows)
+### 🎯 One URL for both QR and NFC
 
-**Options:** (A) a different URL per method (QR → mobile web, NFC → app deep-link) · (B) one URL for both.
+At first I figured QR would get one URL and NFC another — then it hit me that meant maintaining the same thing in two places, and why should it matter to a guest whether they scanned or tapped? Gave both the same URL. That also quietly killed an entire class of bugs — two tabs open, two audios playing at once — because the browser just reopens the same URL instead of a new tab. One thing I did give up: I can't separately count how many people came via QR versus NFC. That's solvable later with a URL parameter, but it wasn't the priority right now.
 
-**Chose B because:**
-- It eliminates the entire class of double-play conflicts — the browser reopens the same URL, not a new tab
-- Less content-management surface — one source of truth per aayudh
-- The guest doesn't need to care which trigger they used — the experience is identical
+### 🎯 Color — changed three times before it finally felt right
 
-**Trade-off accepted:** can't track QR vs. NFC engagement separately (solvable later with a URL param).
+The first pass was plain brown-on-cream — then I noticed that's basically the combo every AI-generated design reaches for, nothing about it felt like *us*. Tried a "devghar palette" next (vermillion-maroon + brass-gold + ivory) — still felt "not impressive enough." That's when it clicked: retuning colors wasn't going to fix it, the structure itself needed to change. So I built three completely different directions at once — one like a museum placard, one like a wedding invitation, one like diya-light — and put them side by side on a comparison page. The "puja invitation" direction won: a gold double-ring border, a Play button shaped like a temple seal, a progress bar that looks like a cord.
 
-### 🎯 Decision 2 — Color palette: a "puja invitation" palette instead of generic warm tones
+Even after the colors were locked in, one thing lingered — the gold accent failed the contrast test twice (on small eyebrow-label text). It looked fine to the eye, but the math doesn't lie. Caught it with manual WCAG math and fixed it: final tokens — body text `#3a0f16` (14.9:1, AAA), maroon `#7a1e2b` (9.2:1, AAA), muted `#7a5c46` (5.4:1, AA), gold `#8f6224` (4.8:1, AA). Simple lesson: whatever color a palette tool hands you, run the math before you trust it.
 
-**Before:** plain brown + cream — the single most common combo in AI-generated designs, zero distinctiveness.
+### 🎯 Added a font, then took it back out
 
-**The journey:** First redesigned toward a "devghar palette" (vermillion-maroon + brass-gold + ivory). It still felt "not impressive enough" → instead of just retuning colors, built **3 fully distinct concepts** (structure + motif + interaction) and put them on a comparison page: **museum placard**, **puja invitation**, **diya light**. Chose **puja invitation** — a gold double-ring border, a "mudra" (seal) Play button, a cord-style progress bar.
+I'd decided early on — no web fonts, period — because the site is a fully offline PWA and the service worker only caches local assets. Then, in the invitation direction, I gave in a little: added Yatra One, headings only, kept body text on system-ui (long paragraphs across an 8-to-80 age range just read better in a clean sans). Then font complaints started coming in, and I asked myself — why take this risk at all? Pulled it entirely, back to the system-ui stack, which renders Devanagari cleanly too. Now the identity comes purely from type scale, weight, and spacing — no outside dependency. Between offline reliability and decorative typography, offline won.
 
-**Final tokens:**
+### 🎯 Went icon-only, and a bug hid inside it
 
-| Token | Value | Contrast (on cream bg) | Result |
-|---|---|---|---|
-| Body text | `#3a0f16` | ~14.9:1 | ✅ AAA |
-| Maroon (primary) | `#7a1e2b` | ~9.2:1 | ✅ AAA |
-| Muted | `#7a5c46` | ~5.4:1 | ✅ AA |
-| Gold | `#8f6224` | ~4.8:1 | ✅ AA |
+The play/pause button used to have text on it. The new design switched to plain SVG icons — looked cleaner, but it quietly stripped the button's name for screen readers. I found this myself while testing in the browser. Fixed it right away with an `aria-label` plus a visible label underneath — a five-minute fix, but if I hadn't caught it, it would have stayed broken indefinitely.
 
-**Honest note:** the gold accent failed contrast **twice** at first (on small eyebrow-label text). Caught it with manual WCAG math and landed on the value above. **Lesson:** run the contrast math before trusting a color a palette tool hands you.
+### 🎯 Wanted Google Sheets, ended up with a plain JSON file
 
-### 🎯 Decision 3 — Web font: none → Yatra One → back to none (system-ui)
+The original plan was Google Sheets + n8n, so anyone at home could edit an aayudh. In practice that much setup wasn't needed yet — a single `data.json`, opened and edited in Notepad, checked against jsonlint.com to catch mistakes, with the flow written into the README. Turned out to be enough. The one real risk: one misplaced comma in that JSON and the whole site goes down, which is why the lint check is non-negotiable. Sheets + n8n is still the longer-term goal, but for now a household gets by fine on one text file.
 
-Three deliberate phases:
-1. **Start — "no web fonts":** the site is an offline PWA; the service worker only caches local assets.
-2. **Added Yatra One** in the invitation-styled redesign — headings only; body text stayed on system-ui (a clean sans reads better for long paragraphs across an 8–80 age range).
-3. **Removed it entirely** after font complaints — back to the system-ui stack (renders Devanagari cleanly too). Visual identity now comes from type scale/weight/spacing, with no external dependency.
+### 🎯 Made peace with no autoplay, made the Play button worth looking at
 
-**Lesson:** offline reliability vs. decorative typography — for this project, offline won.
+Every mobile browser blocks autoplay, universally — not something worth fighting. Instead I made the Play button itself the focal point — a gold seal, a double ring, a clear visual anchor. It quietly sets an expectation: you're starting this yourself, it isn't going to just happen to you.
 
-### 🎯 Decision 4 — Icon-only buttons, without the accessibility bug
+### 🎯 Built dark mode, then removed it completely
 
-The play/pause button used to show text. The new design switched to an SVG icon — which quietly dropped the button's accessible name for screen readers. Caught during browser testing; fixed immediately by adding both `aria-label` and a visible label.
+Built a full dark mode, verified it against WCAG, got it to AAA — technically everything checked out. But someone in the family looked confused by the unexpected brown theme. I stopped and asked myself — if it's confusing the very family it's built for, what good is "technically correct"? Pulled it entirely; there's one theme now, always. A feature can be a genuine gimmick and still be the right one to cut if it becomes a bug for the actual user.
 
-### 🎯 Decision 5 — JSON-as-CMS + a jsonlint guard
+### 🎯 From placeholder items to the real aayudhe
 
-**Options:** (A) edit the JSON directly · (B) Airtable + n8n · (C) Google Sheets + n8n · (D) a custom admin panel.
+Work started with just a handful of placeholder items. Partway through, a detailed docx guide-text landed in my lap — name, story, philosophical meaning, the original scriptural reference, all of it. Expanded scope right away. It was safe to do because the QR/NFC tags weren't printed yet, so there was no risk to the URL scheme. Took the text verbatim.
 
-**Currently A, with a cheap safety net:** a single `data.json`, edited in Notepad, a jsonlint.com check to catch mistakes, a copy-paste flow documented in the README. (C) — Sheets + n8n — is the longer-term goal; for now, one text file is enough for a household. **Trade-off:** a broken JSON takes the whole site down — hence the mandatory lint check.
+### 🎯 Moved the icon out of the QR code
 
-### 🎯 Decision 6 — A big "mudra" Play button, no autoplay
+The first version had an icon right in the QR's center — looked great. But under stress-testing, a large share of codes failed to scan — the icon was eating into the error-correction capacity. Found that by actually testing it, not by guessing. Moved the icon to a separate seal above the code, and every code started scanning again.
 
-**Constraint:** every mobile browser blocks autoplay, universally.
+### 🎯 The #001, #002 numbers aren't decoration
 
-**Embraced it instead of fighting it:** the Play button became a design opportunity — a gold seal, double ring, a visual anchor. It sets an expectation: this is a chosen experience, not a passive one.
+Every item in the list carries a number like `#001`, `#002`… not for looks. The exact same number is printed on the physical QR/NFC tag, so the number in the list tells you directly which tag you're looking at.
 
-### 🎯 Decision 7 — Dark mode: built → tested → removed entirely
+### 🎯 Added new controls once the audio got longer
 
-Built a full dark mode first and verified it against WCAG (AAA). But the unexpected brown theme confused the non-technical family. **Removed it entirely** — one theme, always. Lesson: even a theoretically-correct feature is a bug if it confuses the target user.
+Play/pause alone stopped being enough once the audio got substantial — added a ±10-second skip, dots and a counter in the gallery, prev/next plus keyboard arrows in the lightbox. A soft pulse-ring when playing, cards entering in a stagger — all of it built to respect `prefers-reduced-motion`.
 
-### 🎯 Decision 8 — Placeholder items → real aayudhe
+### 🎯 Replaced the list with "Aayudh-Chakra," a rotating wheel — the biggest redesign of the project
 
-Midway through, a detailed docx guide-text turned up (name + story + philosophical meaning + original scriptural reference for each item). Expanded scope. **Why it was safe:** the QR/NFC tags weren't printed yet, so there was no risk to the URL scheme. Text was taken verbatim.
+A simple scrollable list or card grid worked fine, but it lost something — nowhere did it show that these twenty different objects actually relate to each other. So I put an Om at the center and arranged all twenty aayudhe on two concentric rotating rings around it, aiming for the feel of a temple mandala or chakra. It auto-rotates slowly (and can be paused), you can drag it to spin it yourself, and there's a "suggest a random aayudh" button at the center.
 
-### 🎯 Decision 9 — No icon in the QR code's center, a separate seal above it instead
+I didn't jump straight to this design — `design-demos/` still holds nine completely different concepts I built first (wheel, mala, featured, scroll, deck, bento, playlist, mandala, coverflow), all preserved with code. Even after choosing the wheel, one problem surfaced: on mobile (measured at 375px, not guessed), fitting all twenty nodes onto a single ring left less space between neighbors than the minimum tap target allows. That overlap was mathematically unavoidable — no amount of CSS tuning was going to fix it. So the ring disappears entirely below 600px, replaced by a swipeable row of circles, Spotify or Instagram Stories style. My assumption that one ring would fit every screen size turned out to be wrong — and I only found that out by measuring, not by guessing.
 
-Putting an icon in the QR's center caused a large share of codes to fail scanning under stress-testing (it ate into error-correction capacity). Moved the icon to a separate seal above the code → full pass. A decision the testing itself surfaced.
+### 🎯 Built a new brand mark — and it disappeared at one size
 
-### 🎯 Decision 10 — Item-number badges (#001) — information, not decoration
+Replaced the old inline kalash icon with a new mark — the tip of the ankusha's hook curves into a play-button triangle, so Ganesh symbolism and "this is an audio guide" both land in one shape. But before shipping I zoomed in to check the favicon, and the same detailed mark turned into a blurry smudge at 16×16/32×32. Had to build a separate, simpler crop just for that size. Same lesson as the wheel — one design doesn't survive every size, you have to actually look at each one.
 
-The list shows `#001`, `#002`… This isn't decorative: the **same numbers** are on the physical QR/NFC tags, so the number in the list directly tells you which tag is which.
+### 🎯 Making the physical aayudhe — where the work left the screen entirely
 
-### 🎯 Decision 11 — New controls for longer audio (all reduced-motion-safe)
+This part is a different animal from the software side of the site — it's the story of how the idol figures actually standing in the mandap got made. AI wasn't just for code here; it went into physical craft too, and this is the part of the project that shows that most clearly.
 
-±10-second skip; gallery dots + counter; prev/next plus keyboard arrows in the lightbox. A pulse-ring while playing, staggered card entrances — both respect `prefers-reduced-motion`.
+I started by reading through the puranas and a history book, then pulled everything into NotebookLM to collate it into reference files (this later fed into the docx guide-text from Decision 8). From that research I wrote prompts for each aayudh and generated reference images with Google Flow. Research initially covered more than twenty aayudhe, but space ran out — in the end only 18-19 of them actually got a physical figure placed in the mandap. (The digital site still has all twenty — that's a separate, fully-covering count; the two numbers are about different things, not a contradiction.)
 
-### 🎯 Decision 12 — "Aayudh-Chakra," a rotating wheel, instead of a list/card grid
+With time short, I decided some aayudhe would be 3D printed — Google Flow's images went through meshy.ai to become 3D models, then into Ultimaker for prep and `.stl` editing (software I didn't know at all going in, picked it up as I went), and a local vendor did the actual printing — I didn't print it myself. In parallel, some aayudhe were shaped by hand from Fevicryl clay instead. Pieces from both methods got a black matte spray primer first, then acrylic detailing on top — golden, coppery, metallic-looking finishes, brown for anything meant to read as wood.
 
-**Before:** a simple scrollable list/card grid — functional, but it showed nothing of "how these 20 different objects relate to each other."
-
-**New:** an Om at the center, 20 aayudhe on two concentric rotating rings around it — evoking a temple mandala/chakra. Auto-rotate (slow, pausable), drag-to-rotate, a center "suggest a random aayudh" button.
-
-**Exploration:** didn't jump straight to this design — `design-demos/` holds **9 fully-built alternative concepts** (wheel, mala, featured, scroll, deck, bento, playlist, mandala, coverflow), preserved with code.
-
-**Problem found and solved:** on mobile (measured at 375px), fitting all 20 nodes on one ring left the gap between neighbors below the minimum tap target — **the overlap was mathematically unavoidable, not something CSS could fix.** Solution: hide the ring entirely below 600px, replace it with a swipeable circle-row (Spotify/Instagram-Stories style).
-
-**Lesson:** the assumption "one ring will fit every screen size" was wrong — only real measurement (node spacing at a 375px viewport) revealed it, not a guess.
-
-### 🎯 Decision 13 — A new brand mark, and a separate simplified version for the favicon
-
-Replaced the old inline kalash SVG icon with a new mark — the tip of the ankusha's hook forms a play-button triangle (Ganesh symbolism and "this is an audio guide" in one line). But the same detailed mark looked blurry at 16×16/32×32 favicon size — caught by zooming in before shipping, and built a separate simplified crop. One icon doesn't fit every size — true here too, same as Decision 12.
-
-### 🎯 Decision 14 — Making the physical aayudhe: AI reference art → 3D print/clay → acrylic finishing
-
-This part is different from the site's *software* half — it's the process of how the actual idol figures sitting in the mandap were made. Proof that "AI wasn't just for code — it went into physical craft too" — a rare digital + physical maker workflow combination.
-
-**Pipeline (digital → physical, full tool chain):**
-1. **Research** — gathered information from the puranas and a history book; used research tools and NotebookLM to pull all sources together into reference files (ties to Decision 8)
-2. **AI reference art** — turned that research into prompts for each aayudh, generated reference images with **Google Flow**. Research initially covered 20+ aayudhe; due to space constraints, only **18-19 of them got a physical figure** actually placed in the mandap — the **20 aayudhe** on the digital site is a separate (fully-covering) count; the two numbers describe different things, they aren't inconsistent
-3. **Physical fabrication — two methods, in parallel:**
-   - **3D printing:** with time short, some aayudhe went from Google Flow images through **meshy.ai** to 3D models → prep and `.stl` editing in **Ultimaker** (software I didn't know beforehand, picked up as I went) → printed by a **local vendor** (didn't print it myself)
-   - **Hand-sculpting:** some aayudhe were shaped in parallel from **Fevicryl clay**
-4. **Finishing** — a black matte spray primer coat on pieces from both methods, then acrylic detail painting (golden, copper, metallic, brown for anything meant to read as wood)
-5. **Sizing — a deliberate decision, not an aesthetic one:** each idol figure is roughly 8" tall; the stand is taller, roughly 10" — made of cardboard, finished in black spray paint. **Why 10":** (a) space was needed above the aayudh for a QR code + name label, (b) so the aayudhe wouldn't **overlap** each other when arranged together
-6. **Backdrop** — black paper matching the theme, so each aayudh stands out visually
-7. **QR layer** — a separate QR code per aayudh, plus one master QR for the main landing page
+The sizing was a deliberate call, not an aesthetic one — each figure is roughly 8" tall, the stand beneath it taller still, around 10", made of cardboard and finished in black spray paint. The stand was made tall on purpose: there needed to be room above each aayudh for a QR code and a name label, and it also kept the aayudhe from overlapping each other once they were all arranged together. Black paper went behind everything so each piece would stand out. And finally, each aayudh got its own QR code, plus one master QR pointing to the main landing page.
 
 *(Full original note — HANDWRITTEN-NOTES-DIGITIZED.md, Marathi only.)*
 
-**Intent:** puranic material tends to be dense, formal language, and some guests — especially older ones, or those who simply can't read it — can't access it that way, so an audio layer was added so the full text could be **heard**. That's the real accessibility reason, not technology added for its own sake.
-
-**Framing:** modern technology (AI image generation, 3D printing, TTS, QR) doesn't **replace** a traditional Ganeshotsav decoration — it **carries its meaning to more people.** Not a parody, not a gimmick.
+Why do all this — puranic language is dense and formal, and some guests, especially older family members or anyone who simply can't read it, can't get at it that way. Adding an audio layer meant the full text could be *heard* instead — that's the real accessibility reason, not technology for its own sake. And in one line: modern technology here — AI image generation, 3D printing, TTS, QR — doesn't replace a traditional Ganeshotsav decoration, it carries its meaning to more people. Not a parody, not a gimmick.
 
 ---
 
-## Section 6 — AI-assisted design workflow
+## Section 6 — How I actually worked with AI
+
+I built this whole thing solo — but "solo" doesn't mean without AI. If anything, without it this wouldn't have come together in time. The line between what AI did and what I decided is a clean one though, laid out below.
 
 | Tool | Role | What the human did, what AI did |
 |---|---|---|

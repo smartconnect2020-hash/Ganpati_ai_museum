@@ -37,7 +37,7 @@
 | Section 7 — testing | `testing-guest-scan.jpg` | "पाहुणा प्रत्यक्ष QR स्कॅन करताना" | 🔲 guest testing नंतर |
 | प्रिंट close-up | `print-qr-cards-closeup.jpg` | "छापलेली QR कार्ड्स + NFC टॅग" | 🟡 अंशतः |
 | Cover/hero (social) | `cover-social-1200x630.jpg` | — (मजकूर नाही, फक्त share-preview) | 🔲 तुम्ही ठेवा |
-| Section 7 — SEO पुरावा | `seo-rich-results-proof.jpg` | "Google च्या Rich Results Test चा निकाल — स्वतंत्र पडताळणी" | ✅ मिळालं (मी काढला, २२ Sep) |
+| Section 7 — SEO पुरावा | `seo-rich-results-proof.jpg` | "Google च्या Rich Results Test चा निकाल — स्वतंत्र पडताळणी" | 🟡 **निकाल पडताळला (मजकूर-पुरावा खाली), पण स्क्रीनशॉट फाइल अजून सेव्ह केलेली नाही** — मी परत काढून पाठवू शकतो, सांगा |
 | Section 7 — Analytics पुरावा | `analytics-dashboard.jpg` | "GA4 डॅशबोर्ड — रिअल users/traffic" | 🔲 **फक्त तुम्हीच घेऊ शकता** (तुमच्या Google login च्या मागे, मला प्रवेश नाही) |
 
 फोटो-tracking चा जुना तपशीलवार टेबल (verification-history सह) [CASE-STUDY-NOTES.md](CASE-STUDY-NOTES.md) मध्ये कायम आहे.
@@ -368,7 +368,7 @@ Play/pause बटण आधी मजकूर दाखवत होतं. न
 | Structured data (JSON-LD) | ✅ **Google च्या स्वतःच्या [Rich Results Test](https://search.google.com/test/rich-results) ने स्वतंत्रपणे पडताळलं** — "Crawled successfully on Sep 22, 2026" + "Carousels — 1 valid item detected" — म्हणजे structured data फक्त कोडमध्ये आहे इतकंच नाही, तर Google लाही ती वैध वाटते |
 | robots.txt / sitemap.xml | ✅ दोन्ही repo मध्ये उपस्थित |
 
-**Screenshot प्लेसहोल्डर (फोटो-टेबलमध्येही नोंदवलं):** `seo-rich-results-proof.jpg` (वरचा Rich-Results निकाल — मी काढून तुम्हाला पाठवू शकतो) आणि `analytics-dashboard.jpg` (GA4 चा प्रत्यक्ष डॅशबोर्ड — **हा फक्त तुम्हीच घेऊ शकता, कारण तो तुमच्या Google login च्या मागे आहे, मला तिथे प्रवेश नाही**).
+**Screenshot प्लेसहोल्डर (फोटो-टेबलमध्येही नोंदवलं):** `seo-rich-results-proof.jpg` — वरचा निकाल मी ब्राउझरमध्ये बघून पडताळला (मजकूर-पुरावा वरच्या टेबलमध्ये खरा आहे), **पण प्रत्यक्ष स्क्रीनशॉट फाइल म्हणून सेव्ह केलेला नाही** — विचारल्यास परत काढून देऊ शकतो. आणि `analytics-dashboard.jpg` (GA4 चा प्रत्यक्ष डॅशबोर्ड — **हा फक्त तुम्हीच घेऊ शकता, कारण तो तुमच्या Google login च्या मागे आहे, मला तिथे प्रवेश नाही**).
 
 ### ❗ User metrics (बाकी — guest testing नंतर)
 

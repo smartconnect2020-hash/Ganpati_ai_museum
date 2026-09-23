@@ -8,6 +8,17 @@
 
 ## बदल-इतिहास (कालानुक्रमे)
 
+### २३ Sep 2026
+- CASE-STUDY-DRAFT.md मधून trim केलं (recruiter-वाचनीयता वाढवायला) — 5W1H मधलं TL;DR-पुनरावृत्ती काढली, आवाज-निवड विभागातलं खोल तांत्रिक तपशील इथे हलवलं (खाली).
+
+**आवाज-निवड — पूर्ण तांत्रिक तपशील (`audio-drafts/` फोल्डरवरून, ६३ फाइल्स):**
+- ३ आवाज तुलना: `sample-museum-priya`, `-ritu`, `-shreya` (प्रत्येकाची v2 आवृत्तीसह) → ritu निवडला
+- ritu च्या ३ tonal चाचण्या: `sample-ritu-intimate`, `-lively`, `-warm`
+- "बाप्पा बोलतोय" स्क्रिप्ट (`part-01.txt`, `-v2.txt`, `-v3.txt`) — first-person, बालसुलभ, प्रत्येक आवृत्तीत विराम/उत्स्फूर्त वाक्यरचना वाढवलेली
+- Child-voice इंजिनिअरिंग — पद्धत अ (`_tts_part.py`, librosa pitch-shift, ३-५ semitones=नैसर्गिक, >6=chipmunky); पद्धत ब (`_baby_voice.py`, WORLD vocoder/pyworld — F0/स्पेक्ट्रल-envelope/aperiodicity वेगळे करून, कारण साधा pitch-shift ६ semitones नंतर कृत्रिम वाटतो); breathiness + warmth (low-shelf boost) जोडलं कारण पिच वाढवल्यावर आवाज पातळ वाटतो; Sarvam च्या मूळ आवाजाचा pitch-contour सपाट (~76Hz p10-p90) मोजून खऱ्या मुलांच्या comedy-आवाजाशी (~190-330Hz) तुलना करून "expand" पॅरामीटर जोडला
+- फेऱ्या: baby-B1 ते B6, kid-C1-3, kid-D1-2 — ६+ पुनरावृत्ती
+- `multi-speaker_एकदंत.wav` (६.२MB, २२ Aug) — उद्देश अनिश्चित, सोबत script नाही
+
 ### २२ Sep 2026
 - दोन हस्तलिखित नोंदी (फोटो) डिजिटाइझ केल्या → [HANDWRITTEN-NOTES-DIGITIZED.md](HANDWRITTEN-NOTES-DIGITIZED.md). यातून खालचे जुने उघडे प्रश्न **अंशतः सुटले** (नोंदीतून, फोटोतून नव्हे — फरक खाली नोंदवला आहे):
   - clay-काम: ✅ आता **लेखी पुष्टी** — "Fevicryl clay" ने काही आयुधं समांतर (parallely) घडवली. (⚠️ अजूनही कुठल्याही फोटोत प्रत्यक्ष दिसलेलं नाही — फक्त लिखित नोंदीवर विश्वास, स्वतंत्र फोटो-पडताळणी अजून बाकी)

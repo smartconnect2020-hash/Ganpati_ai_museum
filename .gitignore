@@ -30,6 +30,13 @@ icons/_grid2.png
 case study photo/
 case-study-assets/
 
+# Backup snapshots of removed items (e.g. backup-removed-items-2026-09-13/) —
+# these are working-copy scratch folders, not meant to be public, and their
+# own qr-codes/ and media/ subfolders were NOT covered by the top-level
+# "qr-codes/*" rule above since it only matches the top-level directory.
+# One such backup leaked publicly for this reason — see git history.
+backup-removed-items-*/
+
 # Editor
 .vscode/
 .idea/
